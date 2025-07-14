@@ -33,7 +33,7 @@ a_3=a_4=24 cm (leg length)
             %obj.minDxi = obj.frontCornerDistance;
             obj.minDxi = 0;
             
-            strategies = {SwingTriangle() SwingPose()};
+            strategies = {SwingParallel() SwingPose()};
             obj.strategy = strategies{strategy};
             fprintf("Using strategy %s\n", obj.strategy.strategyName);
         end

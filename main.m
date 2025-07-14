@@ -50,14 +50,14 @@ loadFromSaved = false;
 showVisual = true;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 4;
 botStartX = -1;
 maxIterations = 100;
 %% path settings
 pathNum = 5;
 pathStartX = 50; 
 pathStartY = 100;
-pathEndX = 1000;
+pathEndX = 500;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings

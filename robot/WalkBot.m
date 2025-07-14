@@ -13,7 +13,7 @@ classdef WalkBot < LeggedBot
     end
     methods
         function obj = WalkBot(terrain, path)
-            swingStrategy = 2;
+            swingStrategy = 1;
             obj@LeggedBot(swingStrategy);
             %obj.useAltKinematics = false;
             %obj.stepAdjusterSwing = StepAdjusterSwing(obj.stepSafetyValue,2);
