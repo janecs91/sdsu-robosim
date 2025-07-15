@@ -1,7 +1,7 @@
 classdef Flat < TerrainGenerator
     properties(Constant)
         % vars: width, height
-        name = 'flat_%d_%d';
+        name = 'flat_%.0d_%.0d';
         argNames = {};
     end
     % fix get terrain name (consolidate names)

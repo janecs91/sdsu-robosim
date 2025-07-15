@@ -1,7 +1,7 @@
 classdef Sin < TerrainGenerator
     properties(Constant)
         % vars: width, height, amplitude, frequency
-        name = 'sin_%d_%d_%d_%.3f';
+        name = 'sin_%.0d_%.0d_%.0d_%.3f';
         argNames = {'amplitude', 'frequency'};
     end
     methods

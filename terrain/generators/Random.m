@@ -1,7 +1,7 @@
 classdef Random < TerrainGenerator
     properties(Constant)
         % vars: width, height, filter size, elevation range
-        name = 'random_%d_%d_%d_%d';
+        name = 'random_%.0d_%.0d_%.0d_%.0d';
         argNames = {'elevationChangeRange', 'randFilterSize'};
     end
     methods

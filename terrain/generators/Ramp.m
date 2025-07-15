@@ -1,7 +1,7 @@
 classdef Ramp < TerrainGenerator
     properties(Constant)
         % vars: width, height, amplitude
-        name = 'ramp_%d_%d_%d';
+        name = 'ramp_%.0d_%.0d_%.0d';
         argNames = {'amplitude'};
     end
     methods

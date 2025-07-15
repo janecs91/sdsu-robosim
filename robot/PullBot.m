@@ -5,13 +5,15 @@ classdef PullBot < LeggedBot
         % row = motion phase #
         % column = legs involved
         legMotionOrder = [1; 2];
+        initialActiveLeg = 1;
         numLegs = 2;
         numWheels = 2;
         useAltKinematics = true;
     end
     methods
         function obj = PullBot(terrain, path)
-            obj@LeggedBot();
+            swingStrategy = 1;
+            obj@LeggedBot(swingStrategy);
             
             % load functions
             addpath('transformations/functions2');

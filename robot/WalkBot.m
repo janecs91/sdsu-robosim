@@ -6,13 +6,15 @@ classdef WalkBot < LeggedBot
         % row = motion phase #
         % column = legs involved
         legMotionOrder = [1; 3; 2; 4];
+        initialActiveLeg = 2;
         numLegs = 4;
         numWheels = 0;
         useAltKinematics = true;
     end
     methods
         function obj = WalkBot(terrain, path)
-            obj@LeggedBot();
+            swingStrategy = 1;
+            obj@LeggedBot(swingStrategy);
             %obj.useAltKinematics = false;
             %obj.stepAdjusterSwing = StepAdjusterSwing(obj.stepSafetyValue,2);
             %obj.stepAdjusterStance = StepAdjusterStance(obj.stepSafetyValue,2);
@@ -24,7 +26,7 @@ classdef WalkBot < LeggedBot
             obj.functionsAByLeg = {@aby_walk_leg_1, @aby_walk_leg_2, @aby_walk_leg_3, @aby_walk_leg_4};
             obj.functionsAByBody = {@aby_walk_body_1, @aby_walk_body_2, @aby_walk_body_3, @aby_walk_body_4};
             obj.functionJointPositions = @tbe_walk_joint_pos;
-
+ 
             % initial joints ?
             obj.waist = [deg2rad(45) deg2rad(-45) deg2rad(45) deg2rad(-45)];
             obj.hip = [deg2rad(120) deg2rad(120) deg2rad(120) deg2rad(120)];

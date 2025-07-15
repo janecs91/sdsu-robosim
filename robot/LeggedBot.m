@@ -4,15 +4,17 @@
         numLegs;
     end
     properties
-        useConstantTestValues = false;
-        constantTurnAngle = deg2rad(0);
-        constant_dx_b = 10;
-        constant_dx_i = 10;
+        useConstantTestValues = false;  % TBD review use case (probably for testing)
+        constantTurnAngle = deg2rad(0); % For testing: Constant turn angle?
+        constant_dx_b = 10; % For testing: constant base movement along x-direction
+        constant_dx_i = 10; % For testing: constant leg movement along x-direction
+        enableIgnoreBreakingForwardLegMovement = true;
+        alwaysUsePlannedPositions = true;
     end
     properties
-        %LBMaxI = 30;
+        %LBMaxI = 30;       % TBD review use case
         %% initialization pose
-        initialActiveLeg = 1;
+        %initialActiveLeg = 1;
         adjustInitialX = true;
         adjustInitialZ = true;
         setDesiredPose = false;
@@ -20,8 +22,8 @@
         enableLift = true;
         enableBodyMovement = true;
         enableLegMovement = true;
-        iterateMovement = true; % need to iterate for old kinematics (walk)
-        % old kinematics (walk) is inaccurate if large movement
+        iterateMovement = true; % need to iterate for old kinematics (walk) -> only for back legs
+        % old kinematics (walk) is inK  accurate if large movement
         %% step size
         % isStepAdjustable: (0, always use max step size) (1, adjust)
         isStepAdjustable = false;
@@ -60,7 +62,10 @@
         %localWaistLocation;
     end
     methods
-        function obj = LeggedBot()
+        function obj = LeggedBot(swingStrategy)
+            if nargin < 1
+                swingStrategy = 2;
+            end
             addpath('robot/legged');
             
             obj@BaseBot();
@@ -71,7 +76,7 @@
             
             %obj.maxI = obj.LBMaxI;
             obj.debug = 0;
-            obj.stepAdjusterSwing = StepAdjusterSwing(obj.stepSafetyValue);
+            obj.stepAdjusterSwing = StepAdjusterSwing(obj.stepSafetyValue, swingStrategy);
             obj.stepAdjusterStance = StepAdjusterStance(obj.stepSafetyValue);
             obj.stepAdjusterHeight = StepAdjusterHeight(obj.stepSafetyValue);
             
@@ -100,7 +105,7 @@
             
             %% adjust x-direction (legs)
             if obj.adjustInitialX
-                disp('adjusting initial x')
+                %disp('adjusting initial x')
                 %% get move vector
                 turnAngleLeg = 0;
                 slope = tan(turnAngleLeg);
@@ -108,7 +113,7 @@
                 %dx_i = obj.get_leg_step_vector(firstState, firstState.activeLeg, slope, turnAngle, terrain);
                 relativeLegVector = [dx_i 0 0];
                 %moveVector = [bodyStepSize 0 0];
-                if firstState.activeLeg == 2
+                if firstState.activeLeg == 1
                     [obj, firstState] = obj.move_leg(firstState, 2, relativeLegVector, 0);
                 else
                     [obj, firstState] = obj.move_leg(firstState, 1, relativeLegVector, 0);
@@ -118,11 +123,11 @@
                 point2 = firstState.endPositions(stanceLeg, 1:2);
                 [distance, angle] = obj.get_vector_to_point(point1, point2);
                 obj.minBodyToSwingAnkleDistance = distance;
-                disp('minBodyToSwingAnkleDistance');
-                disp(obj.minBodyToSwingAnkleDistance);
+                %disp('minBodyToSwingAnkleDistance');
+                %disp(obj.minBodyToSwingAnkleDistance);
                 obj.minBodyToKneeDistance = obj.a_0;
-                disp('minBodyToKneeDistance');
-                disp(obj.minBodyToKneeDistance);
+                %disp('minBodyToKneeDistance');
+                %disp(obj.minBodyToKneeDistance);
                 
                 if obj.numLegs > 2
                     moveVector = [-bodyStepSize 0 0];
@@ -157,8 +162,8 @@
             z_h = jointPositions(3,3);
             x_h = jointPositions(3,1);
             y_h = jointPositions(3,2);
-            fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 1, x_a, y_a, z_a);
-            fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+            %fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 1, x_a, y_a, z_a);
+            %fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
             jointPositions = obj.get_local_joint_positions(firstState, 2);
             jointPositions = jointPositions{1};
             z_a = jointPositions(end,3);
@@ -167,11 +172,18 @@
             z_h = jointPositions(3,3);
             x_h = jointPositions(3,1);
             y_h = jointPositions(3,2);
-            fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 2, x_a, y_a, z_a);
-            fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+            %fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 2, x_a, y_a, z_a);
+            %fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
             
             % set active leg to initial leg
-            firstState.activeLeg = obj.initialActiveLeg;
+            initialActiveLegIndex = find(obj.legMotionOrder==obj.initialActiveLeg);
+            fprintf("## Initial active leg index: %d\n", initialActiveLegIndex);
+            fprintf("Length of leg motion order array: %d\n", length(obj.legMotionOrder))
+            previousIndexFromInitialActiveLeg = mod(initialActiveLegIndex-2, length(obj.legMotionOrder)) + 1;
+            fprintf("## Previous index from initial active leg index: %d\n", initialActiveLegIndex);
+            firstState.activeLeg = obj.legMotionOrder(previousIndexFromInitialActiveLeg);
+            %firstState.activeLeg = obj.initialActiveLeg;
+            fprintf("## First active leg set: %d\n", firstState.activeLeg);
             firstState.plannedEndPositions = obj.get_global_end_positions(firstState);
             disp("Leg initialization completed...")
         end
@@ -212,11 +224,12 @@
                 % alt step size
                 %stanceLeg2 = activeLeg;
                 stanceLeg2 = stanceLeg;
-                %stepAdjusterStance = obj.stepAdjusterStance;
-                fprintf("**********$$$$$$$ before stepadjustcount\n");
+                %stepAdjusterStance = obj.step AdjusterStance;
+                %fprintf("**********$$$$$$$ before stepadjustcount\n");
+                %% This is step vector for body movement
                 [dx_b, dy_b, dz_b, newBodyAngle, futurePathIndex] = obj.stepAdjusterStance.get_step_vector2(obj, previousState, stanceLeg2, terrain, path);
                 obj.stepAdjustCount = obj.stepAdjustCount+1;
-                fprintf("**********$$$$$$$ stepadjustcount: %d\n", obj.stepAdjustCount);
+                %fprintf("**********$$$$$$$ stepadjustcount: %d\n", obj.stepAdjustCount);
                 %turnAngleBody = newBodyAngle./obj.numLegs;
                 turnAngleBody = newBodyAngle;
                 if obj.useConstantTestValues
@@ -224,85 +237,103 @@
                 end
                 relativeBodyVector = [dx_b dy_b dz_b];
                 %relativeBodyVector = [0 0 0];
-            else
+            else 
                 % get step size
                 relativeBodyVector = obj.stepAdjusterStance.adjust_body_vector(obj, previousState, activeLeg, relativeBodyVector);
             end
             
-            fprintf("** STANCE PATH IDX: %d\n", futurePathIndex);
-            fprintf('original relative body vector for stance leg %d ===============================\n', stanceLeg);
-            disp(relativeBodyVector);
+            %fprintf("** STANCE PATH IDX: %d\n", futurePathIndex);
+            %fprintf('original relative body vector for stance leg %d ===============================\n', stanceLeg);
+            %disp(relativeBodyVector);
             
+            %% Planned positions - use Fake State
             % predicting future end points
             previousEndPosition = obj.get_global_end_positions(previousState, activeLeg);
             globalBodyVector(1:2) = obj.rotate_vector(relativeBodyVector(1:2), turnAngle+previousState.baseOrientation(3));
             globalBodyVector(3) = 0;
+            %globalBodyVector(3) = dz_b;
             forwardState = obj.get_last_state();
             fakeState = copy(forwardState);
             fakeState.basePosition = fakeState.basePosition + globalBodyVector;
+            fakeState.baseOrientation(3) = fakeState.baseOrientation(3) + turnAngleBody;
             fakeState.pathIndex = futurePathIndex;
-            [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, fakeState, activeLeg, terrain, path);
-            localLegVector = [dx_i dy_i];
-            if obj.useConstantTestValues
-                dx_i = obj.constant_dx_i;
-            end
-            relativeLegVector = [localLegVector 0];
-            disp("planned leg vector")
-            disp(relativeLegVector)
-            globalLegVector = obj.rotate_vector(relativeLegVector(1:2), fakeState.baseOrientation(3));
+            %% Use swing strategy to get step vector --> is this only for fake state?
+            %[dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, fakeState, activeLeg, terrain, path);
+            plannedRelativeLegVector = obj.stepAdjusterSwing.get_step_vector_main(obj, forwardState, activeLeg, terrain, path);
+            %disp("planned leg vector")
+            %disp(relativeLegVector)
+            globalLegVector = obj.rotate_vector(plannedRelativeLegVector(1:2), fakeState.baseOrientation(3));
             newEndPosition(1:2) = previousEndPosition(1:2) + globalBodyVector(1:2) + globalLegVector(1:2);
-            newEndPosition(3) = 0;
+            newEndPosition(3) = terrain.get_elevation(newEndPosition(1), newEndPosition(1));
             previousState.plannedEndPositions(activeLeg,:) = newEndPosition;
             
             % evaluate terrain elevations
-            elevationDifference = relativeLegVector(3);
+            elevationDifference = plannedRelativeLegVector(3);
             highestElevation = terrain.get_highest_elevation(previousEndPosition(1), ... 
                 previousEndPosition(2), newEndPosition(1), newEndPosition(2), obj.scale);
             highestStep = highestElevation - previousEndPosition(3);
                         
             %% Move Robot
-            % lift up foot (all vertical)
+            %% lift up foot (all vertical)
             upMagnitude = 2 + max([0 elevationDifference highestStep]);
             if obj.enableLift == true
                 obj = obj.move_leg(previousState, activeLeg, [0 0 upMagnitude], 1);
             end
             
-            % move forward foot and body (all horizontal)
+            %% move forward foot and body (all horizontal)
             forwardState = obj.get_last_state();
             %globalBodyVector = [0 0 0];
             %relativeLegVector = [0 0 0];
-            fprintf("*activeLeg: %d\n", activeLeg);
-            fprintf("**********$$$$$$$ before body forward adjust\n");
-            disp(relativeBodyVector);
+            %fprintf("*activeLeg: %d\n", activeLeg);
+            %fprintf("**********$$$$$$$ before body forward adjust\n");
+            %disp(relativeBodyVector);
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
-            fprintf("**********$$$$$$$ after body forward adjust\n");
+            %fprintf("**********$$$$$$$ after body forward adjust\n");
+            %disp("pull hips from leggbot");
+            %disp(forwardState.anglesHip);
+
+
+            %% adjust body height
             forwardState = obj.get_last_state();
-            disp("pull hips from leggbot");
-            disp(forwardState.anglesHip);
+            dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
+            %disp("CHANGING BASE Z after swing")
+            %disp(dz_b);
+            %fprintf("**********$$$$$$$ before body height adjust\n");
+            obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
+            %fprintf("**********$$$$$$$ after body height adjust\n");
+            obj = obj.update_bot_height();
+
+
+            %% adjust forward leg movement
             % --- added this (but is optional, investigate more): && obj.numLegs < 4
             if obj.enableLegMovement == true
                 forwardState = obj.get_last_state();
-                disp("PATH INDEX =======")
-                disp(forwardState.pathIndex);
+                %disp("PATH INDEX =======")
+                %disp(forwardState.pathIndex);
                 forwardState.pathIndex = futurePathIndex;
-                disp("AF s")
-                disp(forwardState.pathIndex);
-                [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, forwardState, activeLeg, terrain, path);
-                relativeLegVector = [dx_i dy_i];
-                disp("relative leg vector")
-                disp(relativeLegVector)
-                obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
-                forwardState = obj.get_last_state();
-                dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
-                disp("CHANGING BASE Z after swing")
-                disp(dz_b);
-                fprintf("**********$$$$$$$ before body height adjust\n");
-                %obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
-                fprintf("**********$$$$$$$ after body height adjust\n");
-                obj = obj.update_bot_height();
+                %disp("AF s")
+                %disp(forwardState.pathIndex);
+                %% Set actual leg movement to planned leg movement
+                if obj.alwaysUsePlannedPositions
+                    actualRelativeLegVector = plannedRelativeLegVector;
+                    %actualRelativeLegVector = globalLegVector;
+                else
+                    actualRelativeLegVector = obj.stepAdjusterSwing.get_step_vector_main(obj, forwardState, activeLeg, terrain, path);
+                end
+                %disp("relative leg vector")
+                %disp(relativeLegVector)
+                if obj.enableIgnoreBreakingForwardLegMovement
+                    try
+                        obj = obj.move_leg(forwardState, activeLeg, [actualRelativeLegVector(1:2) 0], 1);
+                    catch
+                        disp("Skip moving leg")
+                    end
+                else
+                    obj = obj.move_leg(forwardState, activeLeg, [actualRelativeLegVector(1:2) 0], 1);
+                end
             end
                         
-            % put down foot (all vertical) 
+            %% put down foot (all vertical) 
             currentState = obj.get_last_state();
             currentEndPosition = obj.get_global_end_positions(currentState, activeLeg);
             terrainElevation = terrain.get_elevation(currentEndPosition(1), currentEndPosition(2));
@@ -322,6 +353,7 @@
                 maxI = 1;
             end
             legVectorI = legVector./maxI;
+            fprintf("#### ITERATE LEG MOVEMENT: maxI: %d // legVectorI: %d\n", maxI, legVectorI)
             for sequence=1:maxI
                 newState = obj.update_leg(newState, activeLeg, legVectorI);
                 % save to history
@@ -372,12 +404,12 @@
             switch((obj.useAltKinematics && obj.numLegs<4 && ~forceSingleDisable)||altForceTrigger)
                 case 0
                     % walk ?
-                    disp("EVAL TYPE 1 - WALK")
+                    %fprintf("EVAL TYPE 1 - WALK - LEG %d\n", leg)
                     tempState.dotEndPositions(leg,:) = obj.global2relative(moveVector, tempState);
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_swing(obj, tempState);
                 case 1
                     % pull ?
-                    disp("EVAL TYPE 2 - PULL")
+                    %fprintf("EVAL TYPE 2 - PULL - LEG %d\n", leg)
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_swing2(obj, tempState);
             end
             
@@ -427,12 +459,12 @@
             switch((obj.useAltKinematics && obj.numLegs<4)||altForceTrigger)
                 case 0
                     % walk ?
-                    disp("USING OLD KINEMATICS!!!!!!!!!!!!!")
-                    disp("EVAL TYPE 1 - WALK")
+                    %disp("USING OLD KINEMATICS!!!!!!!!!!!!!")
+                    %disp("EVAL TYPE 1 - WALK")
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_stance(obj, tempState);
                 case 1
                     % pull ?
-                    disp("EVAL TYPE 2 - PULL")
+                    %disp("EVAL TYPE 2 - PULL")
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_stance(obj, tempState);
             end
             
@@ -479,10 +511,10 @@
         end
         %% Helper Methods
         function nextLeg = get_next_leg_number(obj, previousState)
-            disp("getting next leg number")
-            disp(obj.legMotionOrder)
-            disp(previousState)
-            disp(previousState.activeLeg)
+            %disp("getting next leg number")
+            %disp(obj.legMotionOrder)
+            %disp(previousState)
+            %disp(previousState.activeLeg)
             previousIndex = find(obj.legMotionOrder == previousState.activeLeg);
             nextIndex = mod(previousIndex, length(obj.legMotionOrder))+1;
             nextLeg = obj.legMotionOrder(nextIndex);

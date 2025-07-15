@@ -1,8 +1,10 @@
 classdef HalfCirclePath < PathGenerator
     properties(Constant)
-        % vars: startX, startY, endX, endY, sign
-        name = 'halfcirc_%d_%d_%d_%d_%d';
+        % naming: halfcirc (sign 1), halfcirc2 (sign -1)
+        % vars: startX, startY, endX, endY
+        name = 'halfcirc_%d_%d_%d_%d';
         argNames = {};
+        isSameStartYEndY = true;
     end
     methods
         function obj = HalfCirclePath(directory)
@@ -13,6 +15,7 @@ classdef HalfCirclePath < PathGenerator
             startY = startPoint(2);
             endX = endPoint(1);
             endY = startY;
+            sprintf("%d %d %d %d\n", startX, startY, endX, endY)
             
             diameter = abs(endX - startX);
             radius = diameter/2;
@@ -36,6 +39,7 @@ classdef HalfCirclePath < PathGenerator
             end
             pathName = sprintf(pathGenName, startX, startY, endX, endY);
             fileAddress = sprintf(obj.saveFileAddress, pathName);
+            sprintf("Saving at file: %s...", fileAddress)
             save(fileAddress, 'pathPoints');
         end
     end

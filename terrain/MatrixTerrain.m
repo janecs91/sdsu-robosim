@@ -33,6 +33,7 @@ classdef MatrixTerrain
             terrainGenerator = TerrainGenerator(directory);
             try
                 terrainData = load(terrainAddress);
+                fprintf("Successfully loaded terrain: %s\n", terrainAddress)
             catch
                 fprintf('error: could not find terrain %s\n', terrainAddress)
                 disp('generating...');

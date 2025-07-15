@@ -6,7 +6,7 @@ classdef Environment
         outputEnvAddress;
         inputPathDirectory;
         inputTerrainDirectory;
-        directory = 'output';
+        %directory = 'output';
         pathGenerator;
         terrainGenerator;
         genTerrainFromPath = true;
@@ -142,13 +142,13 @@ classdef Environment
             % must have run analyze() first
             figure;
             
-            t = Visualizer.simulate_terrain(obj.terrain);
+            terrainVisual = Visualizer.simulate_terrain(obj.terrain);
             xlabel('X');
             ylabel('Y');
             zlabel('Z');
             
             hold on
-            Visualizer.simulate_path(obj.path);
+            pathVisual = Visualizer.simulate_path(obj.path);
             hold off
             
             Visualizer.simulate_bot(bot, varargin{:});
@@ -166,8 +166,8 @@ classdef Environment
         function saveAddress = get_saved_address(directory)
             saveAddress = string(directory) + "/" + string(Environment.prefix) + "_%s.mat";
         end
-        function env = get_saved_env(directory, pathName, terrainName, pathArgs, terrainArgs)
-            saveAddress = Environment.get_saved_address(directory);
+        function env = get_saved_env(outputEnvDirectory, pathDirectory, terrainDirectory, pathName, terrainName, pathArgs, terrainArgs)
+            saveAddress = Environment.get_saved_address(outputEnvDirectory);
             fileName = terrainName; 
             savedFile = load(sprintf(saveAddress, fileName));
             env = savedFile.env;

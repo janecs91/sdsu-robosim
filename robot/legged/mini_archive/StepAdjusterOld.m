@@ -35,6 +35,7 @@ classdef StepAdjusterOld
             obj.safetyValue = safetyValue;
         end
         function result = is_stable_step_size(obj, bot, jointPositions, stepSize, z_new, legLength)
+            %% OLD METHOD
             % test stability
             % (x_ankle+((3/4)x_stepsize)-x_hip)^2 + (z_ankle-z_hip)^2 < (a3+a4)^2
             % l = length of leg = a3+a4 = 24+24 = 48 cm
@@ -47,6 +48,8 @@ classdef StepAdjusterOld
             result = stepSize < maxStableLength;
         end
         function [relativeLegVector, globalLegVector, relativeBodyVector] = get_stable_step_vector(obj, bot, previousState, activeLeg, maxStepVector, turnAngle, terrain, legLength)
+            %% OLD METHOD
+            % This is for leg step vector ? (legs 3 and 4?)
             bestStepVector = maxStepVector;
             bodyVector = bestStepVector./bot.numLegs;
             stepSizes = bestStepVector(1):bot.stepDecrement:bot.minStepSize;
@@ -111,6 +114,7 @@ classdef StepAdjusterOld
         end
         %% apply any limitations on body vector here
         function relativeBodyVector = adjust_body_vector(obj, bot, previousState, activeLeg, relativeBodyVector)
+            %% OLD METHOD
             if activeLeg == 1
                 disp("MIN BODY VECTOR LIMIT LEG 1 ==========")
                 bot.lastPhaseMinimumBodyVector(1:2) = relativeBodyVector(1:2);
@@ -141,6 +145,7 @@ classdef StepAdjusterOld
         
         %% alt
         function [mu_dx_b, mu_dy_b, dz_b] = get_base_step_vector(obj, bot, state, leg, turnAngle, terrain)
+            %% OLD METHOD - Same as new StepAdjusterStance?
             % sigma = slope of path
             % slope
             altLeg = mod(leg,2)+1;
@@ -204,19 +209,23 @@ classdef StepAdjusterOld
             
         end
         function [dx_i, localLegVector] = get_leg_step_vector(obj, bot, state, leg, slope, turnAngle, terrain, path)
+            %% OLD METHOD
             [dx_i, localLegVector] = obj.adjust_leg_step_binary_search(state, slope, turnAngle, leg, terrain, path);
         end
         function stepSize = get_max_step_size(obj, bot, slope, x_a, x_h, z_a, z_h, gamma)
+            %% OLD METHOD
             %stepSize = sqrt(obj.safetyValue*(bot.legLength^2 - (z_a - z_h)^2)/(1+slope^2)) - (x_a-x_h);
             stepSize = bot.legLength;           
         end
         function [x_a_prime, y_a_prime, z_a_prime] = get_new_prime(obj, bot, x_a, y_a, z_a, gamma, dx)
+            %% OLD METHOD
             rotatedStepVector = bot.rotate_vector([dx 0], gamma);
             x_a_prime = x_a + rotatedStepVector(1);
             y_a_prime = y_a + rotatedStepVector(2);
             z_a_prime = 0;
         end
         function [x_a_prime, y_a_prime, z_a_prime] = get_new_prime_alt(obj, bot, x_a, y_a, z_a, gamma, dx)
+            %% OLD METHOD
             % not used
             slope = gamma;
             x_a_prime = x_a + dx;
@@ -225,6 +234,7 @@ classdef StepAdjusterOld
             z_a_prime = 0;
         end
         function isStable = is_stable_alt(obj, bot, state, leg, x_a, y_a, z_a, x_a_prime, y_a_prime, z_a_prime)
+            %% OLD METHOD
             jointPositions = bot.get_local_joint_positions(state, leg);
             jointPositions = jointPositions{1};
             x_h = jointPositions(3,1);
@@ -271,6 +281,7 @@ classdef StepAdjusterOld
             fprintf("l^2: %.2f", bot.legLength^2);
         end
         function [stepSize, localLegVector] = adjust_leg_step_binary_search(obj, bot, state, slope, turnAngleBody, leg, terrain, path)
+            %% OLD METHOD
             gamma = turnAngleBody + state.baseOrientation(3);
             jointPositions = bot.get_local_joint_positions(state, leg);
             jointPositions = jointPositions{1};
@@ -325,6 +336,7 @@ classdef StepAdjusterOld
             fprintf("----------last step adjust: %.2f\n", stepAdjust);
         end
         function [localLegVector, futureEndPosition] = predict_leg_vector(obj, bot, previousState, activeLeg, bodyVector, turnAngle)
+            %% OLD METHOD
             %turnAngle = deg2rad(-5);
             previousEndPosition = bot.get_global_end_positions(previousState, activeLeg);
             point1 = previousEndPosition(1:2);
