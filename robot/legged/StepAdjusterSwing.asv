@@ -40,7 +40,7 @@ a_3=a_4=24 cm (leg length)
             obj.strategy = strategies{strategy};
         end
         function [mu_dx_i, mu_dy_i, mu_dz_i] = get_step_vector2(obj, bot, state, leg, terrain, path)
-            %% Step vector requirements is different for legs 1 and 2 (front) vs legs 3 and 4 (back)
+            %% Step vector strateg
             % Returns relative leg vector
             endPositions = bot.get_global_joint_positions(state, leg);
             endPositions2 = state.endPositions(leg,:);
@@ -59,24 +59,16 @@ a_3=a_4=24 cm (leg length)
             z_h = jointPositions(end,3);
             x_h = jointPositions(end,1);
             y_h = jointPositions(end,2);
-            distance_waist_to_foot = bot.get_distance_waist_to_foot(state, leg);
-            %% Possibly update to backCornerDistance for back legs (if trying for legs 3 and 4)
-            % Possibly use 1/2 leg length ??
-            dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
-            dx_i_back = distance_waist_to_foot/2;
-            %dx_i_back = distance_waist_to_foot;
+            dwf = bot.get_distance_waist_to_foot(state, leg);
+            dx_i = (obj.maxLegLength-dwf)+obj.frontCornerDistance;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
-            dx_i = dx_i_front;
-            if leg > 2
-                dx_i = dx_i_back;
-            end
             dz_i = 0;
             testRange = dx_i:-1:obj.minDxi;
             %{
             fprintf("find swing step: leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", leg, x_a, y_a, z_a);
             fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
-            fprintf("local waist x: %.2f, distance_waist_to_foot: %.2f, maxdx_i: %.2f\n", waist_x, distance_waist_to_foot, dx_i);
+            fprintf("local waist x: %.2f, dwf: %.2f, maxdx_i: %.2f\n", waist_x, dwf, dx_i);
             disp("testRange")
             disp(testRange);
             %}
