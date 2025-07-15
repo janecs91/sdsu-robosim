@@ -1,8 +1,9 @@
 classdef SinPath < PathGenerator
     properties(Constant)
         % vars: startX, startY, endX, endY, amplitude
-        name = 'sin_%d_%d_%d_%d_%.3f';
+        name = 'sin_%d_%d_%d_%d_%.0f';
         argNames = {'amplitude'};
+        isSameStartYEndY = true;
     end
     methods
         function obj = SinPath(directory)

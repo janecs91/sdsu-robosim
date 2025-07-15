@@ -30,6 +30,7 @@ classdef PathGenerator
             startPoint = [startX startY];
             endPoint = [endX endY];
             stepSize = 10;
+            sprintf("%d %d %d %d\n", startPoint, endPoint)
             
             % type dependent extras
             path = PathGenerator.get_type(pathType, obj.directory);
@@ -55,14 +56,17 @@ classdef PathGenerator
             if size(varargin,2) > 0
                 mapValues = varargin;
             end
-            disp(mapValues)
             map = containers.Map(PathGenerator.extraArgNames, mapValues);
-            width = abs(pathEndX-pathStartX);
-            height = abs(pathEndY-pathStartY);
+            %width = abs(pathEndX-pathStartX);
+            %height = abs(pathEndY-pathStartY);
             
             path = PathGenerator.get_type(type, obj.directory);
             args = values(map, path.argNames);
-            name = sprintf(path.name, width, height, args{:});
+            if path.isSameStartYEndY
+                pathEndY = pathStartY;
+            end
+            name = sprintf(path.name, pathStartX, pathStartY, pathEndX, pathEndY, args{:});
+            name = sprintf('%s_%s', obj.prefix, name);
         end
     end
     methods(Static)

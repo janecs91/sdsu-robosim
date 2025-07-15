@@ -18,6 +18,7 @@ classdef WalkKinematics
         end
         %% Eval Methods
         function [dot_waist, dot_hip, dot_knee, waist, hip, knee] = eval_alt_kinematics_swing2(obj, bot, inputState)
+            % This is for only the first 2 legs
             % pull only - cannot handle 4 legs?
             % sigma = slope of path
             % slope
@@ -216,11 +217,15 @@ classdef WalkKinematics
             gamma = turnAngle;
             [x_a_prime, y_a_prime] = WalkKinematics.get_xy_primes_given_vector_and_gamma(bot, state, altLeg, dx_b, dy_b, gamma);
             [x_a_prime0, y_a_prime0] = bot.get_new_location(x_a, y_a, -dx_b, -dy_b, gamma);
-            fprintf("****checkWK Stance--\n x_a_prime: %.2f, y_a_prime: %.2f \n x_a_prime0: %.2f, y_a_prime0: %.2f\n", x_a_prime, y_a_prime, x_a_prime0, y_a_prime0);
-            fprintf("prime diff: %.2f %.2f\n", x_a_prime-x_a_prime0, y_a_prime-y_a_prime0);
+            if obj.verbose == true
+                fprintf("****checkWK Stance--\n x_a_prime: %.2f, y_a_prime: %.2f \n x_a_prime0: %.2f, y_a_prime0: %.2f\n", x_a_prime, y_a_prime, x_a_prime0, y_a_prime0);
+                fprintf("prime diff: %.2f %.2f\n", x_a_prime-x_a_prime0, y_a_prime-y_a_prime0);
+            end
             z_a_prime = z_a-dz_b;
             [waist, hat_waist] = obj.get_waist_given_prime2(bot, altLeg, x_a_prime, y_a_prime, gamma);
-            fprintf("wk - gamma: %.2f, old_waist: %.2f, hat_waist: %.2f, waist: %.2f\n", rad2deg(gamma), rad2deg(state.anglesWaist(altLeg)), rad2deg(hat_waist), rad2deg(waist));
+            if obj.verbose == true
+                fprintf("wk - gamma: %.2f, old_waist: %.2f, hat_waist: %.2f, waist: %.2f\n", rad2deg(gamma), rad2deg(state.anglesWaist(altLeg)), rad2deg(hat_waist), rad2deg(waist));
+            end
             %fprintf("kin stance move leg %d - old waist: %.2f, new waist: %.2f\n", altLeg, rad2deg(state.anglesWaist(altLeg)), rad2deg(waist));
             
             %{
@@ -378,7 +383,7 @@ classdef WalkKinematics
             matrix_function = bot.functionsAByLeg{leg};
             [A, By] = matrix_function(state.anglesWaist(leg), state.anglesHip(leg), state.anglesKnee(leg), ...
                 state.dotEndPositions(leg,:), state.dotEndOrientations(leg,:), ...
-                state.dotBasePosition, state.dotBaseOrientation);
+                state.dotBasePosition, state.dotBaseOrientation); 
         end
         function [A, By] =  eval_body_function(bot, state)
             matrix_function = bot.functionsAByBody{state.activeLeg};
@@ -438,11 +443,12 @@ classdef WalkKinematics
             numerator = [x_a_prime-bot.a_0 y_a_prime-bot.a_0 y_a_prime-bot.a_0 x_a_prime-bot.a_0];
             denominator = [-y_a_prime-bot.a_0 x_a_prime-bot.a_0 x_a_prime-bot.a_0 -y_a_prime-bot.a_0];
             waist_hat = atan2(numerator(leg), denominator(leg));
-            fprintf("waist calc: given gamma %.2f\n", rad2deg(gamma));
+            %fprintf("waist calc: given gamma %.2f\n", rad2deg(gamma));
             %waist_hat = waist_hat - gamma;
             new_waist = waist_hat - deg2rad(45);
         end
         function [new_waist, waist_hat] = get_waist_given_prime2(bot, leg, x_a_prime, y_a_prime, gamma)
+            % This is for the alt kinematics 2 (front 2 legs)
             % LEGS < 4 !!!!
             %{
             numerator = [x_a_prime-bot.a_0 y_a_prime-bot.a_0];     %correct
@@ -453,8 +459,8 @@ classdef WalkKinematics
             numerator = [x_a_prime-bot.a_0 y_a_prime-bot.a_0];
             denominator = [-(y_a_prime+bot.a_0) x_a_prime-bot.a_0];
             waist_hat = atan2(numerator(leg), denominator(leg));
-            fprintf("numerator: %.2f, denominator: %.2f, num/den: %.5f\n", numerator(leg), denominator(leg), numerator(leg)/denominator(leg))
-            fprintf("waist calc: given gamma %.2f\n", rad2deg(gamma));
+            %fprintf("numerator: %.2f, denominator: %.2f, num/den: %.5f\n", numerator(leg), denominator(leg), numerator(leg)/denominator(leg))
+            %fprintf("waist calc: given gamma %.2f\n", rad2deg(gamma));
             %waist_hat = waist_hat - gamma;
             new_waist = waist_hat - deg2rad(45);
         end
@@ -520,10 +526,10 @@ classdef WalkKinematics
             oldGlobalEndPosition = bot.get_global_end_positions(state, altLeg);
             futureState = bot.get_new_state_given_vector_and_gamma(state, dx_b, dy_b, gamma);
             futureLocalPoint = bot.change_global_to_local(futureState, oldGlobalEndPosition(1:2));
-            fprintf("old base: %.2f %.2f, new base: %.2f %.2f\n", state.basePosition(1:2), futureState.basePosition(1:2));
-            fprintf("oldGlobalEndPosition: %.2f %.2f\n", oldGlobalEndPosition(1:2));
-            fprintf("oldOrientation: %.2f, newOrient: %.2f, gamma: %.2f\n", rad2deg(state.baseOrientation(3)), rad2deg(futureState.baseOrientation(3)), rad2deg(gamma));
-            fprintf("futureLocalPt: %.2f %.2f\n", futureLocalPoint(1:2));
+            %fprintf("old base: %.2f %.2f, new base: %.2f %.2f\n", state.basePosition(1:2), futureState.basePosition(1:2));
+            %fprintf("oldGlobalEndPosition: %.2f %.2f\n", oldGlobalEndPosition(1:2));
+            %fprintf("oldOrientation: %.2f, newOrient: %.2f, gamma: %.2f\n", rad2deg(state.baseOrientation(3)), rad2deg(futureState.baseOrientation(3)), rad2deg(gamma));
+            %fprintf("futureLocalPt: %.2f %.2f\n", futureLocalPoint(1:2));
             x_a_prime = futureLocalPoint(1);
             y_a_prime = futureLocalPoint(2);
         end

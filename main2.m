@@ -46,22 +46,22 @@ pulling vs walking) - does pulling have a bigger body vector?
 % additional terrains: steplike, mars?
 
 %% ===== TEST PARAMS ======
-loadFromSaved = false; 
+loadFromSaved = false;
 showVisual = true;
 turn = 0.01;
 %% bot settings
-botNum = 4;
+botNum = 3;
 botStartX = -1;
-maxIterations = 100;
+maxIterations = 10;
 %% path settings
-pathNum = 5;
+pathNum = 3;
 pathStartX = 50; 
 pathStartY = 100;
-pathEndX = 500;
+pathEndX = 400;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 1;
+terrainNum = 7;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+50;
@@ -75,7 +75,7 @@ randFilterSize = 10;
 elevationChangeRange = 10;
 %terrainName = 'customTerrainName';
 %% visualize settings
-rate = 0.1;
+rate = 0.001;
 startState = 1;
 stopState = -1;
 showAllMarkers = true;

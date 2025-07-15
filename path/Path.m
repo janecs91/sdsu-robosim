@@ -1,4 +1,7 @@
 classdef Path
+    properties(Constant)
+        verbose = false;
+    end
     properties
         fileAddress;
         pathName;
@@ -11,17 +14,20 @@ classdef Path
             else
                 pathAddress = 'path_straight.mat';
             end
+            pathAddress = sprintf('%s/%s.mat\n', directory, fileAddress);
             if nargin < 2
                 pathArgs = {};
             end
             % load terrain
+            pathGenerator = PathGenerator(directory);
             try
                 pathData = load(pathAddress);
+                fprintf("Successfully loaded path: %s\n", pathAddress)
             catch
                 fprintf('error: could not find path %s\n', pathAddress)
                 disp('generating...');
+                disp(pathArgs)
                 % generate if doesn't exist
-                pathGenerator = PathGenerator(directory);
                 if size(pathArgs,2) > 0
                     pathAddress = pathGenerator.gen_from_options(pathArgs{:});
                 else
@@ -114,8 +120,10 @@ classdef Path
             nearestPoint = obj.pathPoints(nearestPathPointIndex,:);
         end  
         function [futurePoint, futurePathIndex] = get_next_nearest_point(obj, x1, y1, lastIndexNotInUse, accuracyRadius)
-            disp("GNNP====")
-            fprintf("input - x1: %.2f, y1: %.2f, lastind: %d, rad: %.2f\n", x1, y1, lastIndexNotInUse, accuracyRadius);
+            if Path.verbose == true
+                disp("GNNP====")
+                fprintf("input - x1: %.2f, y1: %.2f, lastind: %d, rad: %.2f\n", x1, y1, lastIndexNotInUse, accuracyRadius);
+            end
             % Get last Index (maybe last index-1 if nearest pt is not exact?)
             [lastIndex, nearestPoint] = get_nearest_point_index(obj, x1, y1);
             % Find next path point that is radius distance away
@@ -126,7 +134,9 @@ classdef Path
                 x2 = futurePoint(1);
                 y2 = futurePoint(2);
                 distance = sqrt((x1-x2)^2+(y1-y2)^2);
-                fprintf("FPI: %d, FP: %0.2f %0.2f, dist: %.2f\n", futurePathIndex, futurePoint, distance);
+                if Path.verbose == true
+                    fprintf("FPI: %d, FP: %0.2f %0.2f, dist: %.2f\n", futurePathIndex, futurePoint, distance);
+                end
                 if distance > accuracyRadius
                     break
                 end
@@ -141,8 +151,10 @@ classdef Path
             futurePt = obj.pathPoints(futurePathIndex,1:2)-overshot*unitVector;
             futurePoint = futurePt;
             futurePathIndex = prevIdx;
-            fprintf("(next nearest pt) path pt: %.2f %.2f, pathidx: %d, x1 y1: %.2f %.2f, x2 y2: %.2f %.2f\n", futurePoint, futurePathIndex, x1, y1, x2, y2);
-            fprintf("overshot: %.2f, distance: %.2f, accRad: %.2f\n", overshot, distance, accuracyRadius);
+            if Path.verbose == true
+                fprintf("(next nearest pt) path pt: %.2f %.2f, pathidx: %d, x1 y1: %.2f %.2f, x2 y2: %.2f %.2f\n", futurePoint, futurePathIndex, x1, y1, x2, y2);
+                fprintf("overshot: %.2f, distance: %.2f, accRad: %.2f\n", overshot, distance, accuracyRadius);
+            end
         end
         function [pathPoint, pathPointAngle, pathPointSlope] = get_path_point_at_x(obj, x2, y2)
             [nearestPathPointIndex, nearestPoint] = obj.get_nearest_point_index(x2, y2);

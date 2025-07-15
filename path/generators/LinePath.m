@@ -1,8 +1,9 @@
 classdef LinePath < PathGenerator
     properties(Constant)
         % vars: startX, startY, endX, endY
-        name = 'line_%d_%d_%d_%d';
+        name = 'line_%.0d_%.0d_%.0d_%.0d';
         argNames = {};
+        isSameStartYEndY = false;
     end
     methods
         function obj = LinePath(directory)
