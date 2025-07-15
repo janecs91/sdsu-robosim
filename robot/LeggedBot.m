@@ -280,13 +280,13 @@
             %relativeLegVector = [0 0 0];
             %fprintf("*activeLeg: %d\n", activeLeg);
             %fprintf("**********$$$$$$$ before body forward adjust\n");
-            disp(relativeBodyVector);
+            %disp(relativeBodyVector);
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
             %fprintf("**********$$$$$$$ after body forward adjust\n");
             forwardState = obj.get_last_state();
             %disp("pull hips from leggbot");
             %disp(forwardState.anglesHip);
-
+            
             %% adjust forward leg movement
             % --- added this (but is optional, investigate more): && obj.numLegs < 4
             if obj.enableLegMovement == true
@@ -310,7 +310,7 @@
                 %fprintf("**********$$$$$$$ after body height adjust\n");
                 obj = obj.update_bot_height();
             end
-                        
+                      
             %% put down foot (all vertical) 
             currentState = obj.get_last_state();
             currentEndPosition = obj.get_global_end_positions(currentState, activeLeg);

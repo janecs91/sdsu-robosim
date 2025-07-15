@@ -263,7 +263,7 @@ a3 = a4 = 24 cm = leg length
                     break
                 end
                 i = i + 1;
-                fprintf("x %.2f endX %.2f maxCenterX %.2f x<endX? %d x<maxCenterX %d \n", x, endX, maxCenterX, x<endX, x<maxCenterX)
+                fprintf("[from basebot] x %.2f endX %.2f maxCenterX %.2f x<endX? %d x<maxCenterX %d \n", x, endX, maxCenterX, x<endX, x<maxCenterX)
             end
         end
         function [distance, angle] = get_vector_to_point(obj, point1, point2)
