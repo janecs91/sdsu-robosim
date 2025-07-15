@@ -2,7 +2,7 @@ classdef StepAdjusterSwing < StepAdjuster
     properties
         % limit ranges
         minDxi = 0;
-        frontCornerDistance;
+        frontCornerDistance = 0;
         strategy;
         allowNegativeDxi = false;
 
@@ -26,9 +26,6 @@ a_3=a_4=24 cm (leg length)
     %}
     methods
         function obj = StepAdjusterSwing(safetyValue, strategy)
-            if nargin < 2
-                strategy = 1;
-            end
             fprintf("SAFETY VALUE SWING: %d", safetyValue)
             obj@StepAdjuster(safetyValue);
             obj.frontCornerDistance = sqrt(2)*15.5;     % How was this calculated?
@@ -36,11 +33,27 @@ a_3=a_4=24 cm (leg length)
             %obj.minDxi = obj.frontCornerDistance;
             obj.minDxi = 0;
             
-            strategies = {SwingTriangle() SwingPose()};
+            strategies = {SwingParallel() SwingPose()};
             obj.strategy = strategies{strategy};
+            fprintf("Using strategy %s\n", obj.strategy.strategyName);
+        end
+        function [relativeLegVector] = get_step_vector_main(obj, bot, forwardState, activeLeg, terrain, path)
+            if activeLeg < 5
+                [planned_dx_i, planned_dy_i, planned_dz_i] = obj.get_step_vector2(bot, forwardState, activeLeg, terrain, path);
+            else
+                % Ignore for now
+                % Try old strategy for legs 3 and 4
+                [planned_dx_i, planned_dy_i, planned_dz_i] = obj.get_step_vector1(bot, forwardState, activeLeg, terrain, turnAngle);
+            end
+            localLegVector = [planned_dx_i planned_dy_i];
+            if obj.useConstantTestValues
+                planned_dx_i = obj.constant_dx_i;
+            end
+            relativeLegVector = [localLegVector 0];
         end
         function [mu_dx_i, mu_dy_i, mu_dz_i] = get_step_vector2(obj, bot, state, leg, terrain, path)
-            %% Step vector requirements is different for legs 1 and 2 (front) vs legs 3 and 4 (back)
+            %% This is for leg step vector: LEGS 1 and 2
+            %% Compare this with StepAdjusterOld.get_stable_step_vector()
             % Returns relative leg vector
             endPositions = bot.get_global_joint_positions(state, leg);
             endPositions2 = state.endPositions(leg,:);
@@ -63,7 +76,7 @@ a_3=a_4=24 cm (leg length)
             %% Possibly update to backCornerDistance for back legs (if trying for legs 3 and 4)
             % Possibly use 1/2 leg length ??
             dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
-            dx_i_back = distance_waist_to_foot/2;
+            dx_i_back = distance_waist_to_foot*obj.safetyValue;
             %dx_i_back = distance_waist_to_foot;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
@@ -132,6 +145,111 @@ a_3=a_4=24 cm (leg length)
             %mu_dy_i = dy_i;
             mu_dy_i = obj.safetyValue*dy_i;
             mu_dz_i = dz_i;
+        end
+
+        %% OLD METHODS
+        function result = is_stable_step_size(obj, bot, jointPositions, stepSize, z_new, legLength)
+            %% OLD METHOD
+            % test stability
+            % (x_ankle+((3/4)x_stepsize)-x_hip)^2 + (z_ankle-z_hip)^2 < (a3+a4)^2
+            % l = length of leg = a3+a4 = 24+24 = 48 cm
+            i_hip = 3;
+            i_ankle = 5;
+            x_ankle = jointPositions(i_ankle, 1);
+            x_hip = jointPositions(i_hip, 1);
+            z_hip = jointPositions(i_hip, 3);
+            maxStableLength = bot.invBodyStepRatio*(sqrt(legLength^2-(z_new-z_hip)^2)-(x_ankle-x_hip));
+            result = stepSize < maxStableLength;
+        end
+        function newFakeState = predict_end_position(obj, bot, activeLeg, bestStepVector, turnAngle)
+            %% OLD METHOD
+            state = bot.get_last_state();
+            dx_b = bestStepVector(1);
+            dy_b = bestStepVector(2);
+            gamma = turnAngle;
+            update_end_positions_bool = true;
+            newFakeState = bot.get_new_state_given_vector_and_gamma(state, dx_b, dy_b, gamma, update_end_positions_bool);
+        end
+        function [mu_dx_i, mu_dy_i, mu_dz_i] = get_step_vector1(obj, bot, previousState, activeLeg, terrain, turnAngle)
+            %% MODIFIED OLD METHOD
+            %% This is for leg step vector: LEGS 3 and 4
+            % Check if this is used for walking legs 1 and 2?
+            % [mu_dx_i, mu_dy_i, mu_dz_i] = get_step_vector2(obj, bot, state, leg, terrain, path)
+            legLength = obj.maxLegLength;
+            maxStepVector = [bot.maxStepSize 0 0]; 
+            bestStepVector = maxStepVector;
+            stepSizes = bestStepVector(1):bot.stepDecrement:bot.minStepSize;
+            if bot.isStepAdjustable == false
+                stepSizes = bestStepVector(1);
+            end
+            for i=1:length(stepSizes)
+                bestStepVector(1) = stepSizes(i);
+                %% Fix here
+                futureState = obj.predict_end_position(bot, activeLeg, bestStepVector, turnAngle);    % Need to fix this method
+                % old original method call - [turnAngleLeg, legDistance, futureEndPosition] = obj.predict_end_position(activeLeg, bestStepVector, turnAngle);
+                futureJointPositions = bot.get_global_joint_positions(futureState, activeLeg);
+                disp("*** Future Joint Positions")
+                disp(futureJointPositions)
+                futureEndPositions = bot.get_global_end_positions(futureState);
+                futureEndPosition = futureEndPositions(activeLeg,:);
+                
+                %fprintf("leg vector %0.2f %0.2f rotated leg vector %0.2f %0.2f TA %.2f\n", legVector(1:2), rotatedLegVector(:), rad2deg(turnAngle));
+                futureTerrainElevation = terrain.get_elevation(futureEndPosition(1), futureEndPosition(2));
+                previousEndPositions = bot.get_global_end_positions(previousState);
+                previousEndPosition = previousEndPositions(activeLeg, :);
+                previousEndPositionZ = previousEndPosition(3);
+                
+                elevationDifference = futureTerrainElevation - previousEndPositionZ;
+                bestStepVector(3) = elevationDifference;
+                %globalLegVector(3) = relativeLegVector(3);
+                
+                
+                %is_stable = true;
+                is_stable = obj.is_stable_step_size(bot, futureJointPositions, bestStepVector(1), futureTerrainElevation, legLength);
+
+                fprintf("TESTING SWING leg #%d => stepVector %f | is_stable %d | prevFootPos (%.2f %.2f %.2f) | newFootPos (%.2f %.2f %.2f)  \n\n", ...
+                activeLeg, bestStepVector(1), is_stable, previousEndPosition, futureEndPosition);
+                
+                %% alt stable?
+                %jointPositions = bot.get_global_joint_positions(previousState, activeLeg);
+                %dz_i = stepVector(1);
+                %is_stable2 = obj.get_leg_step_vector(state, leg, turnAngle, legLength, jointPositions, dz_i);
+                if is_stable
+                    break
+                end
+                %disp('reducing stepsize')
+            end
+            % Do I need base to foot difference? Probably for overextending
+            % on extreme terrain differences
+            futureTerrainElevations = terrain.get_elevations(futureEndPositions(:, 1), futureEndPositions(:, 2));
+            elevationDifferences = futureTerrainElevations-futureEndPositions(:, 3);
+            relativeBodyVector = bestStepVector/bot.numLegs;
+            %relativeBodyVector(3) = relativeLegVector(3);
+            relativeBodyVector(3) = mean(elevationDifferences);
+            xBV = relativeBodyVector(3);
+            % check leg overextension
+            basePositionZ = previousState.basePosition(3)+relativeBodyVector(3);
+            footPositionZ = futureTerrainElevation;
+            baseToFootDifference = abs(basePositionZ-footPositionZ);
+            overextendedDifference = 0;
+            if baseToFootDifference > legLength
+                disp("OVEREXTENDED ******************************************");
+                overextendedDifference = baseToFootDifference - legLength;
+                if relativeLegVector(3) < 0
+                    overextendedDifference = -overextendedDifference;
+                end
+                relativeBodyVector(3) = relativeBodyVector(3)+overextendedDifference;
+            end
+            disp("========================================");
+            disp("========================================");
+            fprintf("SWING FINAL leg #%d => relBodyVectorMean %.2f basePosZ %.2f prevFootPos (%.2f %.2f %.2f) newFootPos (%.2f %.2f %.2f) baseFootDiff %.2f overExtDiff %.2f newBodyVectorz %.2f \n\n", ...
+                activeLeg, xBV, basePositionZ, previousEndPosition, futureEndPosition, baseToFootDifference, ...
+                overextendedDifference, relativeBodyVector(3));
+            % mu_dx_i, mu_dy_i, mu_dz_i = relativeLegVector
+            relativeLegVectorCell = num2cell(bestStepVector);
+            [mu_dx_i, mu_dy_i, mu_dz_i] = relativeLegVectorCell{:};
+            fprintf("Relative leg vector for leg #%d: %.2f %.2f %.2f", activeLeg, mu_dx_i, mu_dy_i, mu_dz_i)
+            %% Is this really relative? check if global or relative
         end
     end
     methods(Static)

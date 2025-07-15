@@ -1,9 +1,14 @@
 %{
 Follows along path and gets farthest swing leg position that is valid
+
+--> Probably use this for walk
 %}
 classdef SwingPose < SwingStrategy
-    properties
+    properties(Constant)
+        strategyName = "SwingPose";
         setDesiredPose = false;
+    end
+    properties
         desiredPose;
     end
     methods
@@ -18,7 +23,10 @@ classdef SwingPose < SwingStrategy
             %disp("getting next path pt")
             %fprintf("current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f, ft path pt: %.2f %.2f\n", state.basePosition, ...
             %    state.baseOrientation(3), moveX, futurePathPoint);
-            futureState = BotState(state);
+            % test pose with initial posture
+            initialState = bot.get_first_state();
+            % test pose
+            futureState = BotState(initialState);
             futureState.basePosition(1:2) = futurePathPoint(1:2);
             futureState.baseOrientation(3) = angle;
             globalFootPoint = bot.get_global_end_positions(futureState, leg);
