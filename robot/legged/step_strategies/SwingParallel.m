@@ -1,23 +1,26 @@
 %{
-Uses triangle for valid area from swing leg
-Possibly only for pull bot
+This gets parallel points for the leg.
+Useful if there is a tight curve.
+Sometimes the path gamma at body is different from path gamma at leg end.
+This balances the leg so that it follows the path gamma closer at leg end.
 %}
-classdef SwingTriangle < SwingStrategy
+classdef SwingParallel < SwingStrategy
     properties(Constant)
+        strategyName = "SwingParallel";
         uConstant = 5.0;
         useUConstant = true;
         legRadius = 48;
     end
     methods
-        function obj = SwingTriangle()
+        function obj = SwingParallel()
             obj@SwingStrategy;
         end
         function globalFootPoint = get_next_global_foot_point(obj, bot, state, leg, terrain, path, moveX)
             [futurePathPoint, endIndex] = bot.get_next_path_point(state, path, moveX);
             startIndex = state.pathIndex;
             s = 1;
-            if SwingTriangle.useUConstant == true
-                s = SwingTriangle.get_ratio_by_path_curve(leg, path, startIndex, endIndex);
+            if SwingParallel.useUConstant == true
+                s = SwingParallel.get_ratio_by_path_curve(leg, path, startIndex, endIndex);
             end
             adjustedMoveX = moveX*s;
             %fprintf("end index: %d\n", endIndex);
@@ -52,13 +55,13 @@ classdef SwingTriangle < SwingStrategy
             %[dy2, dy1] = path.get_2nd_derivative_path(startIndex, endIndex);
             [dy2, dy1] = path.get_avg_2nd_derivative_path(startIndex, endIndex);
             %fprintf("dy values for leg %d ******\n dy2: %.2f, dy1: %.2f\n", leg, dy2, dy1);
-            dyWithConstant = SwingTriangle.uConstant*dy2;
+            dyWithConstant = SwingParallel.uConstant*dy2;
             %fprintf("dyWithConstant: %d\n", dyWithConstant);
             sOptions = [-dyWithConstant dyWithConstant dyWithConstant -dyWithConstant];
             if dy2 > 0
                 sOptions = [dyWithConstant -dyWithConstant -dyWithConstant dyWithConstant];
             end
-            %fprintf("swingtriangle-s ratio used for leg %d: %.2f\n", leg, sOptions(leg));
+            %fprintf("SwingParallel-s ratio used for leg %d: %.2f\n", leg, sOptions(leg));
             s = 1+sOptions(leg);
             %fprintf("swing triangle result s: %d\n", s);
         end

@@ -1,9 +1,13 @@
 %{
 Follows along path and gets farthest swing leg position that is valid
+Uses pose to get leg end positions
 %}
 classdef SwingPose < SwingStrategy
-    properties
+    properties(Constant)
+        strategyName = "SwingPose";
         setDesiredPose = false;
+    end
+    properties
         desiredPose;
     end
     methods
