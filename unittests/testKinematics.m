@@ -1,0 +1,2 @@
+oldPosition = [];
+newPosition = [];
