@@ -254,8 +254,8 @@
                 dx_i = obj.constant_dx_i;
             end
             relativeLegVector = [localLegVector 0];
-            %disp("planned leg vector")
-            %disp(relativeLegVector)
+            disp("planned leg vector")
+            disp(relativeLegVector)
             globalLegVector = obj.rotate_vector(relativeLegVector(1:2), fakeState.baseOrientation(3));
             newEndPosition(1:2) = previousEndPosition(1:2) + globalBodyVector(1:2) + globalLegVector(1:2);
             newEndPosition(3) = 0;
@@ -278,11 +278,11 @@
             forwardState = obj.get_last_state();
             %globalBodyVector = [0 0 0];
             %relativeLegVector = [0 0 0];
-            %fprintf("*activeLeg: %d\n", activeLeg);
-            %fprintf("**********$$$$$$$ before body forward adjust\n");
+            fprintf("*activeLeg: %d\n", activeLeg);
+            fprintf("**********$$$$$$$ before body forward adjust\n");
             disp(relativeBodyVector);
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
-            %fprintf("**********$$$$$$$ after body forward adjust\n");
+            fprintf("**********$$$$$$$ after body forward adjust\n");
             forwardState = obj.get_last_state();
             %disp("pull hips from leggbot");
             %disp(forwardState.anglesHip);
@@ -291,23 +291,23 @@
             % --- added this (but is optional, investigate more): && obj.numLegs < 4
             if obj.enableLegMovement == true
                 forwardState = obj.get_last_state();
-                %disp("PATH INDEX =======")
-                %disp(forwardState.pathIndex);
+                disp("PATH INDEX =======")
+                disp(forwardState.pathIndex);
                 forwardState.pathIndex = futurePathIndex;
-                %disp("AF s")
-                %disp(forwardState.pathIndex);
+                disp("AF s")
+                disp(forwardState.pathIndex);
                 [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, forwardState, activeLeg, terrain, path);
                 relativeLegVector = [dx_i dy_i];
-                %disp("relative leg vector")
-                %disp(relativeLegVector)
+                disp("relative leg vector")
+                disp(relativeLegVector)
                 obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
                 forwardState = obj.get_last_state();
                 dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
-                %disp("CHANGING BASE Z after swing")
-                %disp(dz_b);
-                %fprintf("**********$$$$$$$ before body height adjust\n");
+                disp("CHANGING BASE Z after swing")
+                disp(dz_b);
+                fprintf("**********$$$$$$$ before body height adjust\n");
                 %obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
-                %fprintf("**********$$$$$$$ after body height adjust\n");
+                fprintf("**********$$$$$$$ after body height adjust\n");
                 obj = obj.update_bot_height();
             end
                         

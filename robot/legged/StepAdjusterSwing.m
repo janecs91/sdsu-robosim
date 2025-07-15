@@ -5,7 +5,25 @@ classdef StepAdjusterSwing < StepAdjuster
         frontCornerDistance = 0;
         strategy;
         allowNegativeDxi = false;
+
+        %% old properties
+        adjustType = 0;
+        bodyScale = 0.9;
+        useConstantTestValues = false;
+        constant_dx_i = 0;
+        useConstantTestValues0 = false;
+        constantTurnAngle0 = deg2rad(0);
+        constant_dx_b0 = 20;
+        %constant_dx_i0 = 10;
     end
+    %{
+%% ROBOT
+The joint and link lengths are as follows.
+a_0=d_0=15.5 cm (half width of the robot body)
+d_1=15 cm (half height of the robot body)
+a_2=6 cm (distance from robot body to first joint)
+a_3=a_4=24 cm (leg length)
+    %}
     methods
         function obj = StepAdjusterSwing(safetyValue, strategy)
             if nargin < 2
@@ -108,6 +126,7 @@ classdef StepAdjusterSwing < StepAdjuster
     methods(Static)
         %% Helper Methods
         function [x_h, y_h, z_h, x_h_prime, y_h_prime, z_h_prime] = get_hips(bot, state, leg, x_a_prime, y_a_prime, z_a_prime)
+            %% OK for 4 legs
             jointPositions = bot.get_local_joint_positions(state, leg);
             jointPositions = jointPositions{1};
             x_h = jointPositions(3,1);
@@ -122,12 +141,14 @@ classdef StepAdjusterSwing < StepAdjuster
         %% Stability Check Helper Methods
         function isStable = check_stability_leg_length(x_a_prime, y_a_prime, z_a_prime, ...
                 x_h_prime, y_h_prime, z_h_prime, legLength)
+            %% OK for 4 legs
             stepSize = (x_a_prime-x_h_prime)^2 + (y_a_prime-y_h_prime)^2 + (z_a_prime-z_h_prime)^2;
             isStable = stepSize < legLength^2;
             %fprintf("stability leg length - x_a_prime: %.2f, x_h_prime: %.2f, xap-xhp: %.2f\n", x_a_prime, x_h_prime, abs(x_a_prime-x_h_prime)); 
             %fprintf("stability leg length - %.2f <? %.2f\n", stepSize, legLength^2); 
         end
         function isStable = check_boundary(bot, leg, x_a_prime, y_a_prime)
+            %% Update for legs 3 and 4
             sideCheck2 = [1 1];
             sideCheck3 = [1 1];
             sideCheck1 = [(y_a_prime>-x_a_prime) (y_a_prime>-x_a_prime)];
@@ -141,6 +162,7 @@ classdef StepAdjusterSwing < StepAdjuster
             %}
         end
         function isStable = check_joint_angles(bot, state, leg, x_a, y_a, x_a_prime, y_a_prime)
+            %% Update for legs 3 and 4
             % add z???
             moveVector = [x_a_prime-x_a y_a_prime-y_a];
             newTestState = copy(state);
@@ -164,7 +186,7 @@ classdef StepAdjusterSwing < StepAdjuster
             legLengthCheck = StepAdjusterSwing.check_stability_leg_length(x_a_prime, y_a_prime, z_a_prime, ...
                 x_h_prime, y_h_prime, z_h_prime, legLength);
             
-            extraCheck = 0;
+            extraCheck = 0;     % We are ignoring the boundary and joint angles check
             % other checks
             isStable = legLengthCheck;
             boundaryCheck = 0;

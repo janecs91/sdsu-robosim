@@ -75,7 +75,7 @@ randFilterSize = 10;
 elevationChangeRange = 10;
 %terrainName = 'customTerrainName';
 %% visualize settings
-rate = 0.1;
+rate = 0.001;
 startState = 1;
 stopState = -1;
 showAllMarkers = true;
