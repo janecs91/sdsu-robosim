@@ -1,7 +1,7 @@
 classdef Perlin < TerrainGenerator
     properties(Constant)
         % vars: width, height
-        name = 'perlin_%d_%d';
+        name = 'perlin_%.0d_%.0d';
         argNames = {};
     end
     methods

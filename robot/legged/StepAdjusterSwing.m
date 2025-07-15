@@ -9,7 +9,7 @@ classdef StepAdjusterSwing < StepAdjuster
     methods
         function obj = StepAdjusterSwing(safetyValue, strategy)
             if nargin < 2
-                strategy = 2;
+                strategy = 1;
             end
             fprintf("SAFETY VALUE SWING: %d", safetyValue)
             obj@StepAdjuster(safetyValue);

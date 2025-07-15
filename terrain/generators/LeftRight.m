@@ -1,7 +1,7 @@
 classdef LeftRight < TerrainGenerator
     properties(Constant)
         % vars: width, height, amplitude, frequency, path
-        nameLeftRight = 'leftright_%d_%d_%d_%s';
+        nameLeftRight = 'leftright_%.0d_%.0d_%.0d_%s';
         argNames = {'amplitude', 'path'};
     end
     methods
