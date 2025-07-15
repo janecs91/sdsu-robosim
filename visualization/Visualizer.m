@@ -143,7 +143,7 @@ classdef Visualizer
             
             % change view to 3D
             view(3);
-            if ~strcmp(viewAxis, '')
+            if viewAxis ~= ""
                 if strcmp(viewAxis, 'x')
                     view(90,0);
                 elseif strcmp(viewAxis, 'y')

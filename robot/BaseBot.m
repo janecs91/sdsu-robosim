@@ -508,11 +508,18 @@ a3 = a4 = 24 cm = leg length
             lowestFootZ = min(state.endPositions(:,3));
             distance = waistZ - lowestFootZ;
         end
-        function newState = get_new_state_given_vector_and_gamma(obj, state, dx_b, dy_b, gamma)
+        function newState = get_new_state_given_vector_and_gamma(obj, state, dx_b, dy_b, gamma, update_end_positions_bool)
+            if nargin < 6
+                update_end_positions_bool = false;
+            end
             globalMoveVector = obj.rotate_vector([dx_b dy_b], state.baseOrientation(3));
             newState = copy(state);
             newState.basePosition(1:2) = newState.basePosition(1:2)+globalMoveVector;
             newState.baseOrientation(3) = newState.baseOrientation(3)+gamma;
+            % also get new end positions?
+            if update_end_positions_bool == true
+                newState = obj.update_end_positions(newState);
+            end
         end
         function [x_a_prime, y_a_prime] = get_new_location(obj, x_a, y_a, dx_b, dy_b, gamma)
             newLocalPosition = [(cos(gamma)*x_a+sin(gamma)*y_a+dx_b) (-sin(gamma)*x_a+cos(gamma)*y_a+dy_b)];
