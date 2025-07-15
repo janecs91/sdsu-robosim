@@ -382,12 +382,12 @@
             switch((obj.useAltKinematics && obj.numLegs<4 && ~forceSingleDisable)||altForceTrigger)
                 case 0
                     % walk ?
-                    %disp("EVAL TYPE 1 - WALK")
+                    %fprintf("EVAL TYPE 1 - WALK - LEG %d\n", leg)
                     tempState.dotEndPositions(leg,:) = obj.global2relative(moveVector, tempState);
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_swing(obj, tempState);
                 case 1
                     % pull ?
-                    %disp("EVAL TYPE 2 - PULL")
+                    %fprintf("EVAL TYPE 2 - PULL - LEG %d\n", leg)
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_swing2(obj, tempState);
             end
             
