@@ -8,39 +8,63 @@ classdef SwingParallel < SwingStrategy
     properties(Constant)
         strategyName = "SwingParallel";
         uConstant = 5.0;
-        useUConstant = true;
         legRadius = 48;
+        useUConstant = true;
+        constantLegRadius = true;
+    end
+    properties
+        SwingPose;
     end
     methods
         function obj = SwingParallel()
             obj@SwingStrategy;
+            addpath('robot/legged/step_strategies/');
+            obj.SwingPose = SwingPose();
         end
         function globalFootPoint = get_next_global_foot_point(obj, bot, state, leg, terrain, path, moveX)
-            [futurePathPoint, endIndex] = bot.get_next_path_point(state, path, moveX);
-            startIndex = state.pathIndex;
-            s = 1;
-            if SwingParallel.useUConstant == true
-                s = SwingParallel.get_ratio_by_path_curve(leg, path, startIndex, endIndex);
+            if leg > 2
+                % custom strategy for back legs
+                [futurePathPoint, futurePathIndex] = bot.get_next_path_point(state, path, moveX);
+                [angle, slope] = path.get_gamma_at_index(futurePathIndex);
+                futureState = BotState(state);
+                futureState.basePosition(1:2) = futurePathPoint(1:2);
+                futureState.baseOrientation(3) = angle;
+                % get waist x,y
+                globalJointPositions = bot.get_global_joint_positions(futureState, leg);
+                %disp(globalJointPositions)
+                globalFootPoint = globalJointPositions(leg, 1:2);
+            else
+                % parallel strategy (front legs)
+                [futurePathPoint, endIndex] = bot.get_next_path_point(state, path, moveX);
+                startIndex = state.pathIndex;
+                s = 1;
+                if SwingParallel.useUConstant == true
+                    s = SwingParallel.get_ratio_by_path_curve(leg, path, startIndex, endIndex);
+                end
+                adjustedLegRadius = obj.legRadius/2;
+                if ~obj.constantLegRadius
+                    adjustedLegRadius = (obj.legRadius/2)*s;
+                end
+                %fprintf("end index: %d\n", endIndex);
+                %fprintf("before movex: %.2f -- s value %.2f -- after movex: %.2f\n", moveX, s, adjustedMoveX);
+                fakeState = copy(state);
+                fakeState.pathIndex = endIndex;
+                fakeState.basePosition(1:2) = futurePathPoint(1:2);
+                %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, moveX);
+                %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, obj.legRadius/2);
+                [futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, adjustedLegRadius);
+                futurePathIndex = endIndex;
+                [angle, slope] = path.get_gamma_at_index(futurePathIndex);
+                %fprintf("(swing) current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f\n", state.basePosition, state.baseOrientation(3), moveX); 
+                %fprintf("old ft pt: [%.2f %.2f], ft center path pt: [%.2f %.2f]\n", state.endPositions(leg,1:2), futurePathPoint);
+                % plus = left?, minus = right?
+                halfWidthRobotBody = bot.a_0;
+                %[plusPoint, minusPoint] = path.get_parallel_point_at_index(futurePathIndex, legRadius);
+                [plusPoint, minusPoint] = path.get_parallel_point_at_x(futurePathPoint(1), futurePathPoint(2), halfWidthRobotBody, futurePathIndex);
+                footPoints = [minusPoint; plusPoint; plusPoint; minusPoint];
+                globalFootPoint = footPoints(leg,:);
+                %fprintf("parallel pts - plus: %.2f %.2f, minus %.2f %.2f\n", plusPoint, minusPoint);
             end
-            adjustedMoveX = moveX*s;
-            %fprintf("end index: %d\n", endIndex);
-            %fprintf("before movex: %.2f -- s value %.2f -- after movex: %.2f\n", moveX, s, adjustedMoveX);
-            fakeState = copy(state);
-            fakeState.pathIndex = endIndex;
-            fakeState.basePosition(1:2) = futurePathPoint(1:2);
-            %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, moveX);
-            [futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, obj.legRadius/2);
-            futurePathIndex = endIndex;
-            [angle, slope] = path.get_gamma_at_index(futurePathIndex);
-            %fprintf("(swing) current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f\n", state.basePosition, state.baseOrientation(3), moveX); 
-            %fprintf("old ft pt: [%.2f %.2f], ft center path pt: [%.2f %.2f]\n", state.endPositions(leg,1:2), futurePathPoint);
-            % plus = left?, minus = right?
-            legRadius = bot.a_0;
-            %[plusPoint, minusPoint] = path.get_parallel_point_at_index(futurePathIndex, legRadius);
-            [plusPoint, minusPoint] = path.get_parallel_point_at_x(futurePathPoint(1), futurePathPoint(2), legRadius, futurePathIndex);
-            footPoints = [minusPoint; plusPoint; plusPoint; minusPoint];
-            globalFootPoint = footPoints(leg,:);
-            %fprintf("parallel pts - plus: %.2f %.2f, minus %.2f %.2f\n", plusPoint, minusPoint); 
         end
     end
     methods(Static)

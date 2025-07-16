@@ -124,7 +124,7 @@ disp('energies');
 disp(energies);
 
 % Launch visualization (if enabled)
-if showVisual == true
+if showVisual == false
     env.visualize(botOptions{botNum}{1}, ...
         rate, startState, stopState, showAllMarkers, showAxis, showColorBar, equalAxis);
 end
