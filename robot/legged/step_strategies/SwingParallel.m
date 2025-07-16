@@ -11,6 +11,7 @@ classdef SwingParallel < SwingStrategy
         legRadius = 48;
         useUConstant = true;
         constantLegRadius = true;
+        useBaseGamma = true;
     end
     properties
         SwingPose;
@@ -53,7 +54,9 @@ classdef SwingParallel < SwingStrategy
                 %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, moveX);
                 %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, obj.legRadius/2);
                 [futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, adjustedLegRadius);
-                futurePathIndex = endIndex;
+                if obj.useBaseGamma
+                    futurePathIndex = endIndex;
+                end
                 [angle, slope] = path.get_gamma_at_index(futurePathIndex);
                 %fprintf("(swing) current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f\n", state.basePosition, state.baseOrientation(3), moveX); 
                 %fprintf("old ft pt: [%.2f %.2f], ft center path pt: [%.2f %.2f]\n", state.endPositions(leg,1:2), futurePathPoint);

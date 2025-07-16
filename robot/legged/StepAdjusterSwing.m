@@ -62,8 +62,8 @@ a_3=a_4=24 cm (leg length)
             distance_waist_to_foot = bot.get_distance_waist_to_foot(state, leg);
             %% Possibly update to backCornerDistance for back legs (if trying for legs 3 and 4)
             % Possibly use 1/2 leg length ??
-            %dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
-            dx_i_front = obj.maxLegLength;
+            dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
+            %dx_i_front = obj.maxLegLength;
             dx_i_back = distance_waist_to_foot/2;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
