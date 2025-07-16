@@ -37,20 +37,32 @@ classdef TerrainGenerator
             yRange = [0 height];
             terrain = TerrainGenerator.get_type(terrainType, obj.directory);
             terrainArgs = terrain.argNames;
-            %disp(terrainArgs)
+            disp(terrainArgs)
             indices = zeros(size(terrainArgs));
+            disp(indices)
             for i=1:size(terrainArgs,2)
                 fprintf("i: %d\n", i);
+                disp(obj.extraArgNames)
+                disp(terrainArgs(i))
                 index = find(strcmp(obj.extraArgNames, terrainArgs(i)));
+                disp(index)
+                disp(indices(1))
+                disp(indices(2))
+                disp("before assign")
                 indices(i) = index;
+                disp(indices)
             end
-            %disp("varargin")
-            %disp(varargin)
-            generateTerrainArgs = varargin;
-            generateTerrainArgs{end+1} = path;
-            generateTerrainArgs = generateTerrainArgs(indices);
-            %disp("TERRAIN INPUT")
-            %disp(generateTerrainArgs)
+            generateTerrainArgs{:} = varargin{:};
+            disp(generateTerrainArgs)
+            if strcmp(terrainType, 'leftright')
+                disp("triggered leftright add")
+                generateTerrainArgs{end+1} = path;
+            end
+            disp("TERRAIN INPUT")
+            disp(generateTerrainArgs)
+            disp(size(generateTerrainArgs))
+            generateTerrainArgs = generateTerrainArgs(1,indices);
+            disp(generateTerrainArgs(1,indices))
             fileAddress = terrain.generate(xRange, yRange, scale, generateTerrainArgs{:});
         end
         function name = get_name(obj, fromPath, path, type, varargin)

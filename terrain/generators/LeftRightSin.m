@@ -1,8 +1,8 @@
 classdef LeftRightSin < TerrainGenerator
     properties(Constant)
         % vars: width, height, amplitude, frequency, path
-        nameLeftRight = 'leftrightsin_%.0d_%.0d_%.0d_%s';
-        argNames = {'amplitude', 'path'};
+        name = 'leftrightsin_%.0d_%.0d_%.0d_%.0d_%s';
+        argNames = {'amplitude', 'frequency', 'path'};
     end
     methods
         function obj = LeftRightSin(directory)

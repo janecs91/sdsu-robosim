@@ -1,14 +1,17 @@
 classdef LeftRight < TerrainGenerator
     properties(Constant)
-        % vars: width, height, amplitude, frequency, path
-        nameLeftRight = 'leftright_%.0d_%.0d_%.0d_%s';
+        % vars: width, height, amplitude, path
+        name = 'leftright_%.0d_%.0d_%.0d_%s';
         argNames = {'amplitude', 'path'};
     end
     methods
         function obj = LeftRight(directory)
             obj@TerrainGenerator(directory);
         end
-        function fileAddress = generate(obj, xRange, yRange, scale, amplitude, frequency, path)
+        function fileAddress = generate(obj, xRange, yRange, scale, amplitude, path)
+            disp("TERRAIN ARGS")
+            disp(amplitude)
+            disp(path)
             initX = xRange(1);
             initY = yRange(1);
             scaleX = scale;

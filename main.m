@@ -52,7 +52,7 @@ turn = 0.01;
 %% bot settings
 botNum = 4;
 botStartX = -1;
-maxIterations = 100;
+maxIterations = 1;
 %% path settings
 pathNum = 5;
 pathStartX = 100; 
@@ -61,7 +61,7 @@ pathEndX = 600;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 1;
+terrainNum = 5;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
