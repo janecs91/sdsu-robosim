@@ -41,7 +41,7 @@ classdef Path
         end
         function obj = add_points(obj, points)
             if size(points, 2) == 2
-                obj.pathPoints = [obj.pathPonts; points];
+                obj.pathPoints = [obj.pathPoints; points];
             else
                 disp("Need 2 columns (x,y)");
             end

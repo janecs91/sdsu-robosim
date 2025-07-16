@@ -64,7 +64,7 @@ pathAmplitude = 100;
 terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
-width = pathEndX+50;
+width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
@@ -77,7 +77,7 @@ elevationChangeRange = 10;
 %% visualize settings
 rate = 0.001;
 startState = 1;
-stopState = -1;
+stopState = 2;
 showAllMarkers = true;
 showAxis = '';
 showColorBar = 0;

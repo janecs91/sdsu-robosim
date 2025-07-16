@@ -97,6 +97,11 @@ classdef TerrainGenerator
             width = width + TerrainGenerator.terrainPadding(1);
             height = maxY;
             height = height + TerrainGenerator.terrainPadding(2);
+            % need to add path start offset
+            startingPathPoint = path.pathPoints(1,:);
+            disp(startingPathPoint)
+            width = width + startingPathPoint(1);
+            %height = height + startingPathPoint(2);
         end
         %% terrain options
         function terrain = get_type(type, directory)
