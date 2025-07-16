@@ -55,9 +55,9 @@ botStartX = -1;
 maxIterations = 100;
 %% path settings
 pathNum = 5;
-pathStartX = 50; 
+pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 500;
+pathEndX = 600;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings

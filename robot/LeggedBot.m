@@ -130,9 +130,10 @@
                 %disp(obj.minBodyToKneeDistance);
                 
                 if obj.numLegs > 2
-                    moveVector = [-bodyStepSize 0 0];
+                    %moveVector = [-bodyStepSize 0 0];
+                    relativeLegVector = [-bodyStepSize 0 0];
                     [obj, firstState] = obj.move_leg(firstState, 3, relativeLegVector, 0);
-                    %[obj, firstState] = obj.move_leg(firstState, 4, relativeLegVector, 0);
+                    [obj, firstState] = obj.move_leg(firstState, 4, relativeLegVector, 0);
                 end
                 
             end

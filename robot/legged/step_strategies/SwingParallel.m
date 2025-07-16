@@ -28,12 +28,12 @@ classdef SwingParallel < SwingStrategy
                 [futurePathPoint, futurePathIndex] = bot.get_next_path_point(state, path, moveX);
                 [angle, slope] = path.get_gamma_at_index(futurePathIndex);
                 futureState = BotState(state);
-                futureState.basePosition(1:2) = futurePathPoint(1:2);
-                futureState.baseOrientation(3) = angle;
+                %futureState.basePosition(1:2) = futurePathPoint(1:2);
+                %futureState.baseOrientation(3) = angle;
                 % get waist x,y
                 globalJointPositions = bot.get_global_joint_positions(futureState, leg);
                 %disp(globalJointPositions)
-                globalFootPoint = globalJointPositions(leg, 1:2);
+                globalFootPoint = globalJointPositions(1, 1:2);
             else
                 % parallel strategy (front legs)
                 [futurePathPoint, endIndex] = bot.get_next_path_point(state, path, moveX);
