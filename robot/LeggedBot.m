@@ -4,6 +4,7 @@
         numLegs;
     end
     properties
+        verbose = true;
         useConstantTestValues = false;  % TBD review use case (probably for testing)
         constantTurnAngle = deg2rad(0); % For testing: Constant turn angle?
         constant_dx_b = 10; % For testing: constant base movement along x-direction
@@ -214,6 +215,7 @@
             %[relativeLegVector, globalLegVector, relativeBodyVector] = obj.get_stable_step_vector(previousState, activeLeg, stepVector, turnAngle, terrain, obj.legLength);
             relativeBodyVector = [0 0 0];
             %turnAngleLeg = turnAngle;
+            turnAngleBody = turnAngle;
             if obj.useAltKinematics == true
                 % alt step size
                 %stanceLeg2 = activeLeg;
@@ -221,15 +223,15 @@
                 %stepAdjusterStance = obj.step AdjusterStance;
                 %fprintf("**********$$$$$$$ before stepadjustcount\n");
                 %% This is step vector for body movement
-                [dx_b, dy_b, dz_b, newBodyAngle, futurePathIndex] = obj.stepAdjusterStance.get_step_vector2(obj, previousState, stanceLeg2, terrain, path);
+                [dx_b, dy_b, dz_b, newBodyTurnAngle, futurePathIndex] = obj.stepAdjusterStance.get_step_vector2(obj, previousState, stanceLeg2, terrain, path);
                 obj.stepAdjustCount = obj.stepAdjustCount+1;
                 %fprintf("**********$$$$$$$ stepadjustcount: %d\n", obj.stepAdjustCount);
                 %turnAngleBody = newBodyAngle./obj.numLegs;
-                turnAngleBody = newBodyAngle;
+                turnAngleBody = newBodyTurnAngle;
                 if obj.useConstantTestValues
                     dx_b = obj.constant_dx_b;
                 end
-                relativeBodyVector = [dx_b dy_b dz_b];
+                relativeBodyVector = [dx_b dy_b 0];
                 %relativeBodyVector = [0 0 0];
             else
                 % get step size
@@ -248,6 +250,7 @@
             forwardState = obj.get_last_state();
             fakeState = copy(forwardState);
             fakeState.basePosition = fakeState.basePosition + globalBodyVector;
+            fakeState.baseOrientation = fakeState.baseOrientation + turnAngleBody;
             fakeState.pathIndex = futurePathIndex;
             [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, fakeState, activeLeg, terrain, path);
             localLegVector = [dx_i dy_i];
@@ -281,7 +284,9 @@
             %relativeLegVector = [0 0 0];
             %fprintf("*activeLeg: %d\n", activeLeg);
             %fprintf("**********$$$$$$$ before body forward adjust\n");
-            %disp(relativeBodyVector);
+            if obj.verbose
+                fprintf("relative Body Vector %d %d\n", relativeBodyVector);
+            end
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
             %fprintf("**********$$$$$$$ after body forward adjust\n");
             forwardState = obj.get_last_state();
@@ -303,11 +308,12 @@
                 %disp(relativeLegVector)
                 obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
                 forwardState = obj.get_last_state();
-                dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
+                
                 %disp("CHANGING BASE Z after swing")
                 %disp(dz_b);
                 %fprintf("**********$$$$$$$ before body height adjust\n");
-                %obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
+                dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
+                obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
                 %fprintf("**********$$$$$$$ after body height adjust\n");
                 obj = obj.update_bot_height();
             end
@@ -380,15 +386,15 @@
             
             forceSingleDisable = false;
             altForceTrigger = false;
-            switch((obj.useAltKinematics && obj.numLegs<4 && ~forceSingleDisable)||altForceTrigger)
+            switch((obj.useAltKinematics && leg<3 && ~forceSingleDisable)||altForceTrigger)
                 case 0
                     % walk ?
-                    %fprintf("EVAL TYPE 1 - WALK - LEG %d\n", leg)
+                    fprintf("EVAL TYPE 1 - WALK - LEG %d\n", leg)
                     tempState.dotEndPositions(leg,:) = obj.global2relative(moveVector, tempState);
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_swing(obj, tempState);
                 case 1
                     % pull ?
-                    %fprintf("EVAL TYPE 2 - PULL - LEG %d\n", leg)
+                    fprintf("EVAL TYPE 2 - SHARED PULL - LEG %d\n", leg)
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_swing2(obj, tempState);
             end
             
@@ -439,11 +445,11 @@
                 case 0
                     % walk ?
                     %disp("USING OLD KINEMATICS!!!!!!!!!!!!!")
-                    %disp("EVAL TYPE 1 - WALK")
+                    disp("EVAL TYPE 1 - WALK")
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_stance(obj, tempState);
                 case 1
                     % pull ?
-                    %disp("EVAL TYPE 2 - PULL")
+                    disp("EVAL TYPE 2 - PULL")
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_stance(obj, tempState);
             end
             

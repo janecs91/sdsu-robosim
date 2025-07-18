@@ -1,5 +1,6 @@
 classdef StepAdjusterStance < StepAdjuster
     properties
+        verbose = true;
         % limit ranges
         minDxb = 0;
         minBottomZFromTerrain = 10;
@@ -19,7 +20,7 @@ classdef StepAdjusterStance < StepAdjuster
             footDistanceFromFront = bot.get_distance_waist_to_foot(state, stanceLeg);
             dx_b = max(footDistanceFromBase-(2*bot.a_0),0);
             dx_b = max(footDistanceFromFront-bot.a_0,0);
-            dx_b = dx_b/2;
+            %dx_b = dx_b/2;
             %{
             fprintf("stance leg: %d\n", stanceLeg);
             fprintf("footdistfrombase: %d\n", max(footDistanceFromBase-(2*bot.a_0),0));
@@ -64,16 +65,18 @@ classdef StepAdjusterStance < StepAdjuster
                 %turnBodyAngle = angle - state.baseOrientation(3);
                 isStable = StepAdjusterStance.check_stability_stance(stanceLeg, turnBodyAngle, x_a, y_a, dx_b, dy_b);
                 if isStable
-                    %disp("found stable body step stance")
-                    %fprintf("stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    if obj.verbose
+                        disp("found stable body step stance")
+                        fprintf("stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    end
                     break
                 end
                 if i==size(testRange,2)
-                    %disp("could not find isstable stance, end of check")
-                    %fprintf("last values leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    disp("could not find isstable stance, end of check")
+                    fprintf("last values leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
                     dx_b = 0;
                     dy_b = 0;
-                    %fprintf("reset stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    fprintf("reset stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
                 end
             end
             dz_b = obj.get_base_z_vector(bot, state, terrain, futurePathPoint);

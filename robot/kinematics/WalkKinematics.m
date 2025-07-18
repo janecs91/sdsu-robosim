@@ -9,7 +9,7 @@ classdef WalkKinematics
         mock_dx_b = 20;
         mock_dx_i = 10;
         verbose = false;
-        swingVerbose = true;
+        swingVerbose = false;
     end
     properties(Constant)
     end

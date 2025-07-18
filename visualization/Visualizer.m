@@ -148,6 +148,9 @@ classdef Visualizer
                     view(90,0);
                 elseif strcmp(viewAxis, 'y')
                     view(0,0);
+                    disp('axis')
+                    disp(axis)
+                    axis([0 inf -inf inf -inf inf]);
                 elseif strcmp(viewAxis, 'z')
                     view(0, 90);
                 end

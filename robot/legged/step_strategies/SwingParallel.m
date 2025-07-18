@@ -10,8 +10,9 @@ classdef SwingParallel < SwingStrategy
         uConstant = 5.0;
         legRadius = 48;
         useUConstant = true;
-        constantLegRadius = true;
+        constantLegRadius = false;
         useBaseGamma = true;
+        verbose = true;
     end
     properties
         SwingPose;
@@ -25,8 +26,8 @@ classdef SwingParallel < SwingStrategy
         function globalFootPoint = get_next_global_foot_point(obj, bot, state, leg, terrain, path, moveX)
             if leg > 2
                 % custom strategy for back legs
-                [futurePathPoint, futurePathIndex] = bot.get_next_path_point(state, path, moveX);
-                [angle, slope] = path.get_gamma_at_index(futurePathIndex);
+                %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(state, path, moveX);
+                %[angle, slope] = path.get_gamma_at_index(futurePathIndex);
                 futureState = BotState(state);
                 %futureState.basePosition(1:2) = futurePathPoint(1:2);
                 %futureState.baseOrientation(3) = angle;
@@ -36,28 +37,37 @@ classdef SwingParallel < SwingStrategy
                 globalFootPoint = globalJointPositions(1, 1:2);
             else
                 % parallel strategy (front legs)
-                [futurePathPoint, endIndex] = bot.get_next_path_point(state, path, moveX);
+                %{
+                [futurePathPoint, endIndex] = bot.get_next_path_point(state, path, 0);
                 startIndex = state.pathIndex;
                 s = 1;
                 if SwingParallel.useUConstant == true
                     s = SwingParallel.get_ratio_by_path_curve(leg, path, startIndex, endIndex);
                 end
-                adjustedLegRadius = obj.legRadius/2;
-                if ~obj.constantLegRadius
-                    adjustedLegRadius = (obj.legRadius/2)*s;
+                %}
+                adjustedLegRadius = moveX;
+                if obj.constantLegRadius
+                    adjustedLegRadius = obj.legRadius/2;
                 end
                 %fprintf("end index: %d\n", endIndex);
                 %fprintf("before movex: %.2f -- s value %.2f -- after movex: %.2f\n", moveX, s, adjustedMoveX);
                 fakeState = copy(state);
-                fakeState.pathIndex = endIndex;
-                fakeState.basePosition(1:2) = futurePathPoint(1:2);
+                %fakeState.pathIndex = endIndex;
+                %fakeState.basePosition(1:2) = futurePathPoint(1:2);
                 %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, moveX);
                 %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, obj.legRadius/2);
                 [futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, adjustedLegRadius);
+                if obj.verbose
+                    fprintf("planned base position: %.2d %.2d\n", fakeState.basePosition(1:2));
+                    fprintf("futurePathPoint: %.2d %.2d\n", futurePathPoint);
+                    fprintf("adjustedLegRadius: %.2d\n", adjustedLegRadius);
+                end
+                %{
                 if obj.useBaseGamma
                     futurePathIndex = endIndex;
                 end
-                [angle, slope] = path.get_gamma_at_index(futurePathIndex);
+                %}
+                %[angle, slope] = path.get_gamma_at_index(futurePathIndex);
                 %fprintf("(swing) current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f\n", state.basePosition, state.baseOrientation(3), moveX); 
                 %fprintf("old ft pt: [%.2f %.2f], ft center path pt: [%.2f %.2f]\n", state.endPositions(leg,1:2), futurePathPoint);
                 % plus = left?, minus = right?

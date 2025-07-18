@@ -15,6 +15,8 @@ classdef StepAdjusterSwing < StepAdjuster
         constantTurnAngle0 = deg2rad(0);
         constant_dx_b0 = 20;
         %constant_dx_i0 = 10;
+
+        verbose = true;
     end
     %{
 %% ROBOT
@@ -64,7 +66,7 @@ a_3=a_4=24 cm (leg length)
             % Possibly use 1/2 leg length ??
             %dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
             dx_i_front = obj.maxLegLength;
-            dx_i_back = distance_waist_to_foot/2;
+            dx_i_back = distance_waist_to_foot;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
             dx_i = dx_i_front;
@@ -98,27 +100,28 @@ a_3=a_4=24 cm (leg length)
                 y_a_prime = localFootPoint(2);
                 z_a_prime = localFootPoint(3);
                 [x_h, y_h, z_h, x_h_prime, y_h_prime, z_h_prime] = StepAdjusterSwing.get_hips(bot, state, leg, x_a_prime, y_a_prime, z_a_prime);
-                %{
-                fprintf("trying leg %d swing step - moveX: %.2f\n", leg, moveX)
-                fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
-                fprintf("x_h_prime: %.2f, y_h_prime: %.2f, z_h_prime: %.2f\n", x_h_prime, y_h_prime, z_h_prime);
-                %}
+                if obj.verbose
+                    fprintf("trying leg %d swing step - moveX: %.2f\n", leg, moveX)
+                    fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
+                    fprintf("x_h_prime: %.2f, y_h_prime: %.2f, z_h_prime: %.2f\n", x_h_prime, y_h_prime, z_h_prime);
+                end
                 isStable = StepAdjusterSwing.check_stability_swing(bot, state, leg, x_a, y_a, z_a, ...
                     x_a_prime, y_a_prime, z_a_prime, obj.maxLegLength);
                 %fprintf("stable? %d\n", isStable);
                 if isStable
-                    %{
-                    disp("found stable leg step")
-                    fprintf("x_a: %.2f, y_a: %.2f, z_a: %.2f\n", x_a, y_a, z_a);
-                    fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
-                    fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
-                    fprintf("x_h_prime: %.2f, y_h_prime: %.2f, z_h_prime: %.2f\n", x_h_prime, y_h_prime, z_h_prime);
-                    %}
-                    %fprintf("x_a_prime: %.2f, x_h_prime: %.2f, xap-xhp: %.2f\n", x_a_prime, x_h_prime, abs(x_a_prime-x_h_prime)); 
-                    %fprintf("y_a_prime: %.2f, y_h_prime: %.2f, yap-yhp: %.2f\n", y_a_prime, y_h_prime, abs(y_a_prime-y_h_prime)); 
-                    %fprintf("z_a_prime: %.2f, z_h_prime: %.2f, zap-zhp: %.2f\n", z_a_prime, z_h_prime, abs(z_a_prime-z_h_prime)); 
-                
+                    if obj.verbose
+                        disp("found stable leg step")
+                        fprintf("x_a: %.2f, y_a: %.2f, z_a: %.2f\n", x_a, y_a, z_a);
+                        fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+                        fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
+                        fprintf("x_h_prime: %.2f, y_h_prime: %.2f, z_h_prime: %.2f\n", x_h_prime, y_h_prime, z_h_prime);
+                        %fprintf("x_a_prime: %.2f, x_h_prime: %.2f, xap-xhp: %.2f\n", x_a_prime, x_h_prime, abs(x_a_prime-x_h_prime)); 
+                        %fprintf("y_a_prime: %.2f, y_h_prime: %.2f, yap-yhp: %.2f\n", y_a_prime, y_h_prime, abs(y_a_prime-y_h_prime)); 
+                        %fprintf("z_a_prime: %.2f, z_h_prime: %.2f, zap-zhp: %.2f\n", z_a_prime, z_h_prime, abs(z_a_prime-z_h_prime)); 
+                    end
                     break
+                else
+                    fprintf("NOT stable --> after trying leg %d swing step - moveX: %.2f\n", leg, moveX)
                 end
             end
             dx_i = x_a_prime-x_a;

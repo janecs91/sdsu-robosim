@@ -106,11 +106,13 @@ classdef RollBot < BaseBot
             %newState.dotBaseOrientation = [0 0 0];
             %newState.dotBasePosition(1:2) = moveVector;
             newState.dotBasePosition(1:2) = obj.rotate_vector(moveVector, turnAngle+newState.baseOrientation(3));
+            %{
             disp('TURN ANGLE');
             disp(rad2deg(turnAngle));
             disp('dot_xy =====================');
             disp(newState.dotBasePosition(1:2));
-            %disp(newState.dotEndPositions(:,1:2));
+            disp(newState.dotEndPositions(:,1:2));
+            %}
                         
             % update steering
             sigma = obj.wheelShift;
@@ -190,15 +192,18 @@ classdef RollBot < BaseBot
                 new_dot_y_base = -new_dot_y_base;
                 dot_alpha_base = (1/4).*sum(cos(steering_hat).*dot_beta_wheel');
                 dot_beta_base = (1/4).*sum(sin(steering_hat).*dot_beta_wheel');
+                %{
                 disp('new base xy ab');
                 disp(new_dot_x_base);
                 disp(new_dot_y_base);
                 disp(dot_alpha_base);
                 disp(dot_beta_base);
+                %}
             end
             newState.dotBasePosition(1) = new_dot_x_base(1);
             newState.dotBasePosition(2) = new_dot_y_base(1);
             newState.dotBaseOrientation(3) = dot_gamma_base;
+            %{
             disp('SLIP');
             disp(slip);
             disp('new dot xy base');
@@ -211,6 +216,7 @@ classdef RollBot < BaseBot
             disp(rad2deg(new_dot_gamma_base));
             disp('dot base ori');
             disp(rad2deg(newState.dotBaseOrientation));
+            %}
             
             % equation base orientaion
             eq_alpha = cos(steering_hat)'.*dot_beta_wheel;
@@ -218,6 +224,7 @@ classdef RollBot < BaseBot
             % expected base orientation
             expected_alpha = obj.get_expected_alpha(newState);
             expected_beta = obj.get_expected_beta(newState);
+            %{
             disp('equation alpha/beta ==========')
             disp(eq_alpha);
             disp(eq_beta);
@@ -226,6 +233,7 @@ classdef RollBot < BaseBot
             disp('expected alpha/beta ================')
             disp(expected_alpha);
             disp(expected_beta);
+            %}
             eq_alpha = mean(eq_alpha);
             eq_beta = mean(eq_beta);
             newState.dotBaseOrientation(1) = eq_alpha;

@@ -52,32 +52,32 @@ turn = 0.01;
 %% bot settings
 botNum = 4;
 botStartX = -1;
-maxIterations = 1;
+maxIterations = 100;
 %% path settings
-pathNum = 5;
+pathNum = 1;
 pathStartX = 100; 
 pathStartY = 100;
 pathEndX = 600;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 5;
+terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 20;
-terrainFrequency = 0.01;
+terrainAmplitude = 5;
+terrainFrequency = 1;
 % random
 randFilterSize = 10;
 elevationChangeRange = 10;
 %terrainName = 'customTerrainName';
 %% visualize settings
-rate = 0.001;
+rate = 0.01;
 startState = 1;
-stopState = 2;
+stopState = -1;
 showAllMarkers = true;
 showAxis = '';
 showColorBar = 0;
