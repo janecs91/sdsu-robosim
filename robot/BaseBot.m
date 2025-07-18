@@ -241,7 +241,7 @@ a3 = a4 = 24 cm = leg length
             %maxX = (terrain.maxX - terrain.initX);
             %maxX = maxX - obj.botBodyLength;
             maxCenterX = terrain.maxX - (2*obj.botBodyLength);
-            endX = path.pathPoints(end,1)-48;
+            endX = path.pathPoints(end,1)-48;   % this is so that there are enough path points for legs to follow (pull, walk)
             x = startX;
             i = 0;
             %moveVector = [obj.maxStepSize 0];
