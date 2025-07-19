@@ -1,6 +1,6 @@
 classdef StepAdjusterStance < StepAdjuster
     properties
-        verbose = true;
+        verbose = false;
         % limit ranges
         minDxb = 0;
         minBottomZFromTerrain = 10;

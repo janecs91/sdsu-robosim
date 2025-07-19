@@ -142,17 +142,19 @@ classdef MatrixTerrain
            highestElevation = max(elevations);
         end
         function angles = get_angle_elevations(obj, x1, y1, x2, y2)
-            disp('ANGLE ELEVATIONS')
+            %disp('ANGLE ELEVATIONS')
             z1 = obj.get_elevations(x1, y1);
             z2 = obj.get_elevations(x2, y2);
             distances = sqrt((x1-x2).^2+(y1-y2).^2);
             angles = atan2(z2-z1, distances);
+            %{
             disp(x1);
             disp(x2);
             disp(y1);
             disp(y2);
             disp(distances);
             disp(angles);
+            %}
         end
     end
     methods(Static)

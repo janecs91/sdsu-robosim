@@ -101,13 +101,17 @@ classdef PullBot < LeggedBot
         
         %% Pull Override?
         function newState = body_sequence(obj, newState, activeLeg, bodyVectorI, turnAngleBodyI, stancePathIndex, terrain)
-            disp('pull body sequence');
+            if obj.verbose
+                disp('pull body sequence');
+            end
             newState = obj.update_body(newState, activeLeg, bodyVectorI, turnAngleBodyI, stancePathIndex);
             newState = obj.update_wheels(newState, terrain, turnAngleBodyI);
         end
         function newState = update_wheels(obj, previousState, terrain, turnAngleBody)
             % calculate new elevations for wheels
-            disp("moving wheels...")
+            if obj.verbose
+                disp("moving wheels...")
+            end
             previousEndPositions = obj.get_global_end_positions(previousState);
             newTerrainElevations = terrain.get_elevations(previousEndPositions(3:4,1), previousEndPositions(3:4,2));
             dotZWheels =  newTerrainElevations - previousEndPositions(3:4,3);

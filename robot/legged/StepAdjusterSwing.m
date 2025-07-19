@@ -16,7 +16,7 @@ classdef StepAdjusterSwing < StepAdjuster
         constant_dx_b0 = 20;
         %constant_dx_i0 = 10;
 
-        verbose = true;
+        verbose = false;
     end
     %{
 %% ROBOT
@@ -121,7 +121,9 @@ a_3=a_4=24 cm (leg length)
                     end
                     break
                 else
-                    fprintf("NOT stable --> after trying leg %d swing step - moveX: %.2f\n", leg, moveX)
+                    if obj.verbose
+                        fprintf("NOT stable --> after trying leg %d swing step - moveX: %.2f\n", leg, moveX)
+                    end
                 end
             end
             dx_i = x_a_prime-x_a;

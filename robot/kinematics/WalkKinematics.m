@@ -260,7 +260,7 @@ classdef WalkKinematics
                 Bs = [B_sin B_cos];
                 B = Bs(altLeg);
             end
-            abs(hat_waist)
+            %disp(abs(hat_waist));
             A = z_a - dz_b + bot.d_1;
             C=-A^2-B^2;
             

@@ -4,7 +4,7 @@
         numLegs;
     end
     properties
-        verbose = true;
+        verbose = false;
         useConstantTestValues = false;  % TBD review use case (probably for testing)
         constantTurnAngle = deg2rad(0); % For testing: Constant turn angle?
         constant_dx_b = 10; % For testing: constant base movement along x-direction
@@ -389,12 +389,16 @@
             switch((obj.useAltKinematics && leg<3 && ~forceSingleDisable)||altForceTrigger)
                 case 0
                     % walk ?
-                    fprintf("EVAL TYPE 1 - WALK - LEG %d\n", leg)
+                    if obj.verbose
+                        fprintf("EVAL TYPE 1 - WALK - LEG %d\n", leg)
+                    end
                     tempState.dotEndPositions(leg,:) = obj.global2relative(moveVector, tempState);
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_swing(obj, tempState);
                 case 1
                     % pull ?
-                    fprintf("EVAL TYPE 2 - SHARED PULL - LEG %d\n", leg)
+                    if obj.verbose
+                        fprintf("EVAL TYPE 2 - SHARED PULL - LEG %d\n", leg)
+                    end
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_swing2(obj, tempState);
             end
             
@@ -444,12 +448,16 @@
             switch((obj.useAltKinematics && obj.numLegs<4)||altForceTrigger)
                 case 0
                     % walk ?
-                    %disp("USING OLD KINEMATICS!!!!!!!!!!!!!")
-                    disp("EVAL TYPE 1 - WALK")
+                    if obj.verbose
+                        %disp("USING OLD KINEMATICS!!!!!!!!!!!!!")
+                        disp("EVAL TYPE 1 - WALK")
+                    end
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_kinematics_stance(obj, tempState);
                 case 1
                     % pull ?
-                    disp("EVAL TYPE 2 - PULL")
+                    if obj.verbose
+                        disp("EVAL TYPE 2 - PULL")
+                    end
                     [dot_waist, dot_hip, dot_knee] = obj.kinematics.eval_alt_kinematics_stance(obj, tempState);
             end
             
