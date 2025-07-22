@@ -3,6 +3,7 @@ classdef BaseBot
         debug;
         % bot values
         botHeight;
+        originalBotHeight = 30;
         botBodyLength = 30;
         maxBotHeight = 90;  % check?
         %maxLegLength = 48;
@@ -208,7 +209,8 @@ a3 = a4 = 24 cm = leg length
             state.anglesContact = contact;
             % fix init Z
             %obj.botHeight = obj.get_bot_height(state)+10;
-            obj.botHeight = obj.get_bot_height(state);
+            %obj.botHeight = obj.get_bot_height(state);
+            obj.botHeight = obj.originalBotHeight;
             state.basePosition(3) = obj.botHeight + obj.get_lowest_point(state, terrain);
             %state.basePosition(3) = 39;
             state.endPositions = obj.get_global_end_positions(state);

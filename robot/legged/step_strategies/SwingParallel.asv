@@ -57,11 +57,8 @@ classdef SwingParallel < SwingStrategy
                 %fakeState.basePosition(1:2) = futurePathPoint(1:2);
                 %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, moveX);
                 %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, obj.legRadius/2);
-                %[futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, adjustedLegRadius+obj.frontCornerDistance);
-                frontCornerDistanceVector = bot.rotate_vector([obj.frontCornerDistance 0], fakeState.baseOrientation(3));
-                frontX = fakeState.basePosition(1)+frontCornerDistanceVector(1);
-                frontY = fakeState.basePosition(2)+frontCornerDistanceVector(2);
-                [futurePathPoint, futurePathIndex] = path.get_next_nearest_point(frontX, frontY, fakeState.pathIndex, adjustedLegRadius);
+                [futurePathPoint, futurePathIndex] = bot.get_next_path_point(fakeState, path, adjustedLegRadius+obj.frontCornerDistance);
+                [futurePoint, futurePathIndex] = path.get_next_nearest_point(fakeState.basePosition(1), fakeState.basePosition(2), fakeState.lastIndex, accuracyRadius)
                 if obj.verbose
                     fprintf("planned base position: %.2d %.2d\n", fakeState.basePosition(1:2));
                     fprintf("futurePathPoint: %.2d %.2d\n", futurePathPoint);

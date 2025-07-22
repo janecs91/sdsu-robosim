@@ -58,7 +58,7 @@
         stepAdjusterSwing;
         stepAdjusterStance;
         stepAdjusterHeight;
-        stepSafetyValue = 0.8;
+        stepSafetyValue = 0.9;
         stepAdjustCount = 0;
         %localWaistLocation;
     end
@@ -110,7 +110,7 @@
                 %% get move vector
                 turnAngleLeg = 0;
                 slope = tan(turnAngleLeg);
-                dx_i = 10;
+                dx_i = 12;
                 %dx_i = obj.get_leg_step_vector(firstState, firstState.activeLeg, slope, turnAngle, terrain);
                 relativeLegVector = [dx_i 0 0];
                 %moveVector = [bodyStepSize 0 0];
@@ -153,29 +153,31 @@
             end
             
             %% display initial values
-            %state = obj.update_end_positions(firstState);
-            %disp("after update")
-            %disp(state.endPositions(leg,:));
-            jointPositions = obj.get_local_joint_positions(firstState, 1);
-            jointPositions = jointPositions{1};
-            z_a = jointPositions(end,3);
-            x_a = jointPositions(end,1);
-            y_a = jointPositions(end,2);
-            z_h = jointPositions(3,3);
-            x_h = jointPositions(3,1);
-            y_h = jointPositions(3,2);
-            %fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 1, x_a, y_a, z_a);
-            %fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
-            jointPositions = obj.get_local_joint_positions(firstState, 2);
-            jointPositions = jointPositions{1};
-            z_a = jointPositions(end,3);
-            x_a = jointPositions(end,1);
-            y_a = jointPositions(end,2);
-            z_h = jointPositions(3,3);
-            x_h = jointPositions(3,1);
-            y_h = jointPositions(3,2);
-            %fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 2, x_a, y_a, z_a);
-            %fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+            if obj.verbose
+                %state = obj.update_end_positions(firstState);
+                %disp("after update")
+                %disp(state.endPositions(leg,:));
+                jointPositions = obj.get_local_joint_positions(firstState, 1);
+                jointPositions = jointPositions{1};
+                z_a = jointPositions(end,3);
+                x_a = jointPositions(end,1);
+                y_a = jointPositions(end,2);
+                z_h = jointPositions(3,3);
+                x_h = jointPositions(3,1);
+                y_h = jointPositions(3,2);
+                fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 1, x_a, y_a, z_a);
+                fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+                jointPositions = obj.get_local_joint_positions(firstState, 2);
+                jointPositions = jointPositions{1};
+                z_a = jointPositions(end,3);
+                x_a = jointPositions(end,1);
+                y_a = jointPositions(end,2);
+                z_h = jointPositions(3,3);
+                x_h = jointPositions(3,1);
+                y_h = jointPositions(3,2);
+                fprintf("initial leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", 2, x_a, y_a, z_a);
+                fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+            end
             
             % set active leg to initial leg
             firstState.activeLeg = obj.initialActiveLeg;
@@ -292,6 +294,15 @@
             forwardState = obj.get_last_state();
             %disp("pull hips from leggbot");
             %disp(forwardState.anglesHip);
+
+            %% change base z
+            %disp("CHANGING BASE Z after swing")
+            %disp(dz_b);
+            %fprintf("**********$$$$$$$ before body height adjust\n");
+            dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
+            obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
+            %fprintf("**********$$$$$$$ after body height adjust\n");
+            obj = obj.update_bot_height();
             
             %% adjust forward leg movement
             % --- added this (but is optional, investigate more): && obj.numLegs < 4
@@ -308,14 +319,6 @@
                 %disp(relativeLegVector)
                 obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
                 forwardState = obj.get_last_state();
-                
-                %disp("CHANGING BASE Z after swing")
-                %disp(dz_b);
-                %fprintf("**********$$$$$$$ before body height adjust\n");
-                dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
-                obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
-                %fprintf("**********$$$$$$$ after body height adjust\n");
-                obj = obj.update_bot_height();
             end
                       
             %% put down foot (all vertical) 

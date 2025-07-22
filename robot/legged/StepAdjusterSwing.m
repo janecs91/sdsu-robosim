@@ -15,8 +15,9 @@ classdef StepAdjusterSwing < StepAdjuster
         constantTurnAngle0 = deg2rad(0);
         constant_dx_b0 = 20;
         %constant_dx_i0 = 10;
+        modifyDx_i = true;
 
-        verbose = false;
+        verbose = true;
     end
     %{
 %% ROBOT
@@ -58,14 +59,15 @@ a_3=a_4=24 cm (leg length)
             z_a = jointPositions(end,3);
             x_a = jointPositions(end,1);
             y_a = jointPositions(end,2);
-            z_h = jointPositions(end,3);
-            x_h = jointPositions(end,1);
-            y_h = jointPositions(end,2);
+            z_h = jointPositions(1,3);
+            x_h = jointPositions(1,1);
+            y_h = jointPositions(1,2);
             distance_waist_to_foot = bot.get_distance_waist_to_foot(state, leg);
             %% Possibly update to backCornerDistance for back legs (if trying for legs 3 and 4)
             % Possibly use 1/2 leg length ??
             %dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
-            dx_i_front = obj.maxLegLength;
+            %dx_i_front = obj.maxLegLength;
+            dx_i_front = 68;
             dx_i_back = distance_waist_to_foot;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
@@ -75,13 +77,13 @@ a_3=a_4=24 cm (leg length)
             end
             dz_i = 0;
             testRange = dx_i:-1:obj.minDxi;
-            %{
-            fprintf("find swing step: leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", leg, x_a, y_a, z_a);
-            fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
-            fprintf("local waist x: %.2f, distance_waist_to_foot: %.2f, maxdx_i: %.2f\n", waist_x, distance_waist_to_foot, dx_i);
-            disp("testRange")
-            disp(testRange);
-            %}
+            if obj.verbose && false
+                fprintf("find swing step: leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", leg, x_a, y_a, z_a);
+                fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
+                fprintf("local waist x: %.2f, distance_waist_to_foot: %.2f, maxdx_i: %.2f\n", waist_x, distance_waist_to_foot, dx_i);
+                disp("testRange")
+                disp(testRange);
+            end
             for i=testRange
                 %fprintf("* test range i: %d\n", i);
                 moveX = i;
@@ -90,17 +92,19 @@ a_3=a_4=24 cm (leg length)
                 globalFootPoint(3) = newTerrainZ;
                 localFootPoint = bot.change_global_to_local(state, globalFootPoint);
                 localOldFootPoint = bot.change_global_to_local(state, state.endPositions(leg,1:2));
-                %fprintf("state pos: %.2f %.2f, gamma: %.2f\n", state.basePosition(1:2), rad2deg(state.baseOrientation(3)));
-                %fprintf("(global) old ft pt: %.2f %.2f %.2f, new ft pt: %.2f %.2f %.2f\n", ...
-                %    state.endPositions(leg,:), globalFootPoint);
-                %fprintf("(local) old ft pt: %.2f %.2f, local old2: %.2f %.2f %.2f, new ft pt: %.2f %.2f %.2f\n", ...
-                %    [x_a y_a], localOldFootPoint, localFootPoint);
+                if obj.verbose
+                    fprintf("state pos: %.2f %.2f, gamma: %.2f\n", state.basePosition(1:2), rad2deg(state.baseOrientation(3)));
+                    fprintf("(global) old ft pt: %.2f %.2f %.2f, new ft pt: %.2f %.2f %.2f\n", ...
+                        state.endPositions(leg,:), globalFootPoint);
+                    fprintf("(local) old ft pt: %.2f %.2f, local old2: %.2f %.2f %.2f, new ft pt: %.2f %.2f %.2f\n", ...
+                        [x_a y_a], localOldFootPoint, localFootPoint);
+                end
                 
                 x_a_prime = localFootPoint(1);
                 y_a_prime = localFootPoint(2);
                 z_a_prime = localFootPoint(3);
-                [x_h, y_h, z_h, x_h_prime, y_h_prime, z_h_prime] = StepAdjusterSwing.get_hips(bot, state, leg, x_a_prime, y_a_prime, z_a_prime);
-                if obj.verbose
+                [x_h, y_h, z_h, x_h_prime, y_h_prime, z_h_prime] = StepAdjusterSwing.get_hips(bot, state, leg, x_a_prime, y_a_prime, z_a_prime);    % for display only
+                if obj.verbose && false
                     fprintf("trying leg %d swing step - moveX: %.2f\n", leg, moveX)
                     fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
                     fprintf("x_h_prime: %.2f, y_h_prime: %.2f, z_h_prime: %.2f\n", x_h_prime, y_h_prime, z_h_prime);
@@ -110,7 +114,7 @@ a_3=a_4=24 cm (leg length)
                 %fprintf("stable? %d\n", isStable);
                 if isStable
                     if obj.verbose
-                        disp("found stable leg step")
+                        %fprintf("found stable leg %d step, moveX: %d", leg, moveX)
                         fprintf("x_a: %.2f, y_a: %.2f, z_a: %.2f\n", x_a, y_a, z_a);
                         fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
                         fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
@@ -121,15 +125,22 @@ a_3=a_4=24 cm (leg length)
                     end
                     break
                 else
-                    if obj.verbose
+                    if obj.verbose && false
                         fprintf("NOT stable --> after trying leg %d swing step - moveX: %.2f\n", leg, moveX)
                     end
                 end
             end
-            dx_i = x_a_prime-x_a;
-            dy_i = y_a_prime-y_a;
-            %fprintf("stable moveX for leg %d: %.2f\n", leg, moveX);
-            %fprintf("dx_i: %.2f, dy_i: %.2f\n", dx_i, dy_i);
+            disp(moveX);
+            dx_i = 24;
+            dy_i = 0;
+            if obj.modifyDx_i
+                dx_i = x_a_prime-x_a;
+                dy_i = y_a_prime-y_a;
+            end
+            if obj.verbose
+                fprintf("stable moveX for leg %d: %.2f\n", leg, moveX);
+                fprintf("dx_i: %.2f, dy_i: %.2f\n", dx_i, dy_i);
+            end
             mu_dx_i = max(obj.safetyValue*dx_i, 0);
             if obj.allowNegativeDxi == true
                 mu_dx_i = dx_i;

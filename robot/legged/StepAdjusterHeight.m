@@ -1,8 +1,9 @@
 classdef StepAdjusterHeight < StepAdjuster
     properties
-        originalBaseZ;
+        originalBaseZ = 24;
         enableIncreaseHeight = true;
         enableDecreaseToOriginal = false;
+        verbose = true;
     end
     methods
         function obj = StepAdjusterHeight(safetyValue)
@@ -13,7 +14,9 @@ classdef StepAdjusterHeight < StepAdjuster
             maxBaseZ = bot.get_max_height_from_waist_to_foot(state);
             requiredZ = StepAdjusterHeight.get_z_difference_between_feet(bot, state, terrain);
             dz_b = 0;
-            %fprintf("height adj-- max base z: %.2f , req Z: %.2f, orig height: %.2f\n", maxBaseZ, requiredZ, obj.originalBaseZ);
+            if obj.verbose
+                fprintf("height adj-- max base z: %.2f , req Z: %.2f, orig height: %.2f\n", maxBaseZ, requiredZ, obj.originalBaseZ);
+            end
             if obj.enableIncreaseHeight == true && maxBaseZ < requiredZ
                 %disp("maxB < reqZ");
                 %dz_b = requiredZ;
