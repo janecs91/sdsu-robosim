@@ -12,6 +12,15 @@ classdef WalkAnalyzer < CostAnalyzer
             timeCosts = max(timePerJoint,[],2);
             totalTimeCost = sum(timeCosts);
             totalJointChanges = sum(max(jointChanges, [], 2));
+            if obj.verbose
+                disp("max joint changes")
+                disp(totalJointChanges)
+                disp("*** max time costs ***")
+                disp("time costs per joint")
+                disp(timePerJoint)
+                disp("max time joints")
+                disp(timeCosts)
+            end
             %cumulativeTimeCosts = cumsum(maxTimeCosts);
             distance = squeeze(bot.baseMatrix(end, 1) - bot.baseMatrix(indexAfterDistance, 1));
             velocity = distance/(max(totalTimeCost, 1));

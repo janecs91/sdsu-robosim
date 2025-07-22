@@ -14,6 +14,17 @@ classdef RollAnalyzer < CostAnalyzer
             timeWheels = max(timePerWheel.',[],2);
             timeJoints = max(timePerJoint,[],2);
             timeCosts = max(timeJoints, timeWheels);
+            if obj.verbose
+                disp("*** distances ***")
+                disp(distances)
+                disp("*** max time costs ***")
+                disp("max time wheels")
+                disp(timeWheels)
+                disp("max time joints")
+                disp(timeJoints)
+                disp("max time overall")
+                disp(timeCosts)
+            end
             %cumulativeTimeCosts = cumsum(maxTimeCosts);
             totalTimeCost = sum(timeCosts);
             totalJointChanges = sum(max(jointChanges, [], 2));

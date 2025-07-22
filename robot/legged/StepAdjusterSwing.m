@@ -17,7 +17,7 @@ classdef StepAdjusterSwing < StepAdjuster
         %constant_dx_i0 = 10;
         modifyDx_i = true;
 
-        verbose = true;
+        verbose = false;
     end
     %{
 %% ROBOT
@@ -130,7 +130,6 @@ a_3=a_4=24 cm (leg length)
                     end
                 end
             end
-            disp(moveX);
             dx_i = 24;
             dy_i = 0;
             if obj.modifyDx_i

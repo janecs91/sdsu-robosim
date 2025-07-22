@@ -47,10 +47,10 @@ pulling vs walking) - does pulling have a bigger body vector?
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = true;
+showVisual = false;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 2;
 botStartX = -1;
 maxIterations = 999;
 %% path settings
@@ -68,14 +68,14 @@ width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 5;
+terrainAmplitude = 20;
 terrainFrequency = 1;
 % random
 randFilterSize = 10;
 elevationChangeRange = 10;
 %terrainName = 'customTerrainName';
 %% visualize settings
-rate = 0.5;
+rate = 0.001;
 startState = 1;
 stopState = -1;
 showAllMarkers = true;

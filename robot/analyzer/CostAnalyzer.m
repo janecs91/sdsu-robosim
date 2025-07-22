@@ -18,6 +18,8 @@ classdef CostAnalyzer
         maxJointPowersPaperWSteer = [13.17 70.76 25.49 25.49];  % from paper, includes steering
         maxWheelPowerPaper = 25.49;     % from paper
         maxWheelPowerAdjusted = 36.18;
+
+        verbose = false;
     end
     properties
         % joint/wheel properties can be adjusted here
@@ -52,6 +54,12 @@ classdef CostAnalyzer
             sinkRate = terrain.sinkRate;
             jointChanges = obj.get_joints_changes(jointsMatrix, sinkRate);
             timeCostsPerJoint = jointChanges ./ repelem(obj.maxJointVelocities, 4);
+            if obj.verbose && false
+                disp("joint changes")
+                disp(jointChanges)
+                disp("time costs per joint")
+                disp(timeCostsPerJoint)
+            end
         end
         function distances = get_wheels_distances(obj, endPositionsMatrix)
             dotEndPositionsMatrix = endPositionsMatrix(:,:,2:end) - endPositionsMatrix(:,:,1:end-1);
@@ -78,6 +86,14 @@ classdef CostAnalyzer
             
             actualVelocity = ((1-slipRates).*(2*pi*wheelRadius)).*stateVelocity;
             timeCostsPerWheel = distances./actualVelocity;
+            if obj.verbose && true
+                disp("state velocity")
+                disp(stateVelocity)
+                disp("actual velocity")
+                disp(actualVelocity)
+                disp("time costs per wheel")
+                disp(timeCostsPerWheel)
+            end
         end
         %% Power Analysis
         function totalPowerCost = get_joints_power(obj, jointsMatrix, terrain)
