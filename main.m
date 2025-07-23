@@ -16,10 +16,9 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % Add or clean up comments. Use Copilot to help if needed
 
 %% 07.23
-% - Fix initial position (pull/walk)
-% - Fix initial path tracing (roll)
+% - Fix axis
+% - Fix load from env; possibly fix terrain load
 % - Add max joint change distance
-% - Fix state visualizer (starting state base position)
 % - If time, possibly add stride length (distance between each leg end -- may avg)
 
 %% Potential fixes and ideas
@@ -57,9 +56,9 @@ loadFromSaved = false;
 showVisual = true;
 turn = 0.01;
 %% bot settings
-botNum = 2;
+botNum = 3;
 botStartX = -1;
-maxIterations = 1;
+maxIterations = 200;
 %% path settings
 pathNum = 1;
 pathStartX = 100; 
@@ -83,8 +82,8 @@ elevationChangeRange = 10;
 %terrainName = 'customTerrainName';
 %% visualize settings
 rate = 0.001;
-startState = 1;
-stopState = -1;
+startState = 500;
+stopState = 501;
 showAllMarkers = true;
 showAxis = '';
 showColorBar = 0;

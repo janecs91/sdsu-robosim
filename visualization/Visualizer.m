@@ -1,4 +1,7 @@
 classdef Visualizer
+    properties(Constant)
+        verbose = false;
+    end
     properties
     end
     methods
@@ -165,8 +168,12 @@ classdef Visualizer
 
             isNotRoll = ~strcmp(bot.mode, 'roll');
             isWalk = strcmp(bot.mode, 'walk');
-            
-            fprintf("showAllMarkers? : %d\n", showAllMarkers)
+            if Visualizer.verbose
+                fprintf("isnotRoll? %d\n", isNotRoll);
+                fprintf("isWalk? %d\n", isWalk);
+                
+                fprintf("showAllMarkers? : %d\n", showAllMarkers)
+            end
             % get data
             botPositions = bot.get_history_base();
             
@@ -226,16 +233,19 @@ classdef Visualizer
                 %Visualizer.show_text(plannedEndPositions2, startScatterI, i, '2');
             end
             if isWalk
-                historyScatterPlannedEndPosition3 = animatedline(initialPlannedEndPositions3(:,1),initialPlannedEndPositions3(:,2), initialPlannedEndPositions3(:,3),'MarkerFaceColor','b', 'Marker','o','LineStyle','none');
-                historyScatterPlannedEndPosition4 = animatedline(initialPlannedEndPositions4(:,1),initialPlannedEndPositions4(:,2), initialPlannedEndPositions4(:,3),'MarkerFaceColor','b', 'Marker','o','LineStyle','none');
+                historyScatterPlannedEndPosition3 = animatedline(initialPlannedEndPositions3(:,1),initialPlannedEndPositions3(:,2), initialPlannedEndPositions3(:,3),'MarkerFaceColor','black', 'Marker','o','LineStyle','none');
+                historyScatterPlannedEndPosition4 = animatedline(initialPlannedEndPositions4(:,1),initialPlannedEndPositions4(:,2), initialPlannedEndPositions4(:,3),'MarkerFaceColor','black', 'Marker','o','LineStyle','none');
                 %Visualizer.show_text(plannedEndPositions3, startScatterI, i, '3');
                 %Visualizer.show_text(plannedEndPositions4, startScatterI, i, '4');
             end
 
 
-            for i = beginState:stopState
-                %fprintf('state #%i\n', i)
+            for i = 1:stopState
                 state = states(i);
+                if Visualizer.verbose
+                    fprintf('state #%i\n', i)
+                    fprintf('state base position: %d %d %d\n', state.basePosition(:))
+                end
                 if showAllMarkers == false
                     % history lines
                     addpoints(historyLineBase,botPositions(i,1),botPositions(i,2),botPositions(i,3));
@@ -244,8 +254,8 @@ classdef Visualizer
     
                     % planned end positions scatter
                     if isNotRoll
-                    addpoints(historyScatterPlannedEndPosition1,plannedEndPositions1(i,1),plannedEndPositions1(i,2),plannedEndPositions1(i,3));
-                    addpoints(historyScatterPlannedEndPosition2,plannedEndPositions2(i,1),plannedEndPositions2(i,2),plannedEndPositions2(i,3));
+                        addpoints(historyScatterPlannedEndPosition1,plannedEndPositions1(i,1),plannedEndPositions1(i,2),plannedEndPositions1(i,3));
+                        addpoints(historyScatterPlannedEndPosition2,plannedEndPositions2(i,1),plannedEndPositions2(i,2),plannedEndPositions2(i,3));
                     end
                     if isWalk
                         addpoints(historyScatterPlannedEndPosition3,plannedEndPositions3(i,1),plannedEndPositions3(i,2),plannedEndPositions3(i,3));
@@ -254,8 +264,10 @@ classdef Visualizer
                     drawnow
                 end   
 
-                b = Visualizer.show_joint_positions(bot, state, 'r', b); 
-                pause(pauseTime);
+                if i >= beginState
+                    b = Visualizer.show_joint_positions(bot, state, 'r', b); 
+                    pause(pauseTime);
+                end
 
             end
         end
