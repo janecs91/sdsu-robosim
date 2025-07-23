@@ -196,6 +196,7 @@ a3 = a4 = 24 cm = leg length
             backBasePosition = initPosition(1)-obj.a_0;
             highestElevation = terrain.get_highest_elevation(backBasePosition,initPosition(2),frontBasePosition,initPosition(2),1);
             fprintf("highest elevation: %d", highestElevation);
+            initPosition(3) = max(highestElevation+20, obj.botHeight + obj.get_lowest_point(state, terrain));
             
             state = BotState();
             state.basePosition = initPosition;
@@ -216,7 +217,6 @@ a3 = a4 = 24 cm = leg length
             % fix init Z
             obj.botHeight = obj.originalBotHeight;
             %state.basePosition(3) = obj.botHeight + obj.get_lowest_point(state, terrain);
-            state.basePosition(3) = max(highestElevation+20, obj.botHeight+obj.get_lowest_point(state, terrain));
             state.endPositions = obj.get_global_end_positions(state);
             % reset dot values
             state.clear_dots();

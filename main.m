@@ -15,6 +15,13 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % Review math and code
 % Add or clean up comments. Use Copilot to help if needed
 
+%% 07.23
+% - Fix initial position (pull/walk)
+% - Fix initial path tracing (roll)
+% - Add max joint change distance
+% - Fix state visualizer (starting state base position)
+% - If time, possibly add stride length (distance between each leg end -- may avg)
+
 %% Potential fixes and ideas
 % Back legs are planning to move too far ahead
 % Added safetyValue* factor to back leg max. Review.
@@ -47,12 +54,12 @@ pulling vs walking) - does pulling have a bigger body vector?
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = false;
+showVisual = true;
 turn = 0.01;
 %% bot settings
 botNum = 2;
 botStartX = -1;
-maxIterations = 999;
+maxIterations = 0;
 %% path settings
 pathNum = 1;
 pathStartX = 100; 

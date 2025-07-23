@@ -62,6 +62,16 @@ classdef PullBot < LeggedBot
         end
         function firstState = init_pull(obj, firstState, stepSize, terrain)
             disp('init pull')
+            %{
+            initPosition = firstState.basePosition;
+            frontBasePosition = initPosition(1)+obj.a_0;
+            backBasePosition = initPosition(1)-obj.a_0;
+            highestElevation = terrain.get_highest_elevation(backBasePosition,initPosition(2),frontBasePosition,initPosition(2),1);
+            fprintf("highest elevation: %d", highestElevation);
+            %initPosition(3) = highestElevation;
+            % update base position
+            firstState.basePosition(3) = highestElevation+20;
+            %}
             firstState = obj.init_legs(firstState, stepSize, terrain);
             % adjust wheels, check elevation too
             firstState = obj.update_wheels(firstState, terrain, 0);
