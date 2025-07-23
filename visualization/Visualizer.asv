@@ -163,27 +163,27 @@ classdef Visualizer
             end
             %zoom off;
 
-            isNotRoll = ~strcmp(bot.mode, 'roll');
-            isWalk = strcmp(bot.mode, 'walk');
+            isNotRoll = ~strcmp(obj.mode, 'roll');
+            isWalk = strcmp(obj.mode, 'walk');
             
             fprintf("showAllMarkers? : %d\n", showAllMarkers)
             % get data
             botPositions = bot.get_history_base();
             
             % reduce data
-            [endPositions, plannedEndPositions] = bot.get_history_ends();
             botPositions = cast(botPositions, 'single');
             endPositions = cast(endPositions, 'single');
             endPositions1 = endPositions(:,1,:);
             endPositions2 = endPositions(:,2,:);
             if isNotRoll
+                [endPositions, plannedEndPositions] = bot.get_history_ends();
                 plannedEndPositions = cast(plannedEndPositions, 'single');
                 plannedEndPositions1 = plannedEndPositions(:,1,:);
                 plannedEndPositions2 = plannedEndPositions(:,2,:);
             end
             
             % if walk
-            if isWalk
+            if strcmp(bot.mode, 'walk')
                 plannedEndPositions3 = plannedEndPositions(:,3,:);
                 plannedEndPositions4 = plannedEndPositions(:,4,:);
             end
@@ -197,7 +197,7 @@ classdef Visualizer
                 initialPlannedEndPositions1 = plannedEndPositions1;
                 initialPlannedEndPositions2 = plannedEndPositions2;
             end
-            if isWalk
+            if strcmp(bot.mode, 'walk')
                 initialPlannedEndPositions3 = plannedEndPositions3;
                 initialPlannedEndPositions4 = plannedEndPositions4;
             end
@@ -209,7 +209,7 @@ classdef Visualizer
                     initialPlannedEndPositions1 = plannedEndPositions1(1,:);
                     initialPlannedEndPositions2 = plannedEndPositions2(1,:);
                 end
-                if isWalk
+                if strcmp(bot.mode, 'walk')
                     initialPlannedEndPositions3 = plannedEndPositions3(1,:);
                     initialPlannedEndPositions4 = plannedEndPositions4(1,:);
                 end
@@ -225,7 +225,7 @@ classdef Visualizer
                 %Visualizer.show_text(plannedEndPositions1, startScatterI, i, '1');
                 %Visualizer.show_text(plannedEndPositions2, startScatterI, i, '2');
             end
-            if isWalk
+            if strcmp(bot.mode, 'walk')
                 historyScatterPlannedEndPosition3 = animatedline(initialPlannedEndPositions3(:,1),initialPlannedEndPositions3(:,2), initialPlannedEndPositions3(:,3),'MarkerFaceColor','b', 'Marker','o','LineStyle','none');
                 historyScatterPlannedEndPosition4 = animatedline(initialPlannedEndPositions4(:,1),initialPlannedEndPositions4(:,2), initialPlannedEndPositions4(:,3),'MarkerFaceColor','b', 'Marker','o','LineStyle','none');
                 %Visualizer.show_text(plannedEndPositions3, startScatterI, i, '3');
@@ -247,7 +247,7 @@ classdef Visualizer
                     addpoints(historyScatterPlannedEndPosition1,plannedEndPositions1(i,1),plannedEndPositions1(i,2),plannedEndPositions1(i,3));
                     addpoints(historyScatterPlannedEndPosition2,plannedEndPositions2(i,1),plannedEndPositions2(i,2),plannedEndPositions2(i,3));
                     end
-                    if isWalk
+                    if strcmp(bot.mode, 'walk')
                         addpoints(historyScatterPlannedEndPosition3,plannedEndPositions3(i,1),plannedEndPositions3(i,2),plannedEndPositions3(i,3));
                         addpoints(historyScatterPlannedEndPosition4,plannedEndPositions4(i,1),plannedEndPositions4(i,2),plannedEndPositions4(i,3));
                     end

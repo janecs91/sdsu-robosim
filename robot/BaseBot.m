@@ -318,11 +318,16 @@ a3 = a4 = 24 cm = leg length
         function [endPositions, plannedEndPositions] = get_history_ends(obj)
             numStates = size(obj.stateHistory,1);
             endPositions = zeros(numStates,4,3);
-            plannedEndPositions = zeros(numStates,4,3);
+            plannedEndPositions = [];
             for i=1:numStates
                 state = obj.stateHistory(i);
                 endPositions(i,:,:) = state.endPositions;
-                plannedEndPositions(i,:,:) = state.plannedEndPositions;
+            end
+            if ~strcmp(obj.mode, 'roll')
+                plannedEndPositions = zeros(numStates,4,3);
+                for i=1:numStates
+                    plannedEndPositions(i,:,:) = state.plannedEndPositions;
+                end
             end
         end
         function obj = update_bot_height(obj)

@@ -91,6 +91,9 @@ classdef RollBot < BaseBot
             firstState = update_hip(obj, firstState, oldState);
             % update base position
             firstState.basePosition = oldState.basePosition + firstState.dotBasePosition;
+            firstState.endPositions = obj.get_global_end_positions(firstState);
+            % reset dot values
+            firstState.clear_dots();
         end
         function obj = move_next_step(obj, moveVector, turnAngle, terrain, path)
             previousState = obj.get_last_state();
