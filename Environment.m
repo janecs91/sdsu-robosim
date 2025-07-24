@@ -122,7 +122,6 @@ classdef Environment
             %obj.coveredDistance = zeros(numBotTypes, 1);
             %obj.velocities = zeros(numBotTypes, 1);
             for i=1:length(obj.botKeys)
-                disp("CHECK STR EXISTS")
                 currentBotKey = obj.botKeys{i};
                 disp(any(strcmp(currentBotKey,botKeys)))
                 if any(strcmp(currentBotKey,botKeys))

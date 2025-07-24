@@ -17,6 +17,7 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % [metric] - Stridge length: end position, body
 
 %% 07.23
+% Fix walk
 % - Fix axis
 % - Fix load from env; possibly fix terrain load
 % Fix Visualizer
@@ -42,10 +43,11 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = false;
+showVisual = true;
+showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 1;
+botNum = 4;
 botStartX = -1;
 maxIterations = 999;
 %% path settings
@@ -125,9 +127,11 @@ if showVisual == true
 end
 
 %% Plot
-addpath('plot');
-plotter = BotPlotter();
-%plotter.plot_time_per_distance(env);
-plotter.plot_power_per_distance(env);
+if showPlots
+    addpath('plot');
+    plotter = BotPlotter();
+    plotter.plot_time_per_distance(env);
+    plotter.plot_power_per_distance(env);
+end
 
 

@@ -50,7 +50,7 @@ classdef BotPlotter
                 baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix(1,1);
                 %disp(size(baseX))
                 powerCost = env.powerCosts{i};
-                disp(size(powerCost))
+                %disp(size(powerCost))
                 cumsumPowerCost = cumsum(powerCost);
                 %disp(size(cumsumPowerCost))
                 
