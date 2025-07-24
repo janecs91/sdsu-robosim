@@ -5,16 +5,19 @@ classdef RollAnalyzer < CostAnalyzer
         end
         
         %% Time/Power Cost Evaluation Functions
-        function [totalTimeCost, totalJointChanges, timeCosts, velocity, wheelDistance] = analyze_time(obj, bot, terrain)
-            [jointsMatrix, indexAfterDistance] = obj.get_joints_matrix_after_distance(bot, obj.ignoreCostsUntilAfterDistance);
-            [endPositionsMatrix, indexAfterDistance] = obj.get_end_positions_matrix_after_distance(bot, obj.ignoreCostsUntilAfterDistance);
+        function [timeCosts, jointDistances, wheelDistances, timeJoints, timeWheels] = analyze_time(obj, bot, terrain)
+            %[jointsMatrix, indexAfterDistance] = obj.get_joints_matrix_after_distance(bot, obj.ignoreCostsUntilAfterDistance);
+            %[endPositionsMatrix, indexAfterDistance] = obj.get_end_positions_matrix_after_distance(bot, obj.ignoreCostsUntilAfterDistance);
+
+            jointsMatrix = bot.jointsMatrix;
+            endPositionsMatrix = bot.endPositionsMatrix;
             
             [timePerJoint, jointChanges] = obj.get_joints_time_costs(jointsMatrix, terrain);
             [timePerWheel, distances] = obj.get_wheels_time_costs(endPositionsMatrix, terrain, bot.wheelRadius);
             timeWheels = max(timePerWheel.',[],2);
             timeJoints = max(timePerJoint,[],2);
             timeCosts = max(timeJoints, timeWheels);
-            if obj.verbose
+            if obj.verbose && false
                 disp("*** distances ***")
                 disp(distances)
                 disp("*** max time costs ***")
@@ -27,14 +30,24 @@ classdef RollAnalyzer < CostAnalyzer
             end
             %cumulativeTimeCosts = cumsum(maxTimeCosts);
             totalTimeCost = sum(timeCosts);
-            totalJointChanges = sum(max(jointChanges, [], 2));
-            wheelDistance = sum(max(distances, [], 1));
-            velocity = wheelDistance/(max(totalTimeCost, 1));
+            jointDistances = max(jointChanges, [], 2);
+            totalJointChanges = sum(jointDistances);
+            wheelDistances = max(distances, [], 1);
+            totalWheelDistance = sum(wheelDistances);
+            avgVelocity = totalWheelDistance/(max(totalTimeCost, 1));
         end
-        function maxPowerCost = analyze_power(obj, bot, terrain)
+        function powerCost = analyze_power(obj, bot, terrain)
             % extend dotJointsMatrix to include knee, ankle
-            maxPowerCost = obj.get_joints_power(bot.jointsMatrix, terrain) + ...
-                obj.get_wheels_power(bot.endPositionsMatrix, bot.wheelRadius, terrain);
+            jointPowerCost = obj.get_joints_power(bot.jointsMatrix, terrain);
+            wheelPowerCost = obj.get_wheels_power(bot.endPositionsMatrix, bot.wheelRadius, terrain);
+            sumJointPowerCost = sum(jointPowerCost,2);
+            sumWheelPowerCost = sum(wheelPowerCost,1)';
+            %size(sumJointPowerCost)
+            %size(sumWheelPowerCost)
+            powerCost = sumJointPowerCost+sumWheelPowerCost;
+            totalPowerCost = sum(powerCost);
+            disp(powerCost)
+            disp(totalPowerCost)
         end
     end
 end

@@ -19,12 +19,20 @@ classdef Environment
         startX;
         maxIterations;
         % analysis variables
-        times;
-        energies;
-        jointChanges;
-        wheelDistance;
-        coveredDistance;
-        velocities;
+        %times;
+        totalTime;
+        timeCosts;
+        %energies;
+        totalPower;
+        powerCosts;
+        jointDistances;
+        endPosDistances;
+        timeJoints;
+        timeWheels;
+        %jointChanges;
+        %wheelDistance;
+        %coveredDistance;
+        %velocities;
         % bot types
         botKeys;
         botMap;
@@ -91,6 +99,8 @@ classdef Environment
         end
         function obj = analyze(obj, robotTypes, startX, maxIterations)
             botKeys = robotTypes;
+            disp("********botKeys")
+            disp(botKeys)
             obj.analyzedBotKeys = botKeys;
             if nargin < 2 || any(strcmp(robotTypes,'all'))
                 botKeys = obj.botKeys;
@@ -100,27 +110,47 @@ classdef Environment
             obj.maxIterations = maxIterations;
             %% Analysis
             numBotTypes = length(botKeys);
-            obj.times = zeros(numBotTypes, 1);
-            obj.energies = zeros(numBotTypes, 1);
-            obj.jointChanges = zeros(numBotTypes, 1);
-            obj.coveredDistance = zeros(numBotTypes, 1);
-            obj.velocities = zeros(numBotTypes, 1);
-            for i=1:numBotTypes
-                fprintf('analyzing %s \n', botKeys{i});
-                bot = obj.get_bot_by_type(botKeys{i});
-                bot = bot.traverse_terrain(obj.terrain, obj.path, startX, maxIterations);
-                [time, maxJointChanges, timeCosts, velocity, distance] = bot.analyze_time(obj.terrain);
-                if isa(bot, 'rollBot')
-                    obj.wheelDistance = distance;
-                    obj.coveredDistance(i) = bot.stateHistory(end).basePosition(1) - bot.stateHistory(1).basePosition(1);
-                else
-                    obj.coveredDistance(i) = distance;
+            obj.totalTime = zeros(numBotTypes, 1);
+            obj.totalPower = zeros(numBotTypes, 1);
+            obj.timeCosts = {[],[],[]};
+            obj.powerCosts = {[],[],[]};
+            obj.jointDistances = {[],[],[]};
+            obj.endPosDistances = {[],[],[]};
+            obj.timeJoints = {[],[],[]};
+            obj.timeWheels = {[],[],[]};
+            %obj.jointChanges = zeros(numBotTypes, 1);
+            %obj.coveredDistance = zeros(numBotTypes, 1);
+            %obj.velocities = zeros(numBotTypes, 1);
+            for i=1:length(obj.botKeys)
+                disp("CHECK STR EXISTS")
+                currentBotKey = obj.botKeys{i};
+                disp(any(strcmp(currentBotKey,botKeys)))
+                if any(strcmp(currentBotKey,botKeys))
+                    fprintf('analyzing %s \n', currentBotKey);
+                    bot = obj.get_bot_by_type(currentBotKey);
+                    bot = bot.traverse_terrain(obj.terrain, obj.path, startX, maxIterations);
+                    [timeCosts, jointDistances, endPosDistances, timeJoints, timeWheels] = bot.analyze_time(obj.terrain);
+                    powerCosts = bot.analyze_power(obj.terrain);
+                    %{
+                    if isa(bot, 'rollBot')
+                        %obj.wheelDistance = distance;
+                        %obj.coveredDistance(i) = bot.stateHistory(end).basePosition(1) - bot.stateHistory(1).basePosition(1);
+                    else
+                        %obj.coveredDistance(i) = distance;
+                    end
+                    %}
+                    obj.totalTime(i) = sum(timeCosts);
+                    obj.timeCosts{i} = timeCosts;
+                    %obj.jointChanges(i) = maxJointChanges;
+                    %obj.velocities(i) = velocity;
+                    obj.jointDistances{i} = jointDistances;
+                    obj.endPosDistances{i} = endPosDistances;
+                    obj.timeJoints{i} = timeJoints;
+                    obj.timeWheels{i} = timeWheels;
+                    obj.totalPower(i) = sum(powerCosts, 'all');
+                    obj.powerCosts{i} = powerCosts;
+                    obj.bots{obj.botMap(currentBotKey)} = bot;
                 end
-                obj.times(i) = time;
-                obj.jointChanges(i) = maxJointChanges;
-                obj.velocities(i) = velocity;
-                obj.energies(i) = bot.analyze_power(obj.terrain);
-                obj.bots{obj.botMap(botKeys{i})} = bot;
             end
             
             % Save Results

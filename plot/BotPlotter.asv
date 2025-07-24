@@ -3,65 +3,32 @@ classdef BotPlotter
     end
     methods(Static)
         function plot_time_per_distance(env)
-            %disp(env)
+            disp(env)
             bots = env.bots;
-
-            figure;
-            hold on;
             for i=1:length(bots)
                 bot = bots{i};
-                %disp(bot)
-                %disp("sizes")
-                %disp(size(bot.baseMatrix))
+                disp(bot)
+                disp("sizes")
+                disp(size(bot.baseMatrix))
                 botBaseMatrix = bot.baseMatrix;
                 if length(botBaseMatrix) == 0
                     continue
                 end
-                baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix(1,1);
-                %disp(size(baseX))
+                baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix;
+                disp(size(baseX))
                 timeCost = env.timeCosts{i};
-                %disp(size(timeCost))
+                disp(size(timeCost))
                 cumsumTimeCost = cumsum(timeCost);
-                %disp(size(cumsumTimeCost))
+                disp(size(cumsumTimeCost))
                 
                 plot(baseX, cumsumTimeCost);
 
                 title("Time over Base Distance")
-                xlabel('Base Distance (cm)')
-                ylabel('Time (s)')
+                xlabel('Base Position')
+                ylabel('cos(5x)')
             end
-            legend('pull', 'roll', 'walk');
-            hold off;
         end
         function plot_power_per_distance(env)
-            bots = env.bots;
-
-            figure;
-            hold on;
-            for i=1:length(bots)
-                bot = bots{i};
-                %disp(bot)
-                %disp("sizes")
-                %disp(size(bot.baseMatrix))
-                botBaseMatrix = bot.baseMatrix;
-                if length(botBaseMatrix) == 0
-                    continue
-                end
-                baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix(1,1);
-                %disp(size(baseX))
-                powerCost = env.powerCosts{i};
-                disp(size(powerCost))
-                cumsumPowerCost = cumsum(powerCost);
-                %disp(size(cumsumPowerCost))
-                
-                plot(baseX, cumsumPowerCost);
-
-                title("Power over Base Distance")
-                xlabel('Base Distance (cm)')
-                ylabel('Power (W)')
-            end
-            legend('pull', 'roll', 'walk');
-            hold off;
         end
 
         function plot_joint_distances_per_distance(env)

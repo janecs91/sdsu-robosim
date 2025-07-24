@@ -44,30 +44,37 @@ classdef CostAnalyzer
             % distance
         end
         %% Time Analysis
-        function jointChanges = get_joints_changes(obj, jointsMatrix, sinkRate)
+        function dotJointsMatrix = get_joints_changes(obj, jointsMatrix)
             dotJointsMatrix = jointsMatrix(2:end,:) - jointsMatrix(1:end-1,:);
             dotJointsMatrix = abs(dotJointsMatrix);
-            jointChanges = (1+sinkRate)*dotJointsMatrix;
+            %jointChanges = (1+sinkRate)*dotJointsMatrix;
         end
         function [timeCostsPerJoint, jointChanges] = get_joints_time_costs(obj, jointsMatrix, terrain)
             % time cost for joints
             sinkRate = terrain.sinkRate;
-            jointChanges = obj.get_joints_changes(jointsMatrix, sinkRate);
-            timeCostsPerJoint = jointChanges ./ repelem(obj.maxJointVelocities, 4);
+            jointChanges = obj.get_joints_changes(jointsMatrix);
+            affectedJointChanges = (1+sinkRate)*jointChanges;
+            timeCostsPerJoint = affectedJointChanges ./ repelem(obj.maxJointVelocities, 4);
             if obj.verbose && false
-                disp("joint changes")
-                disp(jointChanges)
+                disp("affected joint changes")
+                disp(affectedJointChanges)
                 disp("time costs per joint")
                 disp(timeCostsPerJoint)
             end
         end
-        function distances = get_wheels_distances(obj, endPositionsMatrix)
+        function distances = get_end_position_distances(obj, endPositionsMatrix)
             dotEndPositionsMatrix = endPositionsMatrix(:,:,2:end) - endPositionsMatrix(:,:,1:end-1);
             distances = abs(sqrt(sum(dotEndPositionsMatrix.^2,2)));
             distances = squeeze(distances);
+            if obj.verbose
+                disp("wheels - dotEndPositionsMatrix")
+                disp(dotEndPositionsMatrix)
+                disp("wheels - distances")
+                disp(distances)
+            end
         end
         function [timeCostsPerWheel, distances] = get_wheels_time_costs(obj, endPositionsMatrix, terrain, wheelRadius)
-            distances = obj.get_wheels_distances(endPositionsMatrix);
+            distances = obj.get_end_position_distances(endPositionsMatrix);
             
             % velocity based on traversal difficulty
             epsilon = 0.003;
@@ -96,15 +103,15 @@ classdef CostAnalyzer
             end
         end
         %% Power Analysis
-        function totalPowerCost = get_joints_power(obj, jointsMatrix, terrain)
+        function powerCost = get_joints_power(obj, jointsMatrix, terrain)
             timeCostsMatrix = obj.get_joints_time_costs(jointsMatrix, terrain);
             powerCost = timeCostsMatrix .* repelem(obj.maxJointPowers, 4);
-            totalPowerCost = sum(powerCost,'all');
+            %totalPowerCost = sum(powerCost,'all');
         end
-        function totalPowerCost = get_wheels_power(obj, endPositionsMatrix, wheelRadius, terrain)
+        function powerCost = get_wheels_power(obj, endPositionsMatrix, wheelRadius, terrain)
             timeCostsMatrix = obj.get_wheels_time_costs(endPositionsMatrix, terrain, wheelRadius);
             powerCost = timeCostsMatrix.*obj.maxWheelPower;
-            totalPowerCost = sum(powerCost,'all');
+            %totalPowerCost = sum(powerCost,'all');
         end
         %% Terrain Traversal Difficulty
         function difficulty = get_terrain_traversal_difficulty(obj, terrain, endPositions, epsilon)

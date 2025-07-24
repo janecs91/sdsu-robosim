@@ -246,7 +246,8 @@ a3 = a4 = 24 cm = leg length
             end
             %maxX = (terrain.maxX - terrain.initX);
             %maxX = maxX - obj.botBodyLength;
-            maxCenterX = terrain.maxX - (2*obj.botBodyLength);
+            %maxCenterX = terrain.maxX - (2*obj.botBodyLength);
+            maxCenterX = terrain.maxX;
             endX = path.pathPoints(end,1)-48;   % this is so that there are enough path points for legs to follow (pull, walk)
             x = startX;
             i = 0;
@@ -533,11 +534,11 @@ a3 = a4 = 24 cm = leg length
         
         
         %% Cost Analysis
-        function [totalTimeCost, totalJointChanges, timeCosts, velocity, distance] = analyze_time(obj, terrain)
-            [totalTimeCost, totalJointChanges, timeCosts, velocity, distance] = obj.costAnalyzer.analyze_time(obj, terrain);
+        function [timeCosts, jointDistances, endPosDistances, timeJoints, timeWheels] = analyze_time(obj, terrain)
+            [timeCosts, jointDistances, endPosDistances, timeJoints, timeWheels] = obj.costAnalyzer.analyze_time(obj, terrain);
         end
-        function maxPowerCost = analyze_power(obj, terrain)
-            maxPowerCost = obj.costAnalyzer.analyze_power(obj, terrain);
+        function powerCosts = analyze_power(obj, terrain)
+            powerCosts = obj.costAnalyzer.analyze_power(obj, terrain);
         end
     end
     methods(Static)
