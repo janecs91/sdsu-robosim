@@ -9,7 +9,8 @@ classdef WalkBot < LeggedBot
         initialActiveLeg = 2;
         numLegs = 4;
         numWheels = 0;
-        useAltKinematics = true;
+        useAltKinematics = false;
+        useAltStepAdjuster = true;
     end
     methods
         function obj = WalkBot(terrain, path)

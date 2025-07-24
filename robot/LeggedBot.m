@@ -218,7 +218,7 @@
             relativeBodyVector = [0 0 0];
             %turnAngleLeg = turnAngle;
             turnAngleBody = turnAngle;
-            if obj.useAltKinematics == true
+            if obj.useAltStepAdjuster == true
                 % alt step size
                 %stanceLeg2 = activeLeg;
                 stanceLeg2 = stanceLeg;
@@ -276,6 +276,7 @@
             %% Move Robot
             %% lift up foot (all vertical)
             upMagnitude = 2 + max([0 elevationDifference highestStep]);
+            %fprintf("- leg %d- highest elevation: %d, upMagnitude: %d\n", activeLeg, highestElevation, upMagnitude);
             if obj.enableLift == true
                 obj = obj.move_leg(previousState, activeLeg, [0 0 upMagnitude], 1);
             end

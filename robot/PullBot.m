@@ -9,6 +9,7 @@ classdef PullBot < LeggedBot
         numLegs = 2;
         numWheels = 2;
         useAltKinematics = true;
+        useAltStepAdjuster = true;
     end
     methods
         function obj = PullBot(terrain, path)

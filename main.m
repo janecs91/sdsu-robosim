@@ -47,7 +47,7 @@ showVisual = true;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 4;
+botNum = 3;
 botStartX = -1;
 maxIterations = 999;
 %% path settings

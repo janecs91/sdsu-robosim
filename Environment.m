@@ -99,8 +99,6 @@ classdef Environment
         end
         function obj = analyze(obj, robotTypes, startX, maxIterations)
             botKeys = robotTypes;
-            disp("********botKeys")
-            disp(botKeys)
             obj.analyzedBotKeys = botKeys;
             if nargin < 2 || any(strcmp(robotTypes,'all'))
                 botKeys = obj.botKeys;
@@ -123,7 +121,6 @@ classdef Environment
             %obj.velocities = zeros(numBotTypes, 1);
             for i=1:length(obj.botKeys)
                 currentBotKey = obj.botKeys{i};
-                disp(any(strcmp(currentBotKey,botKeys)))
                 if any(strcmp(currentBotKey,botKeys))
                     fprintf('analyzing %s \n', currentBotKey);
                     bot = obj.get_bot_by_type(currentBotKey);
