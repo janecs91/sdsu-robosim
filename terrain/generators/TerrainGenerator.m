@@ -16,6 +16,9 @@ classdef TerrainGenerator
     end
     methods
         function obj = TerrainGenerator(directory)
+            if nargin < 1
+                directory = obj.directory;
+            end
             obj.saveFileAddress = string(directory) + "/" + string(obj.prefix) + "_%s.mat";
         end
         function saveFileAddress = get_save_address(obj)

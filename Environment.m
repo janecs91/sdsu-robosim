@@ -162,14 +162,41 @@ classdef Environment
             addpath('path/generators');
             addpath('robot');
             addpath('visualization');
+
+            addpath('transformations');
+            addpath('robot/kinematics');
+            addpath('robot/analyzer');
+            addpath('robot/legged');
+            addpath('robot/legged/step_strategies');
         end
         function saveAddress = get_saved_address(directory)
-            saveAddress = string(directory) + "/" + string(Environment.prefix) + "_%s.mat";
+            saveAddress = string(directory) + "/" + string(Environment.prefix) + "_%s_%s.mat";
         end
         function env = get_saved_env(outputEnvDirectory, pathDirectory, terrainDirectory, pathName, terrainName, pathArgs, terrainArgs)
+            Environment.load_paths();
             saveAddress = Environment.get_saved_address(outputEnvDirectory);
-            fileName = terrainName; 
-            savedFile = load(sprintf(saveAddress, fileName));
+
+            if strcmp(pathName, '')
+                pathGen = PathGenerator();
+                pathName = pathGen.get_name(pathArgs{:});
+                disp(pathName);
+            end
+            fromPath = false;
+            path = Path(pathName, pathGen.directory, pathArgs);
+            if size(terrainArgs, 2) > 0
+                fromPath = terrainArgs{1};
+            end
+            if fromPath == true
+                terrainArgs{2} = path;
+            end
+            if strcmp(terrainName, '')
+                disp(terrainArgs{1});
+                terrainGen = TerrainGenerator();
+                terrainName = terrainGen.get_name(terrainArgs{:});
+                disp(terrainName);
+            end
+            
+            savedFile = load(sprintf(saveAddress, terrainName, pathName));
             env = savedFile.env;
         end
     end

@@ -20,10 +20,7 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % - Fix load from env; possibly fix terrain load
 % - Add max joint change distance
 % - If time, possibly add stride length (distance between each leg end -- may avg)
-
-%% Potential fixes and ideas
-% Back legs are planning to move too far ahead
-% Added safetyValue* factor to back leg max. Review.
+% + body vector distance
 
 %% TBD: Analysis quality of life improvements
 %{
@@ -52,7 +49,7 @@ pulling vs walking) - does pulling have a bigger body vector?
 % additional terrains: steplike, mars?
 
 %% ===== TEST PARAMS ======
-loadFromSaved = false; 
+loadFromSaved = true; 
 showVisual = true;
 turn = 0.01;
 %% bot settings
@@ -67,7 +64,7 @@ pathEndX = 600;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 3;
+terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
