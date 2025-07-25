@@ -333,19 +333,19 @@ classdef WalkKinematics
             knee = knees(delta_i);
 
             if waist > 2*pi
-                %fprintf("stance waist: %d\n", waist);
+                fprintf("stance waist: %d\n", waist);
                 waist = mod(waist, 2*pi);
-                %fprintf("stance new waist: %d\n", waist);
+                fprintf("stance new waist: %d\n", waist);
             end
             if hip > 2*pi
-                %fprintf("stance hip: %d\n", hip);
+                fprintf("stance hip: %d\n", hip);
                 hip = mod(hip, 2*pi);
-                %fprintf("stance new hip: %d\n", hip);
+                fprintf("stance new hip: %d\n", hip);
             end
             if knee > 2*pi
-                %fprintf("stance knee: %d\n", knee);
+                fprintf("stance knee: %d\n", knee);
                 knee = mod(knee, 2*pi);
-                %fprintf("stance new knee: %d\n", knee);
+                fprintf("stance new knee: %d\n", knee);
             end
             
             % get dots
