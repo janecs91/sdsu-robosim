@@ -5,6 +5,7 @@ classdef BaseBot
         botHeight;
         botBodyLength = 30;
         maxBotHeight = 90;  % check?
+        initialBottomZFromTerrain = 30;
         minBottomZFromTerrain = 30;
         maxBottomZFromTerrain = 50;
         %maxLegLength = 48;
@@ -192,14 +193,6 @@ a3 = a4 = 24 cm = leg length
             if usePathGamma == true
                 initGamma = pathGamma;
             end
-
-            frontBasePosition = initPosition(1)+obj.a_0;
-            backBasePosition = initPosition(1)-obj.a_0;
-            xBaseVector = backBasePosition:1:frontBasePosition;
-            yBaseVector = linspace(initPosition(2), initPosition(2), size(xBaseVector, 2));
-            elevations = terrain.get_elevations(xBaseVector,yBaseVector);
-            averageElevation = mean(elevations);
-            %fprintf("highest elevation: %d", highestElevation);
             
             state = BotState();
             state.basePosition = initPosition;
@@ -221,7 +214,8 @@ a3 = a4 = 24 cm = leg length
             obj.botHeight = obj.get_bot_height(state);
             %state.basePosition(3) = obj.botHeight + obj.get_lowest_point(state, terrain);
             %state.basePosition(3) = max(averageElevation+20, obj.botHeight+obj.get_lowest_point(state, terrain));
-            state.basePosition(3) = averageElevation+obj.minBottomZFromTerrain;
+            averageElevation = obj.get_average_elevation(state, terrain);
+            state.basePosition(3) = averageElevation+obj.initialBottomZFromTerrain;
             state.endPositions = obj.get_global_end_positions(state);
             % reset dot values
             state.clear_dots();
@@ -312,6 +306,14 @@ a3 = a4 = 24 cm = leg length
             baseElevation = terrain.get_elevation(state.basePosition(1), state.basePosition(2));
             feetElevations = terrain.get_elevations(state.endPositions(:,1), state.endPositions(:,2));
             lowestElevation = min([baseElevation; feetElevations(:)]);
+        end
+        function averageElevation = get_average_elevation(obj, state, terrain)
+            frontBasePosition = state.basePosition(1)+obj.a_0;
+            backBasePosition = state.basePosition(1)-obj.a_0;
+            xBaseVector = backBasePosition:1:frontBasePosition;
+            yBaseVector = linspace(state.basePosition(2), state.basePosition(2), size(xBaseVector, 2));
+            elevations = terrain.get_elevations(xBaseVector,yBaseVector);
+            averageElevation = mean(elevations);
         end
         function basePositions = get_history_base(obj)
             numStates = size(obj.stateHistory,1);

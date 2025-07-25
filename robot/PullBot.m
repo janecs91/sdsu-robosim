@@ -58,8 +58,8 @@ classdef PullBot < LeggedBot
             %obj = obj.init_leg_bot(initState);
             
             % set height
-            obj.botHeight = obj.get_bot_height(initState);
-            obj.stepAdjusterHeight.originalBaseZ = obj.get_max_height_from_waist_to_foot(initState);
+            %obj.botHeight = obj.get_bot_height(initState);
+            %obj.stepAdjusterHeight.originalBaseHeight = obj.get_max_height_from_waist_to_foot(initState);
         end
         function firstState = init_pull(obj, firstState, stepSize, terrain)
             disp('init pull')

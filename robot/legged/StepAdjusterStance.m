@@ -173,6 +173,7 @@ classdef StepAdjusterStance < StepAdjuster
             backBasePosition = futurePoint(1)-bot.a_0;
             highestElevation = terrain.get_highest_elevation(backBasePosition,futurePoint(2),frontBasePosition,futurePoint(2),1);
             lowestPoint = bot.get_lowest_point(state, terrain);
+            averageElevation = bot.get_average_elevation(state, terrain);
             dz_b = 0;
             minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
             maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
