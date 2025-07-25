@@ -23,17 +23,19 @@ classdef StepAdjusterStance < StepAdjuster
             x_a = oldJointPositionsStanceLeg(end,1);
             y_a = oldJointPositionsStanceLeg(end,2);
             
-            footDistanceFromWaist = bot.get_distance_waist_to_foot(state, stanceLeg);
-            %dx_b = max(footDistanceFromWaist-bot.a_0,0);
-            dx_b = max(footDistanceFromWaist, 0);
+            footDistanceFromHip = bot.get_distance_hip_to_foot(state, stanceLeg);
+            %dx_b = max(footDistanceFromHip-bot.a_0,0);
+            dx_b = max(footDistanceFromHip, 0);
             %dx_b = dx_b/2;
             if stanceLeg > 2
-                disp("stance leg is > 2, so getting foot distance from base");
-                %footDistanceFromBaseCenter = bot.get_distance_base_to_foot(state, stanceLeg);
-                %footDistanceFromBase = max(footDistanceFromBase-(2*bot.a_0),0);
+                footDistanceFromWaist = bot.get_distance_waist_to_foot(state, stanceLeg);
                 allowableLegStretch = max(obj.maxLegLength-footDistanceFromWaist,0);
-                dx_b = min(footDistanceFromWaist,allowableLegStretch);
-                fprintf("footDistanceFromWaist: %d, allowableLegStretch:%d\n", footDistanceFromWaist, allowableLegStretch);
+                allowableLegStretchWithSafety = allowableLegStretch.*obj.safetyValue;
+                if obj.verbose
+                    fprintf("footDistanceFromHip:%d, footDistanceFromWaist: %d, allowableLegStretch: %d, allowableLegStretchWithSafety: %d\n", ...
+                    footDistanceFromHip, footDistanceFromWaist, allowableLegStretch, allowableLegStretchWithSafety);
+                end
+                dx_b = min(footDistanceFromHip,allowableLegStretch);
             end
             %bodyVectorDivisor = max(ceil(bot.numLegs/2),1);
             %bodyVectorDivisor = 1;
@@ -106,7 +108,9 @@ classdef StepAdjusterStance < StepAdjuster
                     z_h_prime4 = newJointPositions(3,3);
                     isStableLeg4 = obj.check_stability_leg_length(x_a4, y_a4, z_a4, x_h_prime4, y_h_prime4, z_h_prime4, obj.maxLegLength);
                     isStable = isStable && isStableLeg3 && isStableLeg4;
-                    fprintf("is stable back legs for dx_b(%d)? isStableLeg3: %d, isStableLeg4: %d\n", dx_b, isStableLeg3, isStableLeg4);
+                    if obj.verbose
+                        fprintf("is stable back legs for dx_b(%d)? isStableLeg3: %d, isStableLeg4: %d\n", dx_b, isStableLeg3, isStableLeg4);
+                    end
                 end
                 if isStable
                     if obj.verbose

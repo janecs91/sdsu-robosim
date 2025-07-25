@@ -46,8 +46,8 @@ classdef RollAnalyzer < CostAnalyzer
             %size(sumWheelPowerCost)
             powerCost = sumJointPowerCost+sumWheelPowerCost;
             totalPowerCost = sum(powerCost);
-            disp(powerCost)
-            disp(totalPowerCost)
+            %disp(powerCost)
+            %disp(totalPowerCost)
         end
     end
 end
