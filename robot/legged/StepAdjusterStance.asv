@@ -3,6 +3,7 @@ classdef StepAdjusterStance < StepAdjuster
         verbose = false;
         % limit ranges
         minDxb = 0;
+        minBottomZFromTerrain = 10;
     end
     methods
         function obj = StepAdjusterStance(safetyValue)
@@ -126,7 +127,7 @@ classdef StepAdjusterStance < StepAdjuster
                     fprintf("reset stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
                 end
             end
-            %dz_b = obj.get_base_z_vector(bot, state, terrain, futurePathPoint);
+            dz_b = obj.get_base_z_vector(bot, state, terrain, futurePathPoint);
             dz_b = obj.get_base_z_vector2(bot, state, terrain, futurePathPoint);
             %dz_b = 0;
             mu_dx_b = max(dx_b, obj.minDxb);
@@ -141,7 +142,6 @@ classdef StepAdjusterStance < StepAdjuster
         end
         
         function dz_b = get_base_z_vector(obj, bot, state, terrain, futurePoint)
-            %% not in use
             waistZ = bot.get_waist_z(state);
             % get difference in terrain
             baseZ = state.basePosition(3);
@@ -150,8 +150,8 @@ classdef StepAdjusterStance < StepAdjuster
             differenceInTerrain = newTerrainZ - oldTerrainZ;
             dz_b_min = 0;
             dzFromBaseBottomToTerrain = waistZ - newTerrainZ;
-            if dzFromBaseBottomToTerrain < bot.minBottomZFromTerrain
-                dz_b_min = bot.minBottomZFromTerrain-dzFromBaseBottomToTerrain;
+            if dzFromBaseBottomToTerrain < obj.minBottomZFromTerrain
+                dz_b_min = obj.minBottomZFromTerrain-dzFromBaseBottomToTerrain;
             end
             dz_b = dz_b_min + differenceInTerrain;
             %{
@@ -174,17 +174,15 @@ classdef StepAdjusterStance < StepAdjuster
             highestElevation = terrain.get_highest_elevation(backBasePosition,futurePoint(2),frontBasePosition,futurePoint(2),1);
             lowestPoint = bot.get_lowest_point(state, terrain);
             dz_b = 0;
-            minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
-            maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
-            if baseZ < minimumBaseZ
-                dz_b = minimumBaseZ-baseZ;
+            if baseZ < newTerrainZ
+                dz_b = newTerrainZ-baseZ+obj.minBottomZFromTerrain;
             end
-            if baseZ > maximumBaseZ
-                dz_b = maximumBaseZ-baseZ;
+            if baseZ > newTerrainZ
+                
             end
             %dz_b = max(highestElevation, lowestPoint)-oldTerrainZ;
-            fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
-            fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
+            fprintf("baseZ: %d, ")
+            fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b)
         end
 
         %% old methods

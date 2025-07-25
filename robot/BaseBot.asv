@@ -3,9 +3,10 @@ classdef BaseBot
         debug;
         % bot values
         botHeight;
-        originalBotHeight = 30;
         botBodyLength = 30;
         maxBotHeight = 90;  % check?
+        minBottomZFromTerrain = 30;
+        maxBottomZFromTerrain = 50;
         %maxLegLength = 48;
         %{
 a0 = d0 = 15.5cm = half width of robot body
@@ -194,9 +195,9 @@ a3 = a4 = 24 cm = leg length
 
             frontBasePosition = initPosition(1)+obj.a_0;
             backBasePosition = initPosition(1)-obj.a_0;
-            highestElevation = terrain.get_highest_elevation(backBasePosition,initPosition(2),frontBasePosition,initPosition(2),1);
-            fprintf("highest elevation: %d", highestElevation);
-            initPosition(3) = max(highestElevation+20, obj.botHeight + obj.get_lowest_point(state, terrain));
+            elevations = terrain.get_elevations([backBasePosition frontBasePosition],initPosition(2),1);
+            averageElevation = mean(elevations);
+            %fprintf("highest elevation: %d", highestElevation);
             
             state = BotState();
             state.basePosition = initPosition;
@@ -215,8 +216,10 @@ a3 = a4 = 24 cm = leg length
             state.anglesSteering = steering;
             state.anglesContact = contact;
             % fix init Z
-            obj.botHeight = obj.originalBotHeight;
+            obj.botHeight = obj.get_bot_height(state);
             %state.basePosition(3) = obj.botHeight + obj.get_lowest_point(state, terrain);
+            %state.basePosition(3) = max(averageElevation+20, obj.botHeight+obj.get_lowest_point(state, terrain));
+            state.basePosition(3) = averageElevation+obj.minBottomZFromTerrain;
             state.endPositions = obj.get_global_end_positions(state);
             % reset dot values
             state.clear_dots();
@@ -246,7 +249,8 @@ a3 = a4 = 24 cm = leg length
             end
             %maxX = (terrain.maxX - terrain.initX);
             %maxX = maxX - obj.botBodyLength;
-            maxCenterX = terrain.maxX - (2*obj.botBodyLength);
+            %maxCenterX = terrain.maxX - (2*obj.botBodyLength);
+            maxCenterX = terrain.maxX;
             endX = path.pathPoints(end,1)-48;   % this is so that there are enough path points for legs to follow (pull, walk)
             x = startX;
             i = 0;
@@ -318,11 +322,16 @@ a3 = a4 = 24 cm = leg length
         function [endPositions, plannedEndPositions] = get_history_ends(obj)
             numStates = size(obj.stateHistory,1);
             endPositions = zeros(numStates,4,3);
-            plannedEndPositions = zeros(numStates,4,3);
+            plannedEndPositions = [];
             for i=1:numStates
                 state = obj.stateHistory(i);
                 endPositions(i,:,:) = state.endPositions;
-                plannedEndPositions(i,:,:) = state.plannedEndPositions;
+            end
+            if ~strcmp(obj.mode, 'roll')
+                plannedEndPositions = zeros(numStates,4,3);
+                for i=1:numStates
+                    plannedEndPositions(i,:,:) = state.plannedEndPositions;
+                end
             end
         end
         function obj = update_bot_height(obj)
@@ -498,7 +507,9 @@ a3 = a4 = 24 cm = leg length
             globalPositions = obj.get_global_joint_positions(state,1);
             waistZ = globalPositions(2,3);
         end
-        function get_distance_hip_to_foot(obj, state, leg)
+        function distance = get_distance_hip_to_foot(obj, state, leg)
+            globalPositions = obj.get_global_joint_positions(state, leg);
+            [distance, angle] = obj.get_vector_to_point(globalPositions(3,1:2), globalPositions(end,1:2));
         end
         function distance = get_distance_waist_to_foot(obj, state, leg)
             globalPositions = obj.get_global_joint_positions(state, leg);
@@ -528,11 +539,11 @@ a3 = a4 = 24 cm = leg length
         
         
         %% Cost Analysis
-        function [totalTimeCost, totalJointChanges, timeCosts, velocity, distance] = analyze_time(obj, terrain)
-            [totalTimeCost, totalJointChanges, timeCosts, velocity, distance] = obj.costAnalyzer.analyze_time(obj, terrain);
+        function [timeCosts, jointDistances, endPosDistances, timeJoints, timeWheels] = analyze_time(obj, terrain)
+            [timeCosts, jointDistances, endPosDistances, timeJoints, timeWheels] = obj.costAnalyzer.analyze_time(obj, terrain);
         end
-        function maxPowerCost = analyze_power(obj, terrain)
-            maxPowerCost = obj.costAnalyzer.analyze_power(obj, terrain);
+        function powerCosts = analyze_power(obj, terrain)
+            powerCosts = obj.costAnalyzer.analyze_power(obj, terrain);
         end
     end
     methods(Static)

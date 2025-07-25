@@ -43,29 +43,29 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = false;
-showPlots = true;
+showVisual = true;
+showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 1;
+botNum = 3;
 botStartX = -1;
 maxIterations = 999;
 %% path settings
 pathNum = 1;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 600;
+pathEndX = 800;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 1;
+terrainNum = 2;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 20;
+terrainAmplitude = 30;
 terrainFrequency = 1;
 % random
 randFilterSize = 10;

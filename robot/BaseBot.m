@@ -5,6 +5,8 @@ classdef BaseBot
         botHeight;
         botBodyLength = 30;
         maxBotHeight = 90;  % check?
+        minBottomZFromTerrain = 30;
+        maxBottomZFromTerrain = 50;
         %maxLegLength = 48;
         %{
 a0 = d0 = 15.5cm = half width of robot body
@@ -193,7 +195,10 @@ a3 = a4 = 24 cm = leg length
 
             frontBasePosition = initPosition(1)+obj.a_0;
             backBasePosition = initPosition(1)-obj.a_0;
-            highestElevation = terrain.get_highest_elevation(backBasePosition,initPosition(2),frontBasePosition,initPosition(2),1);
+            xBaseVector = backBasePosition:1:frontBasePosition;
+            yBaseVector = linspace(initPosition(2), initPosition(2), size(xBaseVector, 2));
+            elevations = terrain.get_elevations(xBaseVector,yBaseVector);
+            averageElevation = mean(elevations);
             %fprintf("highest elevation: %d", highestElevation);
             
             state = BotState();
@@ -215,7 +220,8 @@ a3 = a4 = 24 cm = leg length
             % fix init Z
             obj.botHeight = obj.get_bot_height(state);
             %state.basePosition(3) = obj.botHeight + obj.get_lowest_point(state, terrain);
-            state.basePosition(3) = max(highestElevation+20, obj.botHeight+obj.get_lowest_point(state, terrain));
+            %state.basePosition(3) = max(averageElevation+20, obj.botHeight+obj.get_lowest_point(state, terrain));
+            state.basePosition(3) = averageElevation+obj.minBottomZFromTerrain;
             state.endPositions = obj.get_global_end_positions(state);
             % reset dot values
             state.clear_dots();

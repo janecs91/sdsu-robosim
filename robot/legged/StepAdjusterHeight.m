@@ -3,7 +3,7 @@ classdef StepAdjusterHeight < StepAdjuster
         originalBaseZ = 24;
         enableIncreaseHeight = true;
         enableDecreaseToOriginal = false;
-        verbose = false;
+        verbose = true;
     end
     methods
         function obj = StepAdjusterHeight(safetyValue)
@@ -25,7 +25,9 @@ classdef StepAdjusterHeight < StepAdjuster
             if obj.enableDecreaseToOriginal == true && requiredZ < obj.originalBaseZ && maxBaseZ > obj.originalBaseZ
                 dz_b = obj.originalBaseZ - maxBaseZ;
             end
-            %fprintf("dz_b: %.2f\n",dz_b);
+            if obj.verbose
+                fprintf("step adjuster height -> dz_b: %.2f\n",dz_b);
+            end
             %dz_b = 0;
         end
     end
