@@ -24,7 +24,9 @@ classdef StepAdjusterStance < StepAdjuster
             y_a = oldJointPositionsStanceLeg(end,2);
             
             footDistanceFromWaist = bot.get_distance_waist_to_foot(state, stanceLeg);
-            dx_b = max(footDistanceFromWaist-bot.a_0,0);
+            %dx_b = max(footDistanceFromWaist-bot.a_0,0);
+            dx_b = max(footDistanceFromWaist, 0);
+            %dx_b = dx_b/2;
             if stanceLeg > 2
                 disp("stance leg is > 2, so getting foot distance from base");
                 %footDistanceFromBaseCenter = bot.get_distance_base_to_foot(state, stanceLeg);
@@ -34,9 +36,9 @@ classdef StepAdjusterStance < StepAdjuster
                 fprintf("footDistanceFromWaist: %d, allowableLegStretch:%d\n", footDistanceFromWaist, allowableLegStretch);
             end
             %bodyVectorDivisor = max(ceil(bot.numLegs/2),1);
-            bodyVectorDivisor = 1;
-            fprintf("bodyVectorDivisor: %d\n",bodyVectorDivisor);
-            dx_b = dx_b/bodyVectorDivisor;
+            %bodyVectorDivisor = 1;
+            %fprintf("bodyVectorDivisor: %d\n",bodyVectorDivisor);
+            %dx_b = dx_b/bodyVectorDivisor;
             %{
             fprintf("stance leg: %d\n", stanceLeg);
             fprintf("footdistfrombase: %d\n", max(footDistanceFromBase-(2*bot.a_0),0));

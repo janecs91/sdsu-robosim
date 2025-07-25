@@ -59,9 +59,9 @@ a_3=a_4=24 cm (leg length)
             z_a = jointPositions(end,3);
             x_a = jointPositions(end,1);
             y_a = jointPositions(end,2);
-            z_h = jointPositions(1,3);
-            x_h = jointPositions(1,1);
-            y_h = jointPositions(1,2);
+            z_h = jointPositions(3,3);
+            x_h = jointPositions(3,1);
+            y_h = jointPositions(3,2);
             distance_waist_to_foot = bot.get_distance_waist_to_foot(state, leg);
             %% Possibly update to backCornerDistance for back legs (if trying for legs 3 and 4)
             % Possibly use 1/2 leg length ??

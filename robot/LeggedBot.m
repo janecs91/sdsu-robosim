@@ -202,7 +202,7 @@
             activeLeg = obj.get_next_leg_number(previousState);
             stanceLegs = setdiff(1:obj.numLegs, activeLeg);
             %stanceLeg = stanceLegs(1);
-            fprintf("active leg: %d, stancelegs: %d %d %d\n", activeLeg, stanceLegs);
+            %fprintf("active leg: %d, stancelegs: %d %d %d\n", activeLeg, stanceLegs);
             %{
             if activeLeg == 1
                 obj.lastPhaseBasePosition = previousState.basePosition;
@@ -362,15 +362,12 @@
                 return;
             end
             maxI = max(floor(sum(abs(bodyVector))/2)+1, 1);
-            if ~obj.useAltKinematics && false
-                maxI = maxI+10;
-            end
             if obj.iterateMovement == false
                 maxI = 1;
             end
             bodyVectorI = bodyVector./maxI;
             turnAngleBodyI = turnAngleBody./maxI;
-            fprintf("### BODY MOVEMENT -- maxI: %d, bodyVectorI: [%d %d %d], turnAngleBodyI: %d ***\n", maxI, bodyVectorI, turnAngleBodyI);
+            %fprintf("### BODY MOVEMENT -- maxI: %d, bodyVectorI: [%d %d %d], turnAngleBodyI: %d ***\n", maxI, bodyVectorI, turnAngleBodyI);
             for sequence=1:maxI
                 if obj.enableBodyMovement
                     newState = obj.body_sequence(newState, activeLeg, bodyVectorI, turnAngleBodyI, stancePathIndex, terrain);

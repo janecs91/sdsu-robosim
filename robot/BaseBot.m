@@ -503,7 +503,9 @@ a3 = a4 = 24 cm = leg length
             globalPositions = obj.get_global_joint_positions(state,1);
             waistZ = globalPositions(2,3);
         end
-        function get_distance_hip_to_foot(obj, state, leg)
+        function distance = get_distance_hip_to_foot(obj, state, leg)
+            globalPositions = obj.get_global_joint_positions(state, leg);
+            [distance, angle] = obj.get_vector_to_point(globalPositions(3,1:2), globalPositions(end,1:2));
         end
         function distance = get_distance_waist_to_foot(obj, state, leg)
             globalPositions = obj.get_global_joint_positions(state, leg);
