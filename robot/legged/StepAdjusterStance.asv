@@ -17,21 +17,22 @@ classdef StepAdjusterStance < StepAdjuster
             stanceLeg = nextLeg;
 
             state = bot.update_end_positions(state);
-            oldJointPositions = bot.get_local_joint_positions(state);
-            oldJointPositionsStanceLeg = oldJointPositions{stanceLeg};
-            z_a = oldJointPositionsStanceLeg(end,3);
-            x_a = oldJointPositionsStanceLeg(end,1);
-            y_a = oldJointPositionsStanceLeg(end,2);
+            jointPositions = bot.get_local_joint_positions(state, stanceLeg);
+            jointPositions = jointPositions{1};
+            z_a = jointPositions(end,3);
+            x_a = jointPositions(end,1);
+            y_a = jointPositions(end,2);
             
-            footDistanceFromWaist = bot.get_distance_waist_to_foot(state, stanceLeg);
-            dx_b = max(footDistanceFromWaist-bot.a_0,0);
+            footDistanceFromFront = bot.get_distance_waist_to_foot(state, stanceLeg);
+            dx_b = max(footDistanceFromFront-bot.a_0,0);
             if stanceLeg > 2
                 disp("stance leg is > 2, so getting foot distance from base");
                 %footDistanceFromBaseCenter = bot.get_distance_base_to_foot(state, stanceLeg);
                 %footDistanceFromBase = max(footDistanceFromBase-(2*bot.a_0),0);
-                allowableLegStretch = max(obj.maxLegLength-footDistanceFromWaist,0);
-                dx_b = min(footDistanceFromWaist,allowableLegStretch);
-                fprintf("footDistanceFromWaist: %d, allowableLegStretch:%d\n", footDistanceFromWaist, allowableLegStretch);
+                footDistanceFromWaist = bot.get_
+                allowableLegStretch = max(obj.maxLegLength-maxFootDistanceFromBase,0);
+                dx_b = min(maxFootDistanceFromBase,allowableLegStretch);
+                fprintf("maxFootDistanceFromBase: %d, allowableLegStretch:%d\n", maxFootDistanceFromBase, allowableLegStretch);
             end
             %bodyVectorDivisor = max(ceil(bot.numLegs/2),1);
             bodyVectorDivisor = 1;
@@ -84,25 +85,19 @@ classdef StepAdjusterStance < StepAdjuster
                     % check both legs 3 and 4
                     % leg 3
                     newJointPositionsAll = bot.get_local_joint_positions(fakeState);
-                    oldJointPositionsStanceLeg = oldJointPositions{3};
-                    z_a3 = oldJointPositionsStanceLeg(end,3);
-                    x_a3 = oldJointPositionsStanceLeg(end,1);
-                    y_a3 = oldJointPositionsStanceLeg(end,2);
+                    disp("newJointPositionsAll")
+                    disp(newJointPositionsAll)
                     newJointPositions = newJointPositionsAll{3};
-                    x_h_prime3 = newJointPositions(3,1);
-                    y_h_prime3 = newJointPositions(3,2);
-                    z_h_prime3 = newJointPositions(3,3);
-                    isStableLeg3 = obj.check_stability_leg_length(x_a3, y_a3, z_a3, x_h_prime3, y_h_prime3, z_h_prime3, obj.maxLegLength);
+                    x_h_prime = newJointPositions(3,1);
+                    y_h_prime = newJointPositions(3,2);
+                    z_h_prime = newJointPositions(3,3);
+                    isStableLeg3 = obj.check_stability_leg_length(x_a, y_a, z_a, x_h_prime, y_h_prime, z_h_prime, obj.maxLegLength);
                     % leg 4
-                    oldJointPositionsStanceLeg = oldJointPositions{4};
-                    z_a4 = oldJointPositionsStanceLeg(end,3);
-                    x_a4 = oldJointPositionsStanceLeg(end,1);
-                    y_a4 = oldJointPositionsStanceLeg(end,2);
                     newJointPositions = newJointPositionsAll{4};
-                    x_h_prime4 = newJointPositions(3,1);
-                    y_h_prime4 = newJointPositions(3,2);
-                    z_h_prime4 = newJointPositions(3,3);
-                    isStableLeg4 = obj.check_stability_leg_length(x_a4, y_a4, z_a4, x_h_prime4, y_h_prime4, z_h_prime4, obj.maxLegLength);
+                    x_h_prime = newJointPositions(3,1);
+                    y_h_prime = newJointPositions(3,2);
+                    z_h_prime = newJointPositions(3,3);
+                    isStableLeg4 = obj.check_stability_leg_length(x_a, y_a, z_a, x_h_prime, y_h_prime, z_h_prime, obj.maxLegLength);
                     isStable = isStable && isStableLeg3 && isStableLeg4;
                     fprintf("is stable back legs for dx_b(%d)? isStableLeg3: %d, isStableLeg4: %d\n", dx_b, isStableLeg3, isStableLeg4);
                 end

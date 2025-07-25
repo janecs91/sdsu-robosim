@@ -201,8 +201,7 @@
             previousState = obj.get_last_state();
             activeLeg = obj.get_next_leg_number(previousState);
             stanceLegs = setdiff(1:obj.numLegs, activeLeg);
-            %stanceLeg = stanceLegs(1);
-            fprintf("active leg: %d, stancelegs: %d %d %d\n", activeLeg, stanceLegs);
+            stanceLeg = stanceLegs(1);
             %{
             if activeLeg == 1
                 obj.lastPhaseBasePosition = previousState.basePosition;
@@ -219,14 +218,15 @@
             relativeBodyVector = [0 0 0];
             %turnAngleLeg = turnAngle;
             turnAngleBody = turnAngle;
+            fprintf("TURN ANGLE BODY: %d\n", turnAngleBody);
             if obj.useAltStepAdjuster == true
                 % alt step size
                 %stanceLeg2 = activeLeg;
-                %stanceLeg2 = stanceLeg;
+                stanceLeg2 = stanceLeg;
                 %stepAdjusterStance = obj.step AdjusterStance;
                 %fprintf("**********$$$$$$$ before stepadjustcount\n");
                 %% This is step vector for body movement
-                [dx_b, dy_b, dz_b, newBodyTurnAngle, futurePathIndex] = obj.stepAdjusterStance.get_step_vector2(obj, previousState, activeLeg, terrain, path);
+                [dx_b, dy_b, dz_b, newBodyTurnAngle, futurePathIndex] = obj.stepAdjusterStance.get_step_vector2(obj, previousState, stanceLeg2, terrain, path);
                 obj.stepAdjustCount = obj.stepAdjustCount+1;
                 %fprintf("**********$$$$$$$ stepadjustcount: %d\n", obj.stepAdjustCount);
                 %turnAngleBody = newBodyAngle./obj.numLegs;
@@ -345,8 +345,12 @@
             if obj.iterateMovement == false
                 maxI = 1;
             end
+            disp("maxI")
+            disp(maxI)
             legVectorI = legVector./maxI;
-            %fprintf("#### ITERATE LEG MOVEMENT: maxI: %d // legVectorI: [%d %d %d]\n", maxI, legVectorI)
+            disp("legVectorI")
+            disp(legVectorI)
+            fprintf("#### ITERATE LEG MOVEMENT: maxI: %d // legVectorI: [%d %d %d]\n", maxI, legVectorI)
             for sequence=1:maxI
                 newState = obj.update_leg(newState, activeLeg, legVectorI);
                 % save to history
@@ -354,6 +358,7 @@
                     obj = obj.add_history(newState);
                 end
             end
+            disp("end move leg")
         end
         function [obj, newState] = move_body(obj, previousState, activeLeg, bodyVector, ...
                 turnAngleBody, stancePathIndex, terrain, saveState)
@@ -361,16 +366,23 @@
             if bodyVector(1) == 0 && bodyVector(2) == 0 && bodyVector(3) == 0
                 return;
             end
+            fprintf("received turnAngleBody: %d\n", turnAngleBody);
             maxI = max(floor(sum(abs(bodyVector))/2)+1, 1);
-            if ~obj.useAltKinematics && false
-                maxI = maxI+10;
+            if ~obj.useAltKinematics
+                maxI = max(floor(sum(abs(bodyVector)))+1, 1);
             end
+            disp(maxI)
             if obj.iterateMovement == false
                 maxI = 1;
             end
+            
             bodyVectorI = bodyVector./maxI;
             turnAngleBodyI = turnAngleBody./maxI;
-            fprintf("### BODY MOVEMENT -- maxI: %d, bodyVectorI: [%d %d %d], turnAngleBodyI: %d ***\n", maxI, bodyVectorI, turnAngleBodyI);
+            disp("bodyVectorI")
+            disp(bodyVectorI)
+            disp("turnAngleBodyI")
+            disp(turnAngleBodyI)
+            fprintf("# BODY MOVEMENT -- maxI: %d, bodyVectorI: [%d %d %d], turnAngleBodyI: %d ***\n", maxI, bodyVectorI, turnAngleBodyI);
             for sequence=1:maxI
                 if obj.enableBodyMovement
                     newState = obj.body_sequence(newState, activeLeg, bodyVectorI, turnAngleBodyI, stancePathIndex, terrain);
@@ -380,6 +392,7 @@
                     obj = obj.add_history(newState);
                 end
             end
+            disp("end move body")
         end
         function newState = body_sequence(obj, newState, activeLeg, bodyVectorI, turnAngleBodyI, stancePathIndex, terrain)
             newState = obj.update_body(newState, activeLeg, bodyVectorI, turnAngleBodyI, stancePathIndex);

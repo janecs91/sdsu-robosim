@@ -9,7 +9,7 @@ classdef WalkBot < LeggedBot
         initialActiveLeg = 2;
         numLegs = 4;
         numWheels = 0;
-        useAltKinematics = false;
+        useAltKinematics = true;
         useAltStepAdjuster = true;
     end
     methods

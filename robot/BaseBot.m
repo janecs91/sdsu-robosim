@@ -194,7 +194,7 @@ a3 = a4 = 24 cm = leg length
             frontBasePosition = initPosition(1)+obj.a_0;
             backBasePosition = initPosition(1)-obj.a_0;
             highestElevation = terrain.get_highest_elevation(backBasePosition,initPosition(2),frontBasePosition,initPosition(2),1);
-            fprintf("highest elevation: %d", highestElevation);
+            %fprintf("highest elevation: %d", highestElevation);
             
             state = BotState();
             state.basePosition = initPosition;
