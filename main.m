@@ -12,16 +12,16 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 %=====================
 
 %% GRAPHS
-% [!!!] Graph time/power per distance
 % [metric] - Max joint change distance
 % [metric] - Stridge length: end position, body
+% [QoL] - Save graphs
 
-%% 07.23
-% Fix walk
+%% 07.25
+% - Fix RollBot base end position?
 % - Fix axis
 % - Fix load from env; possibly fix terrain load
-% Fix Visualizer
-% Possibly fix Perlin?
+% [low] Fix Visualizer - what about it?
+% [low] Possibly fix Perlin?
 
 %% TBD: Analysis quality of life improvements
 %{
@@ -43,11 +43,11 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = true;
-showPlots = false;
+showVisual = false;
+showPlots = true;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 1;
 botStartX = -1;
 maxIterations = 999;
 %% path settings
