@@ -44,7 +44,7 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = false;
+showVisual = true;
 showPlots = false;
 turn = 0.01;
 %% bot settings
@@ -59,7 +59,7 @@ pathEndX = 800;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 3;
+terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -75,7 +75,7 @@ elevationChangeRange = 10;
 %% visualize settings
 rate = 0.001;
 startState = 1;
-stopState = -1;
+stopState = 2;
 showAllMarkers = true;
 showAxis = '';
 showColorBar = 0;

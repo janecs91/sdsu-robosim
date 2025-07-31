@@ -183,15 +183,15 @@ classdef StepAdjusterStance < StepAdjuster
                 minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
                 maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
                 if baseZ < minimumBaseZ && false
-                dz_b = minimumBaseZ-baseZ;
-            end
-            if baseZ > maximumBaseZ && false
-                dz_b = maximumBaseZ-baseZ;
-            end
+                    dz_b = minimumBaseZ-baseZ;
+                end
+                if baseZ > maximumBaseZ && false
+                    dz_b = maximumBaseZ-baseZ;
+                end
             end
             
             %dz_b = max(highestElevation, lowestPoint)-oldTerrainZ;
-            if obj.verbose
+            if obj.verbose || true
                 fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
                 fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
             end

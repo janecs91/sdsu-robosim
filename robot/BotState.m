@@ -70,6 +70,9 @@ classdef BotState < matlab.mixin.Copyable
         function matrix = to_vector_end_positions(obj)
             matrix = [obj.endPositions];
         end
+        function matrix = to_vector_planned_end_positions(obj)
+            matrix = [obj.plannedEndPositions];
+        end
         function matrix = to_vector_joints(obj)
             matrix = [obj.anglesWaist obj.anglesHip obj.anglesKnee];
         end

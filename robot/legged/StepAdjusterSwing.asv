@@ -132,7 +132,7 @@ a_3=a_4=24 cm (leg length)
                     end
                 end
             end
-            dx_i = 24;  % constant dx_i
+            dx_i = 24;  % 
             dy_i = 0;
             if obj.modifyDx_i
                 dx_i = x_a_prime-x_a;

@@ -66,7 +66,7 @@ a3 = a4 = 24 cm = leg length
         costAnalyzer;
 
         % mode properties
-        savePlannedEndPositions = false;
+        savePlannedEndPositions;
     end
     properties(Abstract)
         % mode: roll, walk, pull
@@ -98,10 +98,6 @@ a3 = a4 = 24 cm = leg length
             addpath('robot/kinematics');
             addpath('robot/analyzer');
             %obj.costAnalyzer = CostAnalyzer();
-
-            if ~strcmp(obj.mode, 'roll')
-                obj.savePlannedEndPositions = true;
-            end
         end
         function state = get_first_state(obj)
             state = obj.stateHistory(1);
@@ -119,10 +115,7 @@ a3 = a4 = 24 cm = leg length
             obj.jointsMatrix = [obj.jointsMatrix; newState.to_vector_joints()];
             obj.jointChangesMatrix = [obj.jointChangesMatrix; newState.to_vector_dot_joints()];
             obj.endPositionsMatrix = cat(3, obj.endPositionsMatrix, newState.to_vector_end_positions());
-            if obj.savePlannedEndPositions
-                %obj.plannedEndPositionsMatrix = cat(1, obj.plannedEndPositionsMatrix, newState.to_vector_planned_end_positions_flatten());
-                obj.plannedEndPositionsMatrix = cat(3, obj.plannedEndPositionsMatrix, newState.to_vector_planned_end_positions());
-            end
+            obj.plannedEndPositionsMatrix = cat(3, obj.plannedEndPositionsMatrix, newState.to_vector_planned_end_positions_flatten());
         end
         function obj = clear_history(obj)
             obj.stateHistory = [];
@@ -336,11 +329,16 @@ a3 = a4 = 24 cm = leg length
         function [endPositions, plannedEndPositions] = get_history_ends(obj)
             numStates = size(obj.stateHistory,1);
             endPositions = zeros(numStates,4,3);
-            plannedEndPositions = zeros(numStates,4,3);
+            plannedEndPositions = [];
             for i=1:numStates
                 state = obj.stateHistory(i);
                 endPositions(i,:,:) = state.endPositions;
-                plannedEndPositions(i,:,:) = state.plannedEndPositions;
+            end
+            if obj.sa
+                plannedEndPositions = zeros(numStates,4,3);
+                for i=1:numStates
+                    plannedEndPositions(i,:,:) = state.plannedEndPositions;
+                end
             end
         end
         function obj = update_bot_height(obj)

@@ -1,6 +1,6 @@
 classdef Visualizer
     properties(Constant)
-        verbose = false;
+        verbose = true;
     end
     properties
     end
@@ -187,6 +187,8 @@ classdef Visualizer
                 plannedEndPositions = cast(plannedEndPositions, 'single');
                 plannedEndPositions1 = plannedEndPositions(:,1,:);
                 plannedEndPositions2 = plannedEndPositions(:,2,:);
+            else
+                plannedEndPositions = [];
             end
             
             % if walk
