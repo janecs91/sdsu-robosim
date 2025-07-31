@@ -3,6 +3,7 @@ classdef StepAdjusterStance < StepAdjuster
         verbose = false;
         % limit ranges
         minDxb = 0;
+        keepBaseHeightConstant = true;
     end
     methods
         function obj = StepAdjusterStance(safetyValue)
@@ -175,17 +176,25 @@ classdef StepAdjusterStance < StepAdjuster
             lowestPoint = bot.get_lowest_point(state, terrain);
             averageElevation = bot.get_average_elevation(state, terrain);
             dz_b = 0;
-            minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
-            maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
-            if baseZ < minimumBaseZ
+            newTerrainZ = averageElevation;
+            if obj.keepBaseHeightConstant
+                dz_b = newTerrainZ+bot.minBottomZFromTerrain-baseZ;
+            else
+                minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
+                maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
+                if baseZ < minimumBaseZ && false
                 dz_b = minimumBaseZ-baseZ;
             end
-            if baseZ > maximumBaseZ
+            if baseZ > maximumBaseZ && false
                 dz_b = maximumBaseZ-baseZ;
             end
+            end
+            
             %dz_b = max(highestElevation, lowestPoint)-oldTerrainZ;
-            fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
-            fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
+            if obj.verbose
+                fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
+                fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
+            end
         end
 
         %% old methods
