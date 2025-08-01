@@ -143,7 +143,7 @@ a_3=a_4=24 cm (leg length)
             if obj.verbose
                 fprintf("stable moveX for leg %d: %.2f\n", leg, moveX);
                 fprintf("dx_i: %.2f, dy_i: %.2f\n", dx_i, dy_i);
-                fprintf("planned foot point: %d %d %d -- terrain elevation @ planned foot point: %d\n", globalFootPoint, newTerrainZ);
+                fprintf("planned glob foot point: %d %d %d -- terrain elevation @ foot point: %d\n", globalFootPoint, newTerrainZ);
             end
             mu_dx_i = max(obj.safetyValue*dx_i, 0);
             if obj.allowNegativeDxi == true
@@ -151,11 +151,14 @@ a_3=a_4=24 cm (leg length)
             end
             %mu_dy_i = dy_i;
             mu_dy_i = obj.safetyValue*dy_i;
-            expectedNewSafetyFootPoint = [localOldFootPoint(1)+mu_dx_i localOldFootPoint(2)+mu_dy_i];
-            expectedNewSafetyFootPoint(3) = terrain.get_elevation(expectedNewSafetyFootPoint(1), expectedNewSafetyFootPoint(2));
-            localFootPoint = bot.change_global_to_local(state, expectedNewSafetyFootPoint);
+            expectedSafetyLocalPoint = [localOldFootPoint(1)+mu_dx_i localOldFootPoint(2)+mu_dy_i];
+            expectedSafetyGlobalPoint = bot.change_local_to_global(state, expectedSafetyLocalPoint);
+            expectedSafetyGlobalPoint(3) = terrain.get_elevation(expectedSafetyGlobalPoint(1), expectedSafetyGlobalPoint(2));
+            localFootPoint = bot.change_global_to_local(state, expectedSafetyGlobalPoint);
             dz_i = localFootPoint(3)-z_a;
             mu_dz_i = dz_i;
+            fprintf("expected local: %d %d - expected local2: %d %d %d - expected global: %d %d\n", z_a, expectedSafetyLocalPoint, localFootPoint, expectedSafetyGlobalPoint(1:2));
+            fprintf("z_a: %d - terrain: %d - dz_i: %d\n", z_a, expectedSafetyGlobalPoint(3), dz_i)
         end
     end
     methods(Static)
