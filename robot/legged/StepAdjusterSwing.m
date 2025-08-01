@@ -154,7 +154,7 @@ a_3=a_4=24 cm (leg length)
             expectedNewSafetyFootPoint = [localOldFootPoint(1)+mu_dx_i localOldFootPoint(2)+mu_dy_i];
             expectedNewSafetyFootPoint(3) = terrain.get_elevation(expectedNewSafetyFootPoint(1), expectedNewSafetyFootPoint(2));
             localFootPoint = bot.change_global_to_local(state, expectedNewSafetyFootPoint);
-            dz_i = z_a - localFootPoint(3);
+            dz_i = localFootPoint(3)-z_a;
             mu_dz_i = dz_i;
         end
     end
