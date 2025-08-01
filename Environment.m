@@ -179,6 +179,25 @@ classdef Environment
             
             Visualizer.simulate_bot(bot, varargin{:});
         end
+        function visualize_terrain(obj, varargin)            
+            figure;
+            terrainVisual = Visualizer.simulate_terrain(obj.terrain);
+            xlabel('X');
+            ylabel('Y');
+            zlabel('Z');
+        end
+        function visualize_path(obj, varargin)
+            figure;
+            
+            terrainVisual = Visualizer.simulate_terrain(obj.terrain);
+            xlabel('X');
+            ylabel('Y');
+            zlabel('Z');
+            
+            hold on
+            pathVisual = Visualizer.simulate_path(obj.path);
+            hold off
+        end
     end
     methods(Static)
         function load_paths()

@@ -23,6 +23,7 @@
         enableLift = true;
         enableBodyMovement = true;
         enableLegMovement = true;
+        enableAdjustBotHeight = true;
         iterateMovement = true; % need to iterate for old kinematics (walk) -> only for back legs
         % old kinematics (walk) is inaccurate if large movement
         %% step size
@@ -249,7 +250,7 @@
             %% Planned positions - use Fake State
             % predicting future end points
             previousEndPosition = obj.get_global_end_positions(previousState, activeLeg);
-            globalBodyVector(1:2) = obj.rotate_vector(relativeBodyVector(1:2), turnAngle+previousState.baseOrientation(3));
+            globalBodyVector(1:2) = obj.rotate_vector(relativeBodyVector(1:2), turnAngleBody+previousState.baseOrientation(3));
             globalBodyVector(3) = dz_b;
             forwardState = obj.get_last_state();
             fakeState = copy(forwardState);
@@ -297,7 +298,6 @@
             tempSavePreviousState = copy(forwardState);
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
             %fprintf("**********$$$$$$$ after body forward adjust\n");
-            forwardState = obj.get_last_state();
             fprintf("relative body vector: %d %d %d - old base pos: %d %d %d - new base pos: %d %d %d\n", relativeBodyVector, tempSavePreviousState.basePosition, forwardState.basePosition);
             %disp("pull hips from legbot");
             %disp(forwardState.anglesHip);
@@ -308,7 +308,7 @@
                 forwardState = obj.get_last_state();
                 %disp("PATH INDEX =======")
                 %disp(forwardState.pathIndex);
-                forwardState.pathIndex = futurePathIndex;
+                %forwardState.pathIndex = futurePathIndex;
                 %disp("AF s")
                 %disp(forwardState.pathIndex);
                 [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, forwardState, activeLeg, terrain, path);
@@ -317,16 +317,18 @@
                 %disp(relativeLegVector)
                 obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
                 tempSavePreviousState = copy(forwardState);
-                forwardState = obj.get_last_state();
                 fprintf("relative leg vector: %d %d %d - old leg pos: %d %d %d - new leg pos: %d %d %d\n", relativeLegVector, dz_i, tempSavePreviousState.endPositions(activeLeg,:), forwardState.endPositions(activeLeg,:));
             end
 
             %% change bot height if needed
-            %fprintf("**********$$$$$$$ before body height adjust\n");
-            dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
-            obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
-            %fprintf("**********$$$$$$$ after body height adjust\n");
-            obj = obj.update_bot_height();
+            if obj.enableAdjustBotHeight
+                forwardState = obj.get_last_state();
+                %fprintf("**********$$$$$$$ before body height adjust\n");
+                dz_b = obj.stepAdjusterHeight.adjust_base_z_vector_for_swing(obj, forwardState, terrain);
+                obj = obj.move_body(forwardState, activeLeg, [0 0 dz_b], 0, futurePathIndex, terrain, 1);
+                %fprintf("**********$$$$$$$ after body height adjust\n");
+                obj = obj.update_bot_height();
+            end
                       
             %% put down foot (all vertical) 
             currentState = obj.get_last_state();

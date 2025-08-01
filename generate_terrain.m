@@ -1,4 +1,5 @@
 addpath('terrain')
+addpath('terrain/generators')
 savePath = 'output/results_%s.mat';
 terrainOptions = {'flat', 'sin', 'random'};
 
@@ -20,11 +21,11 @@ terrainType = terrainOptions{terrainNum};
 if loadFromSaved == 0
     disp('generating new terrain');
     if strcmp(terrainType, 'flat')
-        TerrainGenerator.gen_flat(xRange, yRange, scale);
+        Flat.generate(xRange, yRange, scale);
     elseif strcmp(terrainType, 'sin')
-        TerrainGenerator.gen_sin(xRange, yRange, scale, amplitude, frequency);
+        Sin.generate(xRange, yRange, scale, amplitude, frequency);
     elseif strcmp(terrainType, 'random')
-        TerrainGenerator.gen_random(xRange, yRange, scale, convFilterSize, elevationChangeRange);
+        Random.generate(xRange, yRange, scale, convFilterSize, elevationChangeRange);
     else
         disp('error');
         return
