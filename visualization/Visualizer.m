@@ -1,6 +1,6 @@
 classdef Visualizer
     properties(Constant)
-        verbose = true;
+        verbose = false;
     end
     properties
     end

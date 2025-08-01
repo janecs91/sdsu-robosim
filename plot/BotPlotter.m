@@ -65,12 +65,98 @@ classdef BotPlotter
         end
 
         function plot_joint_distances_per_distance(env)
+            % unfinished
+            % todo: add wheel distance
+            bots = env.bots;
+
+            figure;
+            hold on;
+            for i=1:length(bots)
+                bot = bots{i};
+                %disp(bot)
+                %disp("sizes")
+                %disp(size(bot.baseMatrix))
+                botBaseMatrix = bot.baseMatrix;
+                if length(botBaseMatrix) == 0
+                    continue
+                end
+                baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix(1,1);
+                %disp(size(baseX))
+                jointDistances = env.jointDistances{i};
+                %disp(size(powerCost))
+                cumsumJointDistances = cumsum(jointDistances);
+                %disp(size(cumsumPowerCost))
+                
+                plot(baseX, cumsumJointDistances);
+
+                title("Cumulative Maximum Joint Changes At Time over Base Distance")
+                xlabel('Base Distance (cm)')
+                ylabel('Joint Changes (cm)')
+            end
+            legend('pull', 'roll', 'walk');
+            hold off;
         end
 
         function plot_joint_changes(env)
+            bots = env.bots;
+
+            figure;
+            hold on;
+            for i=1:length(bots)
+                bot = bots{i};
+                %disp(bot)
+                %disp("sizes")
+                %disp(size(bot.baseMatrix))
+                botBaseMatrix = bot.baseMatrix;
+                if length(botBaseMatrix) == 0
+                    continue
+                end
+                baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix(1,1);
+                %disp(size(baseX))
+                powerCost = env.powerCosts{i};
+                %disp(size(powerCost))
+                cumsumPowerCost = cumsum(powerCost);
+                %disp(size(cumsumPowerCost))
+                
+                plot(baseX, cumsumPowerCost);
+
+                title("Joint Changes over Base Distance")
+                xlabel('Base Distance (cm)')
+                ylabel('Joint Changes (cm)')
+            end
+            legend('pull', 'roll', 'walk');
+            hold off;
         end
 
         function plot_stride_length(env)
+            bots = env.bots;
+
+            figure;
+            hold on;
+            for i=1:length(bots)
+                bot = bots{i};
+                %disp(bot)
+                %disp("sizes")
+                %disp(size(bot.baseMatrix))
+                botBaseMatrix = bot.baseMatrix;
+                if length(botBaseMatrix) == 0
+                    continue
+                end
+                baseX = bot.baseMatrix(2:end,1)-bot.baseMatrix(1,1);
+                %disp(size(baseX))
+                powerCost = env.powerCosts{i};
+                %disp(size(powerCost))
+                cumsumPowerCost = cumsum(powerCost);
+                %disp(size(cumsumPowerCost))
+                
+                plot(baseX, cumsumPowerCost);
+
+                title("Stride Length over Base Distance")
+                xlabel('Base Distance (cm)')
+                ylabel('Stride Length (cm)')
+            end
+            legend('pull', 'roll', 'walk');
+            hold off;
         end
 
         %% DEPRECATED? NOT IN USE?

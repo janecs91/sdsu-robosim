@@ -67,16 +67,15 @@ a_3=a_4=24 cm (leg length)
             % Possibly use 1/2 leg length ??
             %dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
             %dx_i_front = obj.maxLegLength;
-            dx_i_front = 48;
-            dx_i_back = distance_waist_to_foot;
+            max_dx_i_front = 48;
+            max_dx_i_back = distance_waist_to_foot;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
-            dx_i = dx_i_front;
+            max_dx_i = max_dx_i_front;
             if leg > 2
-                dx_i = dx_i_back;
+                max_dx_i = max_dx_i_back;
             end
-            dz_i = 0;
-            testRange = dx_i:-1:obj.minDxi;
+            testRange = max_dx_i:-1:obj.minDxi;
             if obj.verbose && false
                 fprintf("find swing step: leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", leg, x_a, y_a, z_a);
                 fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
@@ -84,8 +83,9 @@ a_3=a_4=24 cm (leg length)
                 disp("testRange")
                 disp(testRange);
             end
+            localOldFootPoint = bot.change_global_to_local(state, state.endPositions(leg,1:2));
             for i=testRange
-                if obj.verbose
+                if obj.verbose && false
                     fprintf("* test range i: %d\n", i);
                 end
                 moveX = i;
@@ -93,8 +93,7 @@ a_3=a_4=24 cm (leg length)
                 newTerrainZ = terrain.get_elevation(globalFootPoint(1), globalFootPoint(2));
                 globalFootPoint(3) = newTerrainZ;
                 localFootPoint = bot.change_global_to_local(state, globalFootPoint);
-                localOldFootPoint = bot.change_global_to_local(state, state.endPositions(leg,1:2));
-                if obj.verbose
+                if obj.verbose && false
                     fprintf("state pos: %.2f %.2f, gamma: %.2f\n", state.basePosition(1:2), rad2deg(state.baseOrientation(3)));
                     fprintf("(global) old ft pt: %.2f %.2f %.2f, new ft pt: %.2f %.2f %.2f\n", ...
                         state.endPositions(leg,:), globalFootPoint);
@@ -134,13 +133,16 @@ a_3=a_4=24 cm (leg length)
             end
             dx_i = 24;  % constant dx_i
             dy_i = 0;
+            dz_i = 0;
             if obj.modifyDx_i
                 dx_i = x_a_prime-x_a;
                 dy_i = y_a_prime-y_a;
+                dz_i = z_a_prime-z_a;
             end
             if obj.verbose
                 fprintf("stable moveX for leg %d: %.2f\n", leg, moveX);
                 fprintf("dx_i: %.2f, dy_i: %.2f\n", dx_i, dy_i);
+                fprintf("planned foot point: %d %d %d\n", globalFootPoint);
             end
             mu_dx_i = max(obj.safetyValue*dx_i, 0);
             if obj.allowNegativeDxi == true
@@ -148,6 +150,10 @@ a_3=a_4=24 cm (leg length)
             end
             %mu_dy_i = dy_i;
             mu_dy_i = obj.safetyValue*dy_i;
+            expectedNewSafetyFootPoint = [localOldFootPoint(1)+mu_dx_i localOldFootPoint(2)+mu_dy_i];
+            expectedNewSafetyFootPoint(3) = terrain.get_elevation(expectedNewSafetyFootPoint(1), expectedNewSafetyFootPoint(2));
+            localFootPoint = bot.change_global_to_local(state, expectedNewSafetyFootPoint);
+            dz_i = localOldFootPoint(3) - localFootPoint(3);
             mu_dz_i = dz_i;
         end
     end
@@ -172,7 +178,7 @@ a_3=a_4=24 cm (leg length)
             %% OK for 4 legs
             stepSize = (x_a_prime-x_h_prime)^2 + (y_a_prime-y_h_prime)^2 + (z_a_prime-z_h_prime)^2;
             isStable = stepSize < legLength^2;
-            if true
+            if false
                 fprintf("stability leg length - x_a_prime: %.2f, x_h_prime: %.2f, xap-xhp: %.2f\n", x_a_prime, x_h_prime, abs(x_a_prime-x_h_prime)); 
                 fprintf("stability leg length - %.2f <? %.2f\n", stepSize, legLength^2); 
             end

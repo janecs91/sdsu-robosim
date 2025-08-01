@@ -50,7 +50,7 @@ turn = 0.01;
 %% bot settings
 botNum = 3;
 botStartX = -1;
-maxIterations = 999;
+maxIterations = 4;
 %% path settings
 pathNum = 1;
 pathStartX = 100; 
@@ -59,7 +59,7 @@ pathEndX = 800;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 1;
+terrainNum = 3;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -75,7 +75,7 @@ elevationChangeRange = 10;
 %% visualize settings
 rate = 0.001;
 startState = 1;
-stopState = 2;
+stopState = -1;
 showAllMarkers = true;
 showAxis = '';
 showColorBar = 0;

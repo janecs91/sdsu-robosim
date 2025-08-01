@@ -256,17 +256,19 @@
             fakeState.basePosition = fakeState.basePosition + globalBodyVector;
             fakeState.baseOrientation = fakeState.baseOrientation + turnAngleBody;
             fakeState.pathIndex = futurePathIndex;
+            fprintf("Calculating planned leg vector for fake state base pos: %d %d %d\n", fakeState.basePosition);
             [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, fakeState, activeLeg, terrain, path);
-            localLegVector = [dx_i dy_i];
             if obj.useConstantTestValues
                 dx_i = obj.constant_dx_i;
             end
-            relativeLegVector = [localLegVector 0];
+            %relativeLegVector = [dx_i dy_i 0];
+            relativeLegVector = [dx_i dy_i dz_i];
             %disp("planned leg vector")
             %disp(relativeLegVector)
             globalLegVector = obj.rotate_vector(relativeLegVector(1:2), fakeState.baseOrientation(3));
             newEndPosition(1:2) = previousEndPosition(1:2) + globalBodyVector(1:2) + globalLegVector(1:2);
-            newEndPosition(3) = 0;
+            %newEndPosition(3) = 0;
+            newEndPosition(3) = previousEndPosition(3) + dz_i;
             previousState.plannedEndPositions(activeLeg,:) = newEndPosition;
             
             % evaluate terrain elevations
@@ -292,9 +294,11 @@
             if obj.verbose
                 fprintf("relative Body Vector %d %d\n", relativeBodyVector);
             end
+            tempSavePreviousState = copy(forwardState);
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
             %fprintf("**********$$$$$$$ after body forward adjust\n");
             forwardState = obj.get_last_state();
+            fprintf("relative body vector: %d %d %d - old base pos: %d %d %d - new base pos: %d %d %d\n", relativeBodyVector, tempSavePreviousState.basePosition, forwardState.basePosition);
             %disp("pull hips from legbot");
             %disp(forwardState.anglesHip);
             
@@ -312,7 +316,9 @@
                 %disp("relative leg vector")
                 %disp(relativeLegVector)
                 obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
+                tempSavePreviousState = copy(forwardState);
                 forwardState = obj.get_last_state();
+                fprintf("relative leg vector: %d %d %d - old leg pos: %d %d %d - new leg pos: %d %d %d\n", relativeLegVector, dz_i, tempSavePreviousState.endPositions(activeLeg,:), forwardState.endPositions(activeLeg,:));
             end
 
             %% change bot height if needed
@@ -327,6 +333,8 @@
             currentEndPosition = obj.get_global_end_positions(currentState, activeLeg);
             terrainElevation = terrain.get_elevation(currentEndPosition(1), currentEndPosition(2));
             downMagnitude = terrainElevation - currentEndPosition(3);
+            %downMagnitude = dz_i;
+            fprintf("down magnitude: %d - dz_i: %d - terrain elevation: %d\n", downMagnitude, dz_i, terrainElevation);
             if obj.enableLift == true
                 obj = obj.move_leg(currentState, activeLeg, [0 0 downMagnitude], 1);
             end
