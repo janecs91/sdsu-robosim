@@ -267,10 +267,14 @@
             %disp("planned leg vector")
             %disp(relativeLegVector)
             globalLegVector = obj.rotate_vector(relativeLegVector(1:2), fakeState.baseOrientation(3));
+            globalLegVector(3) = dz_i;
             newEndPosition(1:2) = previousEndPosition(1:2) + globalBodyVector(1:2) + globalLegVector(1:2);
             %newEndPosition(3) = 0;
             newEndPosition(3) = previousEndPosition(3) + dz_i;
             previousState.plannedEndPositions(activeLeg,:) = newEndPosition;
+            fprintf("Planned -> relative leg vec: %d %d %d - global leg vec: %d %d %d - end position: %d %d %d\n", relativeLegVector, globalLegVector, newEndPosition);
+            newEndPosTerrainElevation = terrain.get_elevation(newEndPosition(1), newEndPosition(2));
+            fprintf("Terrain elevation @%d %d: %d\n", newEndPosition(1:2), newEndPosTerrainElevation);
             
             % evaluate terrain elevations
             elevationDifference = relativeLegVector(3);
