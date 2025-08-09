@@ -65,10 +65,14 @@ classdef PathGenerator
             
             path = PathGenerator.get_type(type, obj.directory);
             args = values(map, path.argNames);
-            if path.isSameStartYEndY
+            pathName = path.name;
+            if path.isSameStartYEndY || strcmp(type, 'straight')
                 pathEndY = pathStartY;
             end
-            name = sprintf(path.name, pathStartX, pathStartY, pathEndX, pathEndY, args{:});
+            if strcmp(type, 'halfcirc2')
+                pathName = strcat(path.name,'2');
+            end
+            name = sprintf(pathName, pathStartX, pathStartY, pathEndX, pathEndY, args{:});
             name = sprintf('%s_%s', obj.prefix, name);
         end
     end

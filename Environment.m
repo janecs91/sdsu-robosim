@@ -179,17 +179,18 @@ classdef Environment
             
             Visualizer.simulate_bot(bot, varargin{:});
         end
-        function visualize_terrain(obj, filename, varargin)            
+        function visualize_terrain(obj, outputVisualsDirectory, varargin)            
             figure;
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);
             xlabel('X');
             ylabel('Y');
             zlabel('Z');
-            if ~isempty(filename)
-                saveas(gcf,filename)
+            if ~isempty(outputVisualsDirectory)
+                pathVisualFileName = sprintf("%s/%s.png", outputVisualsDirectory, obj.terrainName);
+                saveas(gcf,pathVisualFileName)
             end
         end
-        function visualize_path(obj, filename, varargin)
+        function visualize_path(obj, outputVisualsDirectory, varargin)
             figure;
             
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);
@@ -201,8 +202,9 @@ classdef Environment
             pathVisual = Visualizer.simulate_path(obj.path);
             hold off
 
-            if ~isempty(filename)
-                saveas(gcf,filename)
+            if ~isempty(outputVisualsDirectory)
+                pathVisualFileName = sprintf("%s/%s_%s.png", outputVisualsDirectory, obj.terrainName, obj.pathName);
+                saveas(gcf,pathVisualFileName)
             end
         end
     end

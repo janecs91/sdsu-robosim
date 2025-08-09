@@ -42,6 +42,10 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % 4. write ch 2 of thesis
 % additional terrains: steplike, mars?
 
+%% VISUAL PARAMS
+showTerrainOnly = true;
+outputVisualDirectory = "output_visuals";
+saveVisualAsImage = true;
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
 showVisual = true;
@@ -55,22 +59,22 @@ maxIterations = 4;
 pathNum = 1;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 600;
-pathEndY = pathStartY + 30;
+pathEndX = 900;
+pathEndY = pathStartY+400;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 1;
+terrainNum = 7;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 13;
-terrainFrequency = 1;
+terrainAmplitude = 5;
+terrainFrequency = 0.007;
 % random
-randFilterSize = 10;
-elevationChangeRange = 10;
+randFilterSize = 100;
+elevationChangeRange = 5;
 %terrainName = 'customTerrainName';
 %% visualize settings
 rate = 0.001;
@@ -81,7 +85,7 @@ showAxis = '';
 showColorBar = 0;
 equalAxis = false;
 
-showTerrainOnly = false;
+
 
 
 %% ===== SIMULATE =====
@@ -105,10 +109,13 @@ else
 end
 
 
+if ~saveVisualAsImage
+    outputVisualDirectory = '';
+end
 % Launch terrain visual
 if showTerrainOnly
-    env.visualize_terrain();
+    env.visualize_terrain(outputVisualDirectory);
 else
-    env.visualize_path('output_visuals/testpath.png');
+    env.visualize_path(outputVisualDirectory);
 end
 
