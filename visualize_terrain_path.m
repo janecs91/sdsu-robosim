@@ -109,6 +109,6 @@ end
 if showTerrainOnly
     env.visualize_terrain();
 else
-    env.visualize_path();
+    env.visualize_path('output_visuals/testpath.png');
 end
 

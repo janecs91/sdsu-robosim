@@ -179,14 +179,17 @@ classdef Environment
             
             Visualizer.simulate_bot(bot, varargin{:});
         end
-        function visualize_terrain(obj, varargin)            
+        function visualize_terrain(obj, filename, varargin)            
             figure;
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);
             xlabel('X');
             ylabel('Y');
             zlabel('Z');
+            if ~isempty(filename)
+                saveas(gcf,filename)
+            end
         end
-        function visualize_path(obj, varargin)
+        function visualize_path(obj, filename, varargin)
             figure;
             
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);
@@ -197,6 +200,10 @@ classdef Environment
             hold on
             pathVisual = Visualizer.simulate_path(obj.path);
             hold off
+
+            if ~isempty(filename)
+                saveas(gcf,filename)
+            end
         end
     end
     methods(Static)
