@@ -344,6 +344,9 @@
             if obj.enableLift == true
                 obj = obj.move_leg(currentState, activeLeg, [0 0 downMagnitude], 1);
             end
+            lastState = obj.get_last_state();
+            endPositionsTest = obj.get_global_joint_positions(lastState, activeLeg);
+            fprintf("resulting global end position: %d %d %d\n", endPositionsTest(end,:));
             
         end
         function [obj, newState] = turn_base(obj, previousState, turnAngle)

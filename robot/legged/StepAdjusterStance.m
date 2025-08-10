@@ -3,7 +3,7 @@ classdef StepAdjusterStance < StepAdjuster
         verbose = false;
         % limit ranges
         minDxb = 0;
-        keepBaseHeightConstant = true;
+        keepBaseHeightConstant = false;
     end
     methods
         function obj = StepAdjusterStance(safetyValue)
@@ -182,10 +182,10 @@ classdef StepAdjusterStance < StepAdjuster
             else
                 minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
                 maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
-                if baseZ < minimumBaseZ && false
+                if baseZ < minimumBaseZ
                     dz_b = minimumBaseZ-baseZ;
                 end
-                if baseZ > maximumBaseZ && false
+                if baseZ > maximumBaseZ
                     dz_b = maximumBaseZ-baseZ;
                 end
             end

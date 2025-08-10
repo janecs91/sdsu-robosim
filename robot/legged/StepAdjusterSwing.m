@@ -5,6 +5,7 @@ classdef StepAdjusterSwing < StepAdjuster
         frontCornerDistance;
         strategy;
         allowNegativeDxi = false;
+        applySafetyValue = true;
 
         %% old properties
         adjustType = 0;
@@ -90,6 +91,9 @@ a_3=a_4=24 cm (leg length)
                     fprintf("* test range i: %d\n", i);
                 end
                 moveX = i;
+                if obj.applySafetyValue
+                    moveX = obj.safetyValue*i;
+                end
                 globalFootPoint = obj.strategy.get_next_global_foot_point(bot, state, leg, terrain, path, moveX);
                 newTerrainZ = terrain.get_elevation(globalFootPoint(1), globalFootPoint(2));
                 globalFootPoint(3) = newTerrainZ;
@@ -145,20 +149,12 @@ a_3=a_4=24 cm (leg length)
                 fprintf("dx_i: %.2f, dy_i: %.2f\n", dx_i, dy_i);
                 fprintf("planned glob foot point: %d %d %d -- terrain elevation @ foot point: %d\n", globalFootPoint, newTerrainZ);
             end
-            mu_dx_i = max(obj.safetyValue*dx_i, 0);
+            mu_dx_i = max(dx_i, 0);
             if obj.allowNegativeDxi == true
                 mu_dx_i = dx_i;
             end
-            %mu_dy_i = dy_i;
-            mu_dy_i = obj.safetyValue*dy_i;
-            expectedSafetyLocalPoint = [localOldFootPoint(1)+mu_dx_i localOldFootPoint(2)+mu_dy_i];
-            expectedSafetyGlobalPoint = bot.change_local_to_global(state, expectedSafetyLocalPoint);
-            expectedSafetyGlobalPoint(3) = terrain.get_elevation(expectedSafetyGlobalPoint(1), expectedSafetyGlobalPoint(2));
-            localFootPoint = bot.change_global_to_local(state, expectedSafetyGlobalPoint);
-            dz_i = localFootPoint(3)-z_a;
+            mu_dy_i = dy_i;
             mu_dz_i = dz_i;
-            fprintf("expected local: %d %d - expected local2: %d %d %d - expected global: %d %d\n", z_a, expectedSafetyLocalPoint, localFootPoint, expectedSafetyGlobalPoint(1:2));
-            fprintf("z_a: %d - terrain: %d - dz_i: %d\n", z_a, expectedSafetyGlobalPoint(3), dz_i)
         end
     end
     methods(Static)

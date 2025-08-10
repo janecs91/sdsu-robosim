@@ -478,14 +478,6 @@ a3 = a4 = 24 cm = leg length
             disp(localPositions2{:})
             %}
         end
-        function globalPoint = change_local_to_global(obj, state, localPoint)
-            % TBD: NOT SURE IF THIS IS CORRECT
-            rotatedLocalPoint = obj.rotate_vector(localPoint(1:2), state.baseOrientation(3));
-            globalPoint(1:2) = rotatedLocalPoint(1:2)+state.basePosition(1:2);
-            if length(localPoint) > 2
-                globalPoint(3) = localPoint(3)+state.basePosition(3);
-            end
-        end
         function localZ = change_global_z_to_local_z(obj, state, globalZ)
             localZ = globalZ-state.basePosition(3);
         end
