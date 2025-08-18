@@ -257,10 +257,8 @@ a3 = a4 = 24 cm = leg length
             %maxX = maxX - obj.botBodyLength;
             %maxCenterX = terrain.maxX - (2*obj.botBodyLength);
             maxCenterX = terrain.maxX;
-            endX = path.pathPoints(end,1)-1;   
-            if ~strcmp(obj.mode, 'roll')
-                endX = endX-24;     % this is so that there are enough path points for legs to follow (pull, walk)
-            end
+            endXModifier 
+            endX = path.pathPoints(end,1);   % this is so that there are enough path points for legs to follow (pull, walk)
             x = startX;
             i = 0;
             %moveVector = [obj.maxStepSize 0];
@@ -278,10 +276,7 @@ a3 = a4 = 24 cm = leg length
                 turnAngle = 0;
                 obj = obj.move_next_step(moveVector, turnAngle, terrain, path);
                 x = lastState.basePosition(1);
-                %disp(lastState.pathIndex)
-                %disp(size(path.pathPoints))
                 if lastState.pathIndex == size(path.pathPoints,1)
-                    disp("Breaking")
                     break
                 end
                 i = i + 1;

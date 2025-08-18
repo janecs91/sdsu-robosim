@@ -14,6 +14,7 @@ classdef RollBot < BaseBot
         adjustBotHeight = false;    % not done
         
         maxOrientation = deg2rad(0);
+        verbose = false;
     end
     properties(Constant)
         a = 3*sqrt(2)+(31/2);
@@ -101,6 +102,24 @@ classdef RollBot < BaseBot
             
             % calculate new values and update state
             newState.endPositions = obj.get_global_end_positions(newState);
+
+            % get path position
+            %fprintf("moveVector: %d %d\n", moveVector);
+            fakeState = copy(newState);
+            minIndex = newState.pathIndex;
+            [futurePathPoint, futurePathIndex] = obj.get_next_path_point(fakeState, path, moveVector(1));
+            [futurePathAngle, futurePathSlope] = path.get_gamma_at_index(futurePathIndex);
+            %[futurePathAngle, futurePathSlope] = path.get_gamma_at_x(futurePathPoint(1), minIndex);
+            turnAngle = futurePathAngle - fakeState.baseOrientation(3);
+            turnAngle = wrapToPi(turnAngle);
+            %fprintf("Turn Angle before modulo: %d\n", turnAngle);
+            if abs(turnAngle) > 3
+                %disp("Turn Angle is > 3!!")
+                turnAngle = 0;
+            end
+            if obj.verbose
+                fprintf("Path Angle: %d | Body Orientation: %d -> Turn Angle: %d\n", futurePathAngle, fakeState.baseOrientation(3), turnAngle);
+            end
             
             % global steering ???
             %newState.anglesSteering = [0 0 0 0];
@@ -109,13 +128,13 @@ classdef RollBot < BaseBot
             %newState.dotBaseOrientation = [0 0 0];
             %newState.dotBasePosition(1:2) = moveVector;
             newState.dotBasePosition(1:2) = obj.rotate_vector(moveVector, turnAngle+newState.baseOrientation(3));
-            %{
-            disp('TURN ANGLE');
-            disp(rad2deg(turnAngle));
-            disp('dot_xy =====================');
-            disp(newState.dotBasePosition(1:2));
-            disp(newState.dotEndPositions(:,1:2));
-            %}
+            if obj.verbose
+                disp('TURN ANGLE');
+                disp(rad2deg(turnAngle));
+                disp('dot_xy =====================');
+                disp(newState.dotBasePosition(1:2));
+                disp(newState.dotEndPositions(:,1:2));
+            end
                         
             % update steering
             sigma = obj.wheelShift;
@@ -206,20 +225,20 @@ classdef RollBot < BaseBot
             newState.dotBasePosition(1) = new_dot_x_base(1);
             newState.dotBasePosition(2) = new_dot_y_base(1);
             newState.dotBaseOrientation(3) = dot_gamma_base;
-            %{
-            disp('SLIP');
-            disp(slip);
-            disp('new dot xy base');
-            disp(newState.dotBasePosition(1:2));
-            disp('dot gamma wheel');
-            disp(dot_gamma_wheel);
-            disp('dot gamma base');
-            disp(rad2deg(dot_gamma_base));
-            disp('new dot gamma base');
-            disp(rad2deg(new_dot_gamma_base));
-            disp('dot base ori');
-            disp(rad2deg(newState.dotBaseOrientation));
-            %}
+            if obj.verbose
+                disp('SLIP');
+                disp(slip);
+                disp('new dot xy base');
+                disp(newState.dotBasePosition(1:2));
+                disp('dot gamma wheel');
+                disp(dot_gamma_wheel);
+                disp('dot gamma base');
+                disp(rad2deg(dot_gamma_base));
+                disp('new dot gamma base');
+                disp(rad2deg(new_dot_gamma_base));
+                disp('dot base ori');
+                disp(rad2deg(newState.dotBaseOrientation));
+            end
             
             % equation base orientaion
             eq_alpha = cos(steering_hat)'.*dot_beta_wheel;
@@ -248,6 +267,7 @@ classdef RollBot < BaseBot
             newState.basePosition = previousState.basePosition + newState.dotBasePosition;
             newState.endPositions = obj.get_global_end_positions(newState);
             newState.baseOrientation = previousState.baseOrientation + newState.dotBaseOrientation;
+            %newState.baseOrientation = wrapToPi(newState.baseOrientation);
             newState.anglesSteering = newState.anglesSteering + newState.dotAnglesSteering;
             
             
@@ -266,6 +286,9 @@ classdef RollBot < BaseBot
             dot_y_base = -cos(steering_hat)*dot_x_wheels + sin(steering_hat)*dot_y_wheels - a*(gamma_wheels + dot_steering);
             dot_z_base = dot_z_wheels + b*(sin(steering)*dot_alpha_wheel + cos(steering)*dot_beta_wheels) + 48*sin(hip)*dot_hip;
             %}
+
+            % update path index
+            newState.pathIndex = futurePathIndex;
             
             % add new state to history
             obj = obj.add_history(newState);

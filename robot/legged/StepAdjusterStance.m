@@ -68,7 +68,7 @@ classdef StepAdjusterStance < StepAdjuster
                 [futurePathPoint, futurePathIndex] = bot.get_next_path_point(state, path, moveX);
                 %fprintf("Leg %d - FT PATH PT: %.2f %.2f ; PATH IDX: %d\n", stanceLeg, futurePathPoint, futurePathIndex);
                 triedPathPts(c,:) = futurePathPoint;
-                [angle1, slope1] = path.get_gamma_at_index(futurePathIndex);
+                [angle1, slope1] = path.get_gamma_at_index(futurePathIndex);        % OR try get gammma at x??
                 fakeState = copy(state);
                 fakeState.basePosition(1:2) = futurePathPoint(1:2);
                 [futurePathPoint2, futurePathIndex2] = bot.get_next_path_point(fakeState, path, moveX);

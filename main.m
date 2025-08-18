@@ -45,15 +45,15 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
-showVisual = false;
-showPlots = true;
+showVisual = true;
+showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 1;
+botNum = 2;
 botStartX = -1;
-maxIterations = 999;
+maxIterations = 2000;
 %% path settings
-pathNum = 1;
+pathNum = 3;
 pathStartX = 100; 
 pathStartY = 100;
 pathEndX = 2150;

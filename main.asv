@@ -4,6 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output2';
+outputPlotDirectory = 'output_plots';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -48,18 +49,18 @@ showVisual = true;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 2;
 botStartX = -1;
 maxIterations = 999;
 %% path settings
-pathNum = 1;
+pathNum = 3;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 800;
+pathEndX = 1050;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 3;
+terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;

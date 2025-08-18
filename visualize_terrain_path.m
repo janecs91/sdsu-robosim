@@ -43,7 +43,7 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % additional terrains: steplike, mars?
 
 %% VISUAL PARAMS
-showTerrainOnly = true;
+showTerrainOnly = false;
 outputVisualDirectory = "output_visuals";
 saveVisualAsImage = true;
 %% ===== TEST PARAMS ======
@@ -52,18 +52,18 @@ showVisual = true;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 2;
 botStartX = -1;
 maxIterations = 4;
 %% path settings
-pathNum = 1;
+pathNum = 3;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 900;
-pathEndY = pathStartY+400;
+pathEndX = 650;
+pathEndY = pathStartY + 1000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 7;
+terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
