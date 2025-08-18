@@ -1,8 +1,15 @@
 classdef BotPlotter
     properties
+        env;
+        outputPlotsDirectory;
     end
-    methods(Static)
-        function plot_time_per_distance(env)
+    methods
+        function obj = BotPlotter(env, outputPlotsDirectory)
+            obj.env = env;
+            obj.outputPlotsDirectory = outputPlotsDirectory;
+        end
+        function plot_time_per_distance(obj)
+            env = obj.env;
             %disp(env)
             bots = env.bots;
 
@@ -32,8 +39,14 @@ classdef BotPlotter
             end
             legend('pull', 'roll', 'walk');
             hold off;
+
+            if ~isempty(obj.outputPlotsDirectory)
+                pathVisualFileName = sprintf("%s/time_%s_%s.png", obj.outputPlotsDirectory, obj.env.terrainName, obj.env.pathName);
+                saveas(gcf,pathVisualFileName)
+            end
         end
-        function plot_power_per_distance(env)
+        function plot_power_per_distance(obj)
+            env = obj.env;
             bots = env.bots;
 
             figure;
@@ -62,6 +75,11 @@ classdef BotPlotter
             end
             legend('pull', 'roll', 'walk');
             hold off;
+
+            if ~isempty(obj.outputPlotsDirectory)
+                pathVisualFileName = sprintf("%s/power_%s_%s.png", obj.outputPlotsDirectory, obj.env.terrainName, obj.env.pathName);
+                saveas(gcf,pathVisualFileName)
+            end
         end
 
         function plot_joint_distances_per_distance(env)
