@@ -19,7 +19,6 @@ classdef StepAdjusterSwing < StepAdjuster
         modifyDx_i = true;
 
         verbose = true;
-        conservativeWalkingLegMovement = true;
     end
     %{
 %% ROBOT
@@ -64,29 +63,26 @@ a_3=a_4=24 cm (leg length)
             z_h = jointPositions(3,3);
             x_h = jointPositions(3,1);
             y_h = jointPositions(3,2);
-            distance_waist_to_foot = bot.get_distance_waist_to_foot(state, leg);
+            distance_hip_to_foot = bot.get_distance_hip_to_foot(state, leg);
             %% Possibly update to backCornerDistance for back legs (if trying for legs 3 and 4)
             % Possibly use 1/2 leg length ??
             %dx_i_front = (obj.maxLegLength-distance_waist_to_foot)+obj.frontCornerDistance;
             %dx_i_front = obj.maxLegLength;
             max_dx_i_front = 48;
-            max_dx_i_back = distance_waist_to_foot;
+            max_dx_i_back = distance_hip_to_foot;
             %dx_i = obj.maxLegLength + obj.frontCornerDistance;
             %dx_i = obj.maxLegLength;
             max_dx_i = max_dx_i_front;
             if leg > 2
                 max_dx_i = max_dx_i_back;
             end
-            if bot.numLegs > 2 && leg > 2 && obj.conservativeWalkingLegMovement
-                max_dx_i = max_dx_i/2;
-            end
             testRange = max_dx_i:-1:obj.minDxi;
-            if obj.verbose && false
+            if obj.verbose && true
                 fprintf("find swing step: leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", leg, x_a, y_a, z_a);
                 fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
-                fprintf("local waist x: %.2f, distance_waist_to_foot: %.2f, maxdx_i: %.2f\n", waist_x, distance_waist_to_foot, dx_i);
-                disp("testRange")
-                disp(testRange);
+                fprintf("local waist x: %.2f, distance_hip_to_foot: %.2f, maxdx_i: %.2f\n", waist_x, distance_hip_to_foot, max_dx_i);
+                %disp("testRange")
+                %disp(testRange);
             end
             localOldFootPoint = bot.change_global_to_local(state, state.endPositions(leg,1:2));
             localOldFootPoint(3) = z_a-state.basePosition(3);
@@ -99,6 +95,9 @@ a_3=a_4=24 cm (leg length)
                     moveX = obj.safetyValue*i;
                 end
                 globalFootPoint = obj.strategy.get_next_global_foot_point(bot, state, leg, terrain, path, moveX);
+                if obj.verbose
+                    fprintf("Strategy found global foot point: %.2f %.2f\n", globalFootPoint);
+                end
                 newTerrainZ = terrain.get_elevation(globalFootPoint(1), globalFootPoint(2));
                 globalFootPoint(3) = newTerrainZ;
                 localFootPoint = bot.change_global_to_local(state, globalFootPoint);

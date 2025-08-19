@@ -1,7 +1,7 @@
 classdef StepAdjuster
 properties
     % limit ranges
-    safetyValue = 0.9;
+    safetyValue = 0.95;
     maxLegLength = 48;
 end
 methods

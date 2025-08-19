@@ -59,7 +59,7 @@
         stepAdjusterSwing;
         stepAdjusterStance;
         stepAdjusterHeight;
-        stepSafetyValue = 0.9;
+        stepSafetyValue = 0.95;
         stepAdjustCount = 0;
         %localWaistLocation;
     end

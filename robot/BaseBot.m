@@ -524,6 +524,7 @@ a3 = a4 = 24 cm = leg length
         end
         function distance = get_distance_hip_to_foot(obj, state, leg)
             globalPositions = obj.get_global_joint_positions(state, leg);
+            fprintf("DISTANCE HIP TO FOOT *** HIP: %.2f %.2f, Foot: %.2f %.2f\n", globalPositions(2,1:2), globalPositions(end,1:2));
             [distance, angle] = obj.get_vector_to_point(globalPositions(3,1:2), globalPositions(end,1:2));
         end
         function distance = get_distance_waist_to_foot(obj, state, leg)

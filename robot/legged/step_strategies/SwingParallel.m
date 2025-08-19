@@ -13,7 +13,9 @@ classdef SwingParallel < SwingStrategy
         useUConstant = true;
         constantLegRadius = false;
         useBaseGamma = true;
-        verbose = false;
+        verbose = true;
+
+        constantBackLegGlobalFootPoint = false;
     end
     properties
         SwingPose;
@@ -35,7 +37,20 @@ classdef SwingParallel < SwingStrategy
                 % get waist x,y
                 globalJointPositions = bot.get_global_joint_positions(futureState, leg);
                 %disp(globalJointPositions)
-                globalFootPoint = globalJointPositions(1, 1:2);
+                currentEndPosition = globalJointPositions(end, 1:2);
+                globalFootPoint = globalJointPositions(3, 1:2);
+                if ~obj.constantBackLegGlobalFootPoint
+                    [futurePathPoint, futurePathIndex] = path.get_next_nearest_point(currentEndPosition(1), currentEndPosition(2), futureState.pathIndex, moveX+3);
+                    halfWidthRobotBody = 10;
+                    [plusPoint, minusPoint] = path.get_parallel_point_at_x(futurePathPoint(1), futurePathPoint(2), halfWidthRobotBody, futurePathIndex);
+                    footPoints = [minusPoint; plusPoint; plusPoint; minusPoint];
+                    globalFootPoint = footPoints(leg,:);
+                    if obj.verbose
+                        fprintf("planned base position: %.2f %.2f\n", futureState.basePosition(1:2));
+                        fprintf("futurePathPoint: %.2f %.2f\n", futurePathPoint);
+                        fprintf("moveX: %.2f\n", moveX);
+                    end
+                end
             else
                 % parallel strategy (front legs)
                 %{
@@ -76,7 +91,7 @@ classdef SwingParallel < SwingStrategy
                 %fprintf("(swing) current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f\n", state.basePosition, state.baseOrientation(3), moveX); 
                 %fprintf("old ft pt: [%.2f %.2f], ft center path pt: [%.2f %.2f]\n", state.endPositions(leg,1:2), futurePathPoint);
                 % plus = left?, minus = right?
-                halfWidthRobotBody = bot.a_0;
+                halfWidthRobotBody = 15;
                 %[plusPoint, minusPoint] = path.get_parallel_point_at_index(futurePathIndex, legRadius);
                 [plusPoint, minusPoint] = path.get_parallel_point_at_x(futurePathPoint(1), futurePathPoint(2), halfWidthRobotBody, futurePathIndex);
                 footPoints = [minusPoint; plusPoint; plusPoint; minusPoint];
