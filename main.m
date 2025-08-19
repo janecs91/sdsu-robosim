@@ -47,11 +47,11 @@ showVisual = true;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 4;
 botStartX = -1;
 maxIterations = 999;
 %% path settings
-pathNum = 1;
+pathNum = 3;
 pathStartX = 100; 
 pathStartY = 100;
 pathEndX = 600;
@@ -72,7 +72,7 @@ randFilterSize = 10;
 elevationChangeRange = 10;
 %terrainName = 'customTerrainName';
 %% visualize settings
-rate = 0.001;
+rate = 0.01;
 startState = 1;
 stopState = -1;
 showAllMarkers = true;
