@@ -41,7 +41,7 @@ classdef SwingParallel < SwingStrategy
                 globalFootPoint = globalJointPositions(3, 1:2);
                 if ~obj.constantBackLegGlobalFootPoint
                     [futurePathPoint, futurePathIndex] = path.get_next_nearest_point(currentEndPosition(1), currentEndPosition(2), futureState.pathIndex, moveX+3);
-                    halfWidthRobotBody = 10;
+                    halfWidthRobotBody = 15;
                     [plusPoint, minusPoint] = path.get_parallel_point_at_x(futurePathPoint(1), futurePathPoint(2), halfWidthRobotBody, futurePathIndex);
                     footPoints = [minusPoint; plusPoint; plusPoint; minusPoint];
                     globalFootPoint = footPoints(leg,:);
