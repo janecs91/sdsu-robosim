@@ -19,6 +19,7 @@ classdef StepAdjusterSwing < StepAdjuster
         modifyDx_i = true;
 
         verbose = true;
+        conservativeWalkingLegMovement = true;
     end
     %{
 %% ROBOT
@@ -75,6 +76,9 @@ a_3=a_4=24 cm (leg length)
             max_dx_i = max_dx_i_front;
             if leg > 2
                 max_dx_i = max_dx_i_back;
+            end
+            if bot.numLegs > 2 && leg > 2 && obj.conservativeWalkingLegMovement
+                max_dx_i = max_dx_i/2;
             end
             testRange = max_dx_i:-1:obj.minDxi;
             if obj.verbose && false

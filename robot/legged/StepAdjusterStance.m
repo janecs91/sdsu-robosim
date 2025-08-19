@@ -4,6 +4,8 @@ classdef StepAdjusterStance < StepAdjuster
         % limit ranges
         minDxb = 0;
         keepBaseHeightConstant = false;
+
+        conservativeWalkingBaseMovement = true;
     end
     methods
         function obj = StepAdjusterStance(safetyValue)
@@ -36,6 +38,10 @@ classdef StepAdjusterStance < StepAdjuster
                     footDistanceFromHip, footDistanceFromWaist, allowableLegStretch, allowableLegStretchWithSafety);
                 end
                 dx_b = min(footDistanceFromHip,allowableLegStretch);
+            end
+            if bot.numLegs > 2 && obj.conservativeWalkingBaseMovement
+                disp("Walking bot handicap")
+                dx_b = dx_b/2;
             end
             %bodyVectorDivisor = max(ceil(bot.numLegs/2),1);
             %bodyVectorDivisor = 1;
