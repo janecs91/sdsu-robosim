@@ -51,7 +51,7 @@ turn = 0.01;
 %% bot settings
 botNum = 3;
 botStartX = -1;
-maxIterations = 0;
+maxIterations = 999;
 %% path settings
 pathNum = 3;
 pathStartX = 100; 
@@ -60,7 +60,7 @@ pathEndX = 650;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 7;
+terrainNum = 4;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -70,8 +70,8 @@ cellsize = 5;
 terrainAmplitude = 13;
 terrainFrequency = 1;
 % random
-randFilterSize = 100;
-elevationChangeRange = 1;
+randFilterSize = 10;
+elevationChangeRange = 20;
 %terrainName = 'customTerrainName';
 %% visualize settings
 rate = 0.01;

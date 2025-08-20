@@ -182,12 +182,16 @@ classdef StepAdjusterStance < StepAdjuster
             lowestPoint = bot.get_lowest_point(state, terrain);
             averageElevation = bot.get_average_elevation(state, terrain);
             dz_b = 0;
-            newTerrainZ = averageElevation;
             if obj.keepBaseHeightConstant
-                dz_b = newTerrainZ+bot.minBottomZFromTerrain-baseZ;
+                newTerrainZ = max(averageElevation+bot.minBottomZFromTerrain, highestElevation+1);
+                dz_b = newTerrainZ-baseZ;
             else
+                newTerrainZ = averageElevation;
                 minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
                 maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
+                % Adjust for highest elevation
+                minimumBaseZ = max(minimumBaseZ, highestElevation+1);
+                maximumBaseZ = max(maximumBaseZ, highestElevation+1);
                 if baseZ < minimumBaseZ
                     dz_b = minimumBaseZ-baseZ;
                 end

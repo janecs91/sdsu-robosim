@@ -59,7 +59,7 @@
         stepAdjusterSwing;
         stepAdjusterStance;
         stepAdjusterHeight;
-        stepSafetyValue = 0.95;
+        stepSafetyValue = 0.7;
         stepAdjustCount = 0;
         %localWaistLocation;
     end
@@ -287,6 +287,7 @@
             upMagnitude = 2 + max([0 elevationDifference highestStep]);
             %fprintf("- leg %d- highest elevation: %d, upMagnitude: %d\n", activeLeg, highestElevation, upMagnitude);
             if obj.enableLift == true
+                disp("Lift UP leg movement...")
                 obj = obj.move_leg(previousState, activeLeg, [0 0 upMagnitude], 1);
             end
             
@@ -309,6 +310,7 @@
             %% adjust forward leg movement
             % --- added this (but is optional, investigate more): && obj.numLegs < 4
             if obj.enableLegMovement == true
+                disp("Forward leg movement...")
                 forwardState = obj.get_last_state();
                 %disp("PATH INDEX =======")
                 %disp(forwardState.pathIndex);
@@ -342,6 +344,7 @@
             %downMagnitude = dz_i;
             fprintf("down magnitude: %d - dz_i: %d - terrain elevation: %d\n", downMagnitude, dz_i, terrainElevation);
             if obj.enableLift == true
+                disp("Downward leg movement...")
                 obj = obj.move_leg(currentState, activeLeg, [0 0 downMagnitude], 1);
             end
             lastState = obj.get_last_state();
