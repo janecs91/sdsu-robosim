@@ -3,6 +3,9 @@ classdef Perlin < TerrainGenerator
         % vars: width, height
         name = 'perlin_%.0d_%.0d';
         argNames = {};
+
+        applyFilter = true;
+        filterSize = 5;
     end
     methods
         function obj = Perlin(directory)
@@ -48,6 +51,13 @@ classdef Perlin < TerrainGenerator
                 d = interp2(randn(n, m), i-1, 'spline');
                 elevationMatrix = elevationMatrix + i * d(1:n, 1:m);
                 w = w - ceil(w/2 - 1);
+            end
+
+            % smooth elevations?
+            if obj.applyFilter
+                filterSize = obj.filterSize;
+                K = (1/(filterSize*filterSize))*ones(filterSize);
+                elevationMatrix = conv2(elevationMatrix,K,'same');
             end
                         
             slipMatrix = zeros(size(elevationMatrix));

@@ -18,7 +18,7 @@ classdef MatrixTerrain
         maxY;
     end
     methods
-        function obj = MatrixTerrain(fileAddress, directory, terrainArgs)
+        function obj = MatrixTerrain(fileAddress, directory, loadFromSaved, terrainArgs)
             if nargin > 0
                 terrainAddress = sprintf('%s/%s.mat\n', directory, fileAddress);
                 fprintf('attempting to load terrain address %s\n', terrainAddress);
@@ -32,10 +32,15 @@ classdef MatrixTerrain
             addpath('terrain/generators')
             terrainGenerator = TerrainGenerator(directory);
             try
+                if ~(loadFromSaved)
+                   error("Ignoring load from save...")
+                end
                 terrainData = load(terrainAddress);
                 fprintf("Successfully loaded terrain: %s\n", terrainAddress)
             catch
-                fprintf('error: could not find terrain %s\n', terrainAddress)
+                if loadFromSaved
+                    fprintf('error: could not find terrain %s\n', terrainAddress)
+                end
                 disp('generating...');
                 % generate if doesn't exist
                 if nargin > 2

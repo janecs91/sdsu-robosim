@@ -49,9 +49,9 @@ showVisual = true;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 4;
+botNum = 3;
 botStartX = -1;
-maxIterations = 999;
+maxIterations = 0;
 %% path settings
 pathNum = 3;
 pathStartX = 100; 
@@ -60,7 +60,7 @@ pathEndX = 650;
 pathEndY = pathStartY + 30;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 1;
+terrainNum = 7;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -70,8 +70,8 @@ cellsize = 5;
 terrainAmplitude = 13;
 terrainFrequency = 1;
 % random
-randFilterSize = 10;
-elevationChangeRange = 10;
+randFilterSize = 100;
+elevationChangeRange = 1;
 %terrainName = 'customTerrainName';
 %% visualize settings
 rate = 0.01;
@@ -96,10 +96,10 @@ terrainArgs = [terrainRequiredArgs terrainExtraArgs];
 
 % Load environment
 if loadFromSaved == true
-    env = Environment.get_saved_env(outputEnvDirectory, pathDirectory, terrainDirectory, ...
+    env = Environment.get_saved_env(outputEnvDirectory, true, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 else
-    env = Environment(outputEnvDirectory, pathDirectory, terrainDirectory, ...
+    env = Environment(outputEnvDirectory, false, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
     env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
 end

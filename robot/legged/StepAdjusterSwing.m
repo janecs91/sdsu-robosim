@@ -123,7 +123,7 @@ a_3=a_4=24 cm (leg length)
                 %fprintf("stable? %d\n", isStable);
                 if isStable
                     if obj.verbose
-                        %fprintf("found stable leg %d step, moveX: %d", leg, moveX)
+                        fprintf("found stable leg %d step, moveX: %d", leg, moveX)
                         fprintf("x_a: %.2f, y_a: %.2f, z_a: %.2f\n", x_a, y_a, z_a);
                         fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
                         fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);

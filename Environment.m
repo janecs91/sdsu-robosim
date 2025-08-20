@@ -39,7 +39,7 @@ classdef Environment
         analyzedBotKeys;
     end
     methods
-        function obj = Environment(outputEnvDirectory, inputPathDirectory, inputTerrainDirectory, ...
+        function obj = Environment(outputEnvDirectory, loadFromSaved, inputPathDirectory, inputTerrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs)
             Environment.load_paths();
             obj.outputEnvAddress = Environment.get_saved_address(outputEnvDirectory);
@@ -82,7 +82,7 @@ classdef Environment
                 terrainName = terrainGen.get_name(terrainArgs{:});
                 disp(terrainName);
             end
-            obj.terrain = MatrixTerrain(terrainName, inputTerrainDirectory, terrainArgs);
+            obj.terrain = MatrixTerrain(terrainName, inputTerrainDirectory, loadFromSaved, terrainArgs);
             obj.terrainName = obj.terrain.terrainName;
             
             % setup bots
