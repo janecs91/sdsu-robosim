@@ -91,7 +91,7 @@ classdef SwingParallel < SwingStrategy
                 %fprintf("(swing) current base pos: %.2f %.2f %.2f, currentGamma: %.2f, moveX: %.2f\n", state.basePosition, state.baseOrientation(3), moveX); 
                 %fprintf("old ft pt: [%.2f %.2f], ft center path pt: [%.2f %.2f]\n", state.endPositions(leg,1:2), futurePathPoint);
                 % plus = left?, minus = right?
-                halfWidthRobotBody = 15;
+                halfWidthRobotBody = bot.a_0;
                 %[plusPoint, minusPoint] = path.get_parallel_point_at_index(futurePathIndex, legRadius);
                 [plusPoint, minusPoint] = path.get_parallel_point_at_x(futurePathPoint(1), futurePathPoint(2), halfWidthRobotBody, futurePathIndex);
                 footPoints = [minusPoint; plusPoint; plusPoint; minusPoint];
