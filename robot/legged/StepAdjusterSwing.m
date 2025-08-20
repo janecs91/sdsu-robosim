@@ -95,11 +95,11 @@ a_3=a_4=24 cm (leg length)
                     moveX = obj.safetyValue*i;
                 end
                 globalFootPoint = obj.strategy.get_next_global_foot_point(bot, state, leg, terrain, path, moveX);
-                if obj.verbose
-                    fprintf("Strategy found global foot point: %.2f %.2f\n", globalFootPoint);
-                end
                 newTerrainZ = terrain.get_elevation(globalFootPoint(1), globalFootPoint(2));
                 globalFootPoint(3) = newTerrainZ;
+                if obj.verbose
+                    fprintf("Strategy found global foot point: %.2f %.2f %.2f\n", globalFootPoint);
+                end
                 localFootPoint = bot.change_global_to_local(state, globalFootPoint);
                 if obj.verbose && false
                     fprintf("state pos: %.2f %.2f, gamma: %.2f\n", state.basePosition(1:2), rad2deg(state.baseOrientation(3)));
@@ -150,7 +150,7 @@ a_3=a_4=24 cm (leg length)
             if obj.verbose
                 fprintf("stable moveX for leg %d: %.2f\n", leg, moveX);
                 fprintf("dx_i: %.2f, dy_i: %.2f\n", dx_i, dy_i);
-                fprintf("planned glob foot point: %d %d %d -- terrain elevation @ foot point: %d\n", globalFootPoint, newTerrainZ);
+                fprintf("planned glob foot point: %.2f %.2f %.2f -- terrain elevation @ foot point: %.2f\n", globalFootPoint, newTerrainZ);
             end
             mu_dx_i = max(dx_i, 0);
             if obj.allowNegativeDxi == true
