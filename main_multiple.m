@@ -68,7 +68,7 @@ equalAxis = false;
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 pathArgInstances = {StraightPathArgs()};
-terrainArgInstances = {FlatTerrainArgs()};
+terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs()};
 
 pathName = "";
 terrainName = "";
