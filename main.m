@@ -46,12 +46,13 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
 showVisual = false;
+createPlots = true;
 showPlots = true;
 turn = 0.01;
 %% bot settings
 botNum = 1;
 botStartX = -1;
-maxIterations = 999;
+maxIterations = 9999;
 %% path settings
 % 1, 2, 3, 5
 pathNum = 2;
@@ -130,11 +131,11 @@ if showVisual == true
 end
 
 %% Plot
-if showPlots
+if createPlots
     addpath('plot');
     plotter = BotPlotter(env, outputPlotDirectory);
-    plotter.plot_time_per_distance();
-    plotter.plot_power_per_distance();
+    plotter.plot_time_per_distance(showPlots);
+    plotter.plot_power_per_distance(showPlots);
 end
 
 

@@ -52,7 +52,7 @@ turn = 0.01;
 %% bot settings
 botNum = 1;
 botStartX = -1;
-maxIterations = 999;
+maxIterations = 9999;
 %% visualize settings
 rate = 0.01;
 startState = 1;
