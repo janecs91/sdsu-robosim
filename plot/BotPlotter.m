@@ -8,12 +8,19 @@ classdef BotPlotter
             obj.env = env;
             obj.outputPlotsDirectory = outputPlotsDirectory;
         end
-        function plot_time_per_distance(obj)
+        function plot_time_per_distance(obj, showDisplay)
+            if nargin < 1
+                showDisplay = 0;
+            end
             env = obj.env;
             %disp(env)
             bots = env.bots;
 
-            figure;
+            figureVisibility = 'off';
+            if showDisplay > 0
+                figureVisibility = 'on';
+            end
+            figure('visible',figureVisibility);
             hold on;
             for i=1:length(bots)
                 bot = bots{i};
@@ -45,11 +52,18 @@ classdef BotPlotter
                 saveas(gcf,pathVisualFileName)
             end
         end
-        function plot_power_per_distance(obj)
+        function plot_power_per_distance(obj, showDisplay)
+            if nargin < 1
+                showDisplay = 0;
+            end
             env = obj.env;
             bots = env.bots;
 
-            figure;
+            figureVisibility = 'off';
+            if showDisplay > 0
+                figureVisibility = 'on';
+            end
+            figure('visible',figureVisibility);
             hold on;
             for i=1:length(bots)
                 bot = bots{i};

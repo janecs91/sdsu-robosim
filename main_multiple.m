@@ -4,7 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output2';
-outputPlotDirectory = 'output_plots';
+outputPlotDirectory = 'output_plots_auto';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -46,34 +46,13 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
 showVisual = false;
-showPlots = true;
+createPlots = true;
+showPlots = false;
 turn = 0.01;
 %% bot settings
 botNum = 1;
 botStartX = -1;
 maxIterations = 999;
-%% path settings
-% 1, 2, 3, 5
-pathNum = 2;
-pathStartX = 100; 
-pathStartY = 100;
-pathEndX = 2150;
-pathEndY = pathStartY + 1000;
-pathAmplitude = 100;
-%% terrain settings
-terrainNum = 1;
-genTerrainFromPath = true;
-% custom, ignore if gen from path
-width = pathEndX+100;
-height = pathEndY+200;
-cellsize = 5;
-% sin
-terrainAmplitude = 13;
-terrainFrequency = 1;
-% random
-randFilterSize = 10;
-elevationChangeRange = 14;
-%terrainName = 'customTerrainName';
 %% visualize settings
 rate = 0.01;
 startState = 1;
@@ -86,27 +65,45 @@ equalAxis = false;
 
 %% ===== SIMULATE =====
 % System setup
-pathName = '';
-terrainName = '';
-pathRequiredArgs = {pathOptions{pathNum}, pathStartX, pathStartY, pathEndX, pathEndY};
-pathExtraArgs = {pathAmplitude};
-pathArgs = [pathRequiredArgs pathExtraArgs];
-terrainRequiredArgs = {genTerrainFromPath, pathName, terrainOptions{terrainNum}};
-terrainExtraArgs = {width, height, cellsize, terrainAmplitude, terrainFrequency, randFilterSize, elevationChangeRange};
-terrainArgs = [terrainRequiredArgs terrainExtraArgs];
+addpath('input_args/input_path_args');
+addpath('input_args/input_terrain_args');
+pathArgInstances = {StraightPathArgs()};
+terrainArgInstances = {FlatTerrainArgs()};
 
+pathName = "";
+terrainName = "";
 % Load environment
-if loadFromSaved == true
-    env = Environment.get_saved_env(outputEnvDirectory, true, pathDirectory, terrainDirectory, ...
-        pathName, terrainName, pathArgs, terrainArgs);
-else
-    env = Environment(outputEnvDirectory, false, pathDirectory, terrainDirectory, ...
-        pathName, terrainName, pathArgs, terrainArgs);
-    env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
+for pathArgIndex = 1:length(pathArgInstances)
+    pathArgInstance = pathArgInstances{pathArgIndex};
+    disp(pathArgInstance)
+    pathArgs = pathArgInstance.getPathArgs();
+    disp(pathArgs)
+    for terrainArgIndex = 1:length(terrainArgInstances)
+        terrainArgInstance = terrainArgInstances{terrainArgIndex};
+        terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
+        terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+        if loadFromSaved == true
+            env = Environment.get_saved_env(outputEnvDirectory, true, pathDirectory, terrainDirectory, ...
+                pathName, terrainName, pathArgs, terrainArgs);
+        else
+            env = Environment(outputEnvDirectory, false, pathDirectory, terrainDirectory, ...
+                pathName, terrainName, pathArgs, terrainArgs);
+            env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
+        end
+
+        %% Plot
+        if createPlots
+            addpath('plot');
+            plotter = BotPlotter(env, outputPlotDirectory);
+            plotter.plot_time_per_distance(showPlots);
+            plotter.plot_power_per_distance(showPlots);
+        end
+    end
 end
 
 % System variables
 % To keep in workspace
+%{
 keyOrder = env.botKeys;
 totalTimes = env.totalTime;
 totalPowers = env.totalPower;
@@ -115,26 +112,21 @@ pathPoints = path.pathPoints;
 terrain = env.terrain;
 bots = env.bots;
 pullBot = env.bots{1};
+%}
 
 % System display data
+%{
 disp(keyOrder)
 disp('total times');
 disp(totalTimes);
 disp('total powers');
 disp(totalPowers);
+%}
 
 % Launch visualization (if enabled)
+%{
 if showVisual == true
     env.visualize(botOptions{botNum}{1}, ...
         rate, startState, stopState, showAllMarkers, showAxis, showColorBar, equalAxis);
 end
-
-%% Plot
-if showPlots
-    addpath('plot');
-    plotter = BotPlotter(env, outputPlotDirectory);
-    plotter.plot_time_per_distance();
-    plotter.plot_power_per_distance();
-end
-
-
+%}
