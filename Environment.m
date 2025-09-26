@@ -179,6 +179,31 @@ classdef Environment
             
             Visualizer.simulate_bot(bot, varargin{:});
         end
+        function visualize_single_frame(obj, robotType, varargin)
+            if strcmp(robotType,'all')
+                robotType = obj.botKeys{1};
+            end
+            
+            fprintf('displaying robotType %s \n', robotType);
+            bot = obj.get_bot_by_type(robotType);
+            
+            % robot type params: roll, pull, walk
+            % must have run analyze() first
+            figure;
+            
+            terrainVisual = Visualizer.simulate_terrain(obj.terrain);
+            xlabel('X');
+            ylabel('Y');
+            zlabel('Z');
+            
+            hold on
+            pathVisual = Visualizer.simulate_path(obj.path);
+            hold off
+            
+            hold on
+            Visualizer.simulate_bot_single_frame(bot, varargin{:});
+            hold off
+        end
         function visualize_terrain(obj, outputVisualsDirectory, varargin)            
             figure;
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);

@@ -4,20 +4,26 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output2';
+outputPlotDirectory = 'output_plots';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 
 %% NEW AGENDA !!!!!!!!!!!!!!!!!!!!!!!!!!
 %=====================
-% MINIMIZE OR CLEAN UP PRINT STATEMENTS
-% Go through program step by step
-% Review math and code
-% Add or clean up comments. Use Copilot to help if needed
 
-%% Potential fixes and ideas
-% Back legs are planning to move too far ahead
-% Added safetyValue* factor to back leg max. Review.
+%% GRAPHS
+% [metric] - Max joint change distance
+% [metric] - Stridge length: end position, body
+% [QoL] - Save graphs
+
+%% 07.25
+% - Fix RollBot base end position?
+% - Fix axis
+% - Fix load from env; possibly fix terrain load
+% [low] Fix Visualizer - what about it?
+% [low] Possibly fix Perlin?
+% [med] Possibly optimize step adjuster height
 
 %% TBD: Analysis quality of life improvements
 %{
@@ -25,14 +31,6 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 2. Generate graphs or pictures of a specific state
 3. Iterate over array or combination of experiments
 %}
-
-%% ADDITIONAL ANALYSIS FEATURES????
-%{ 
-Interesting things to add: !!!!!!!!!!!!!!!!!
-Get base position distance for each leg (size of body vector differences in
-pulling vs walking) - does pulling have a bigger body vector?
-%}
-
 
 %=====================
 % OLD agenda
@@ -46,39 +44,40 @@ pulling vs walking) - does pulling have a bigger body vector?
 % additional terrains: steplike, mars?
 
 %% ===== TEST PARAMS ======
-loadFromSaved = false;
+loadFromSaved = false; 
 showVisual = true;
+createPlots = false;
+showPlots = true;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 4;
 botStartX = -1;
-maxIterations = 10;
+maxIterations = 9999;
 %% path settings
-pathNum = 3;
-pathStartX = 50; 
+% 1, 2, 3, 5
+pathNum = 2;
+pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 400;
-pathEndY = pathStartY + 30;
+pathEndX = 650;
+pathEndY = pathStartY + 400;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 7;
+terrainNum = 1;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
-width = pathEndX+50;
+width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 20;
-terrainFrequency = 0.01;
+terrainAmplitude = 13;
+terrainFrequency = 1;
 % random
 randFilterSize = 10;
-elevationChangeRange = 10;
+elevationChangeRange = 14;
 %terrainName = 'customTerrainName';
 %% visualize settings
-rate = 0.001;
-startState = 1;
-stopState = -1;
-showAllMarkers = true;
+stateNumber = 100;
+showAllMarkers = false;
 showAxis = '';
 showColorBar = 0;
 equalAxis = false;
@@ -97,10 +96,10 @@ terrainArgs = [terrainRequiredArgs terrainExtraArgs];
 
 % Load environment
 if loadFromSaved == true
-    env = Environment.get_saved_env(outputEnvDirectory, pathDirectory, terrainDirectory, ...
+    env = Environment.get_saved_env(outputEnvDirectory, true, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 else
-    env = Environment(outputEnvDirectory, pathDirectory, terrainDirectory, ...
+    env = Environment(outputEnvDirectory, false, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
     env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
 end
@@ -108,8 +107,8 @@ end
 % System variables
 % To keep in workspace
 keyOrder = env.botKeys;
-times = env.times;
-energies = env.energies;
+totalTimes = env.totalTime;
+totalPowers = env.totalPower;
 path = env.path;
 pathPoints = path.pathPoints;
 terrain = env.terrain;
@@ -118,13 +117,23 @@ pullBot = env.bots{1};
 
 % System display data
 disp(keyOrder)
-disp('times');
-disp(times);
-disp('energies');
-disp(energies);
+disp('total times');
+disp(totalTimes);
+disp('total powers');
+disp(totalPowers);
 
 % Launch visualization (if enabled)
-if showVisual == false
-    env.visualize(botOptions{botNum}{1}, ...
-        rate, startState, stopState, showAllMarkers, showAxis, showColorBar, equalAxis);
+if showVisual == true
+    env.visualize_single_frame(botOptions{botNum}{1}, stateNumber, showAllMarkers, showAxis, showColorBar, equalAxis);
+    
 end
+
+%% Plot
+if createPlots
+    addpath('plot');
+    plotter = BotPlotter(env, outputPlotDirectory);
+    plotter.plot_time_per_distance(showPlots);
+    plotter.plot_power_per_distance(showPlots);
+end
+
+

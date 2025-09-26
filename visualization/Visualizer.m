@@ -12,7 +12,9 @@ classdef Visualizer
     end
     methods(Static)
         function statePlot = show_joint_positions(bot, state, color, previousStatePlot)
-            delete(previousStatePlot);
+            if nargin > 3
+                delete(previousStatePlot);
+            end
             %set(previousStatePlot, 'visible', 'off');
             positions = bot.get_global_joint_positions(state);
             % base
@@ -273,6 +275,134 @@ classdef Visualizer
 
             end
         end
+
+        function simulate_bot_single_frame(bot, stateNumber, showAllMarkers, viewAxis, showColorBar, equalAxis)
+            grid on;
+            states = bot.stateHistory;
+            if nargin < 3
+                showAllMarkers = false;
+            end
+            if stateNumber == length(states)
+                showAllMarkers = true;
+            end
+            if nargin < 4
+                viewAxis = "";
+            end
+            if nargin < 5
+                showColorBar = 1;
+            end
+            if nargin < 6
+                equalAxis = 1;
+            end
+            
+            % change view to 3D
+            view(3);
+            if ~strcmp(viewAxis, '')
+                if strcmp(viewAxis, 'x')
+                    view(90,0);
+                elseif strcmp(viewAxis, 'y')
+                    view(0,0);
+                    disp('axis')
+                    disp(axis)
+                    axis([0 inf -inf inf -inf inf]);
+                elseif strcmp(viewAxis, 'z')
+                    view(0, 90);
+                end
+            end
+            if equalAxis == 1
+                axis equal;
+            end
+            if showColorBar > 0
+                colorbar;
+            end
+            %zoom off;
+
+            isNotRoll = ~strcmp(bot.mode, 'roll');
+            isWalk = strcmp(bot.mode, 'walk');
+            if Visualizer.verbose
+                fprintf("isnotRoll? %d\n", isNotRoll);
+                fprintf("isWalk? %d\n", isWalk);
+                
+                fprintf("showAllMarkers? : %d\n", showAllMarkers)
+            end
+            % get data
+            botPositions = bot.get_history_base();
+            
+            % reduce data
+            [endPositions, plannedEndPositions] = bot.get_history_ends();
+            botPositions = cast(botPositions, 'single');
+            endPositions = cast(endPositions, 'single');
+            endPositions1 = endPositions(:,1,:);
+            endPositions2 = endPositions(:,2,:);
+            if isNotRoll
+                plannedEndPositions = cast(plannedEndPositions, 'single');
+                plannedEndPositions1 = plannedEndPositions(:,1,:);
+                plannedEndPositions2 = plannedEndPositions(:,2,:);
+            else
+                plannedEndPositions = [];
+            end
+            
+            % if walk
+            if isWalk
+                plannedEndPositions3 = plannedEndPositions(:,3,:);
+                plannedEndPositions4 = plannedEndPositions(:,4,:);
+            end
+
+            % simulate
+            b = [];
+            initialBotPositions = botPositions;
+            initialEndPositions1 = endPositions1;
+            initialEndPositions2 = endPositions2;
+            if isNotRoll
+                initialPlannedEndPositions1 = plannedEndPositions1;
+                initialPlannedEndPositions2 = plannedEndPositions2;
+            end
+            if isWalk
+                initialPlannedEndPositions3 = plannedEndPositions3;
+                initialPlannedEndPositions4 = plannedEndPositions4;
+            end
+            if showAllMarkers == false
+                initialBotPositions = botPositions(1:stateNumber,:);
+                initialEndPositions1 = endPositions1(1:stateNumber,:);
+                initialEndPositions2 = endPositions2(1:stateNumber,:);
+                if isNotRoll
+                    initialPlannedEndPositions1 = plannedEndPositions1(1,:);
+                    initialPlannedEndPositions2 = plannedEndPositions2(1,:);
+                end
+                if isWalk
+                    initialPlannedEndPositions3 = plannedEndPositions3(1,:);
+                    initialPlannedEndPositions4 = plannedEndPositions4(1,:);
+                end
+            end
+            historyLineBase = plot3(initialBotPositions(:,1),initialBotPositions(:,2), initialBotPositions(:,3),'Color','g','LineWidth',2);
+            historyLineEndPosition1 = plot3(initialEndPositions1(:,1),initialEndPositions1(:,2), initialEndPositions1(:,3),'Color','b','LineWidth',2);
+            historyLineEndPosition2 = plot3(initialEndPositions2(:,1),initialEndPositions2(:,2), initialEndPositions2(:,3),'Color','b','LineWidth',2);
+
+            % Plot planned positions
+            if isNotRoll
+                historyScatterPlannedEndPosition1 = scatter3(initialPlannedEndPositions1(:,1),initialPlannedEndPositions1(:,2), initialPlannedEndPositions1(:,3),'MarkerFaceColor','m', 'Marker','o');
+                historyScatterPlannedEndPosition2 = scatter3(initialPlannedEndPositions2(:,1),initialPlannedEndPositions2(:,2), initialPlannedEndPositions2(:,3),'MarkerFaceColor','m', 'Marker','o');
+                %Visualizer.show_text(plannedEndPositions1, startScatterI, i, '1');
+                %Visualizer.show_text(plannedEndPositions2, startScatterI, i, '2');
+            end
+            if isWalk
+                historyScatterPlannedEndPosition3 = scatter3(initialPlannedEndPositions3(:,1),initialPlannedEndPositions3(:,2), initialPlannedEndPositions3(:,3),'MarkerFaceColor','black', 'Marker','o');
+                historyScatterPlannedEndPosition4 = scatter3(initialPlannedEndPositions4(:,1),initialPlannedEndPositions4(:,2), initialPlannedEndPositions4(:,3),'MarkerFaceColor','black', 'Marker','o');
+                %Visualizer.show_text(plannedEndPositions3, startScatterI, i, '3');
+                %Visualizer.show_text(plannedEndPositions4, startScatterI, i, '4');
+            end
+
+            % draw state
+            state = states(stateNumber);
+            if Visualizer.verbose
+                fprintf('state #%i\n', stateNumber)
+                fprintf('state base position: %d %d %d\n', state.basePosition(:))
+            end
+              
+            b = Visualizer.show_joint_positions(bot, state, 'r'); 
+
+        end
+        
     end
 end
         
