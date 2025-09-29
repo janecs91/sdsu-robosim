@@ -59,8 +59,8 @@ maxIterations = 4;
 pathNum = 3;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 650;
-pathEndY = pathStartY + 1000;
+pathEndX = 2100;
+pathEndY = pathStartY + 2000;
 pathAmplitude = 100;
 %% terrain settings
 terrainNum = 1;
@@ -101,10 +101,10 @@ terrainArgs = [terrainRequiredArgs terrainExtraArgs];
 
 % Load environment
 if loadFromSaved == true
-    env = Environment.get_saved_env(outputEnvDirectory, pathDirectory, terrainDirectory, ...
+    env = Environment.get_saved_env(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 else
-    env = Environment(outputEnvDirectory, pathDirectory, terrainDirectory, ...
+    env = Environment(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 end
 

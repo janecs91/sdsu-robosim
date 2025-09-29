@@ -41,6 +41,10 @@ classdef Environment
     methods
         function obj = Environment(outputEnvDirectory, loadFromSaved, inputPathDirectory, inputTerrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs)
+            disp("pathARgs")
+            disp(pathArgs)
+            disp("terrainArgs")
+            disp(terrainArgs)
             Environment.load_paths();
             obj.outputEnvAddress = Environment.get_saved_address(outputEnvDirectory);
             disp("ENV ******f sav  **** ==")
