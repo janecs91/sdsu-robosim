@@ -183,7 +183,7 @@ classdef Environment
             
             Visualizer.simulate_bot(bot, varargin{:});
         end
-        function visualize_single_frame(obj, robotType, varargin)
+        function visualize_single_frame(obj, outputVisualsDirectory, robotType, varargin)
             if strcmp(robotType,'all')
                 robotType = obj.botKeys{1};
             end
@@ -207,6 +207,12 @@ classdef Environment
             hold on
             Visualizer.simulate_bot_single_frame(bot, varargin{:});
             hold off
+
+            % save figure here
+            if ~isempty(outputVisualsDirectory)
+                pathVisualFileName = sprintf("%s/robot_%s_%s.png", outputVisualsDirectory, obj.terrainName, obj.pathName);
+                saveas(gcf,pathVisualFileName)
+            end
         end
         function visualize_terrain(obj, outputVisualsDirectory, varargin)            
             figure;

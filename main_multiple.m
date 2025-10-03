@@ -5,6 +5,7 @@ pathDirectory = 'input_path';
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output2';
 outputPlotDirectory = 'output_plots_auto';
+outputVisualsDirectory = 'output_visuals2';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -68,7 +69,9 @@ equalAxis = false;
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 pathArgInstances = {StraightPathArgs()};
-terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs()};
+%pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+terrainArgInstances = {FlatTerrainArgs()};
+%terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs(), RandomTerrainArgs(), PerlinTerrainArgs()};
 
 pathName = "";
 terrainName = "";
@@ -88,8 +91,12 @@ for pathArgIndex = 1:length(pathArgInstances)
         else
             env = Environment(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs);
-            env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
         end
+        env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
+
+        %% WIP - single frame visual
+        stateNumberPercent = 0.5;
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}, stateNumberPercent, showAllMarkers, showAxis, showColorBar, equalAxis);
 
         %% Plot
         if createPlots

@@ -11,16 +11,18 @@ classdef PathArgsInterface
         pathAmplitude
     end
     methods
-        function obj = PathArgsInterface(pathName, pathStartX, pathStartY, pathEndX, pathEndY, pathAmplitude)
+        function obj = PathArgsInterface()
             %% path settings
             % 1, 2, 3, 5
             %obj.pathNum = pathNum;
+            %{
             obj.pathName = pathName;
             obj.pathStartX = pathStartX; 
             obj.pathStartY = pathStartY;
             obj.pathEndX = pathEndX;
             obj.pathEndY = pathEndY;
             obj.pathAmplitude = pathAmplitude;
+            %}
         end
 
         function pathArgs = getPathArgs(obj)

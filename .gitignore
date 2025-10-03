@@ -1,4 +1,4 @@
 *.asv
-output*/
-input_path/
-input_terrain/
+output*/*
+input_path/*
+input_terrain/*

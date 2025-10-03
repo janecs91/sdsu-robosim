@@ -6,7 +6,7 @@ classdef StraightPathArgs < PathArgsInterface
             obj.pathStartX = 100; 
             obj.pathStartY = 100;
             obj.pathEndX = 2100;
-            obj.pathEndY = pathStartY + 100;
+            obj.pathEndY = obj.pathStartY + 100;
             obj.pathAmplitude = 100;
         end
     end
