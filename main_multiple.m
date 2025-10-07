@@ -4,8 +4,8 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output2';
-outputPlotDirectory = 'output_plots_auto';
-outputVisualsDirectory = 'output_visuals_run';
+outputPlotDirectory = 'output_plots_auto_sin';
+outputVisualsDirectory = 'output_visuals_run_sin';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -68,12 +68,30 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-runAll = false;
-pathArgInstances = {StraightPathArgs()};
-terrainArgInstances = {FlatTerrainArgs()};
-if runAll
+executionGroup = 5;
+if executionGroup == 1
+    pathArgInstances = {StraightPathArgs()};
+    terrainArgInstances = {FlatTerrainArgs()};
+elseif executionGroup == 2
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs(), RandomTerrainArgs(), PerlinTerrainArgs()};
+    terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs()};
+elseif executionGroup == 3
+    % error - fix
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {RandomTerrainArgs()};
+elseif executionGroup == 4
+    % error - fix
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {PerlinTerrainArgs()};
+elseif executionGroup == 5
+    % Sin group - easy
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {SinLowEasyTerrainArgs(), SinMedEasyTerrainArgs, SinLowMedTerrainArgs, SinLowBumpyTerrainArgs, SinLowXBumpyTerrainArgs, SinLowXXBumpyTerrainArgs};
+elseif executionGroup == 6
+    % Sin group - harder
+    % error - fix
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {SinHighEasyTerrainArgs, SinMedMedTerrainArgs, SinHighMedTerrainArgs, SinMedBumpyTerrainArgs, SinMedXBumpyTerrainArgs};
 end
 
 pathName = "";

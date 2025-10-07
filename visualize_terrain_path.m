@@ -63,18 +63,18 @@ pathEndX = 2100;
 pathEndY = pathStartY + 2000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 2;
+terrainNum = 7;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 50;
+terrainAmplitude = 13;
 terrainFrequency = 0.007;
 % random
-randFilterSize = 100;
-elevationChangeRange = 5;
+randFilterSize = 10;
+elevationChangeRange = 14;
 %terrainName = 'customTerrainName';
 %% visualize settings
 rate = 0.001;
@@ -83,7 +83,7 @@ stopState = -1;
 showAllMarkers = true;
 showAxis = '';
 showColorBar = 0;
-equalAxis = false;
+equalAxis = true;
 
 
 
