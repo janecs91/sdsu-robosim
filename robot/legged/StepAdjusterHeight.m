@@ -3,7 +3,7 @@ classdef StepAdjusterHeight < StepAdjuster
         originalBaseHeight = 30;
         enableIncreaseHeight = true;
         enableDecreaseToOriginal = true;
-        verbose = true;
+        verbose = false;
     end
     methods
         function obj = StepAdjusterHeight(safetyValue)
@@ -27,13 +27,17 @@ classdef StepAdjusterHeight < StepAdjuster
             end
             if obj.enableDecreaseToOriginal == true && requiredZ < obj.originalBaseHeight && maxBaseZ > obj.originalBaseHeight
                 dz_b = obj.originalBaseHeight - maxBaseZ;
-                fprintf("decrease height part 1 - dz_b: %d\n", dz_b)
+                if obj.verbose
+                    fprintf("decrease height part 1 - dz_b: %d\n", dz_b)
+                end
 
                 averageElevation = bot.get_average_elevation(state, terrain);
                 if state.basePosition(3)+dz_b < averageElevation+bot.minBottomZFromTerrain
                     dz_b = averageElevation+bot.minBottomZFromTerrain-state.basePosition(3);
-                    fprintf("decrease height part 2 terrain check - dz_b: %d\n", dz_b)
-                    fprintf("state base z: %d, average elevation: %d, min bottom z: %d\n", state.basePosition(3), averageElevation, bot.minBottomZFromTerrain);
+                    if obj.verbose
+                        fprintf("decrease height part 2 terrain check - dz_b: %d\n", dz_b)
+                        fprintf("state base z: %d, average elevation: %d, min bottom z: %d\n", state.basePosition(3), averageElevation, bot.minBottomZFromTerrain);
+                    end
                 end
                 
             end

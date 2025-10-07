@@ -105,8 +105,10 @@
             bodyStepSize = obj.maxStepSize;
             %bodyStepSize = 0;
             firstState.activeLeg = obj.initialActiveLeg;
-            disp("active leg starting")
-            disp(firstState.activeLeg);
+            if obj.verbose
+                disp("active leg starting")
+                disp(firstState.activeLeg);
+            end
             
             %% adjust x-direction (legs)
             if obj.adjustInitialX
@@ -260,7 +262,9 @@
             fakeState.basePosition = fakeState.basePosition + globalBodyVector;
             fakeState.baseOrientation = fakeState.baseOrientation + turnAngleBody;
             fakeState.pathIndex = futurePathIndex;
-            fprintf("Calculating planned leg vector for fake state base pos: %.2f %.2f %.2f\n", fakeState.basePosition);
+            if obj.verbose
+                fprintf("Calculating planned leg vector for fake state base pos: %.2f %.2f %.2f\n", fakeState.basePosition);
+            end
             [dx_i, dy_i, dz_i] = obj.stepAdjusterSwing.get_step_vector2(obj, fakeState, activeLeg, terrain, path);
             if obj.useConstantTestValues
                 dx_i = obj.constant_dx_i;
@@ -275,9 +279,13 @@
             %newEndPosition(3) = 0;
             newEndPosition(3) = previousEndPosition(3) + dz_i;
             previousState.plannedEndPositions(activeLeg,:) = newEndPosition;
-            fprintf("Planned -> relative leg vec: %.2f %.2f %.2f - global leg vec: %.2f %.2f %.2f - end position: %.2f %.2f %.2f\n", relativeLegVector, globalLegVector, newEndPosition);
+            if obj.verbose
+                fprintf("Planned -> relative leg vec: %.2f %.2f %.2f - global leg vec: %.2f %.2f %.2f - end position: %.2f %.2f %.2f\n", relativeLegVector, globalLegVector, newEndPosition);
+            end
             newEndPosTerrainElevation = terrain.get_elevation(newEndPosition(1), newEndPosition(2));
-            fprintf("Terrain elevation %.2f %.2f: %.2f\n", newEndPosition(1:2), newEndPosTerrainElevation);
+            if obj.verbose
+                fprintf("Terrain elevation %.2f %.2f: %.2f\n", newEndPosition(1:2), newEndPosTerrainElevation);
+            end
             
             % evaluate terrain elevations
             elevationDifference = relativeLegVector(3);
@@ -290,7 +298,9 @@
             upMagnitude = 2 + max([0 elevationDifference highestStep]);
             %fprintf("- leg %d- highest elevation: %d, upMagnitude: %d\n", activeLeg, highestElevation, upMagnitude);
             if obj.enableLift == true
-                disp("Lift UP leg movement...")
+                if obj.verbose
+                    disp("Lift UP leg movement...")
+                end
                 obj = obj.move_leg(previousState, activeLeg, [0 0 upMagnitude], 1);
             end
             
@@ -305,15 +315,19 @@
             end
             tempSavePreviousState = copy(forwardState);
             obj = obj.move_body(forwardState, activeLeg, relativeBodyVector, turnAngleBody, futurePathIndex, terrain, 1);
-            %fprintf("**********$$$$$$$ after body forward adjust\n");
-            fprintf("relative body vector: %.2f %.2f %.2f - old base pos: %.2f %.2f %.2f - new base pos: %.2f %.2f %.2f\n", relativeBodyVector, tempSavePreviousState.basePosition, forwardState.basePosition);
-            %disp("pull hips from legbot");
-            %disp(forwardState.anglesHip);
+            if obj.verbose
+                %fprintf("**********$$$$$$$ after body forward adjust\n");
+                fprintf("relative body vector: %.2f %.2f %.2f - old base pos: %.2f %.2f %.2f - new base pos: %.2f %.2f %.2f\n", relativeBodyVector, tempSavePreviousState.basePosition, forwardState.basePosition);
+                %disp("pull hips from legbot");
+                %disp(forwardState.anglesHip);
+            end
             
             %% adjust forward leg movement
             % --- added this (but is optional, investigate more): && obj.numLegs < 4
             if obj.enableLegMovement == true
-                disp("Forward leg movement...")
+                if obj.verbose
+                    disp("Forward leg movement...")
+                end
                 forwardState = obj.get_last_state();
                 %disp("PATH INDEX =======")
                 %disp(forwardState.pathIndex);
@@ -326,7 +340,9 @@
                 %disp(relativeLegVector)
                 obj = obj.move_leg(forwardState, activeLeg, [relativeLegVector(1:2) 0], 1);
                 tempSavePreviousState = copy(forwardState);
-                fprintf("relative leg vector: %.2f %.2f %.2f - old end pos: %.2f %.2f %.2f - new end pos: %.2f %.2f %.2f\n", relativeLegVector, dz_i, tempSavePreviousState.endPositions(activeLeg,:), forwardState.endPositions(activeLeg,:));
+                if obj.verbose
+                    fprintf("relative leg vector: %.2f %.2f %.2f - old end pos: %.2f %.2f %.2f - new end pos: %.2f %.2f %.2f\n", relativeLegVector, dz_i, tempSavePreviousState.endPositions(activeLeg,:), forwardState.endPositions(activeLeg,:));
+                end
             end
 
             %% change bot height if needed
@@ -345,14 +361,20 @@
             terrainElevation = terrain.get_elevation(currentEndPosition(1), currentEndPosition(2));
             downMagnitude = terrainElevation - currentEndPosition(3);
             %downMagnitude = dz_i;
-            fprintf("down magnitude: %.2f - dz_i: %.2f - terrain elevation: %.2f\n", downMagnitude, dz_i, terrainElevation);
+            if obj.verbose
+                fprintf("down magnitude: %.2f - dz_i: %.2f - terrain elevation: %.2f\n", downMagnitude, dz_i, terrainElevation);
+            end
             if obj.enableLift == true
-                disp("Downward leg movement...")
+                if obj.verbose
+                    disp("Downward leg movement...")
+                end
                 obj = obj.move_leg(currentState, activeLeg, [0 0 downMagnitude], 1);
             end
             lastState = obj.get_last_state();
             endPositionsTest = obj.get_global_joint_positions(lastState, activeLeg);
-            fprintf("resulting global end position: %.2f %.2f %.2f\n", endPositionsTest(end,:));
+            if obj.verbose
+                fprintf("resulting global end position: %.2f %.2f %.2f\n", endPositionsTest(end,:));
+            end
             
         end
         function [obj, newState] = turn_base(obj, previousState, turnAngle)

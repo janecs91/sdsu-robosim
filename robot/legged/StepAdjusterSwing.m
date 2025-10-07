@@ -18,7 +18,7 @@ classdef StepAdjusterSwing < StepAdjuster
         %constant_dx_i0 = 10;
         modifyDx_i = true;
 
-        verbose = true;
+        verbose = false;
     end
     %{
 %% ROBOT
@@ -77,7 +77,7 @@ a_3=a_4=24 cm (leg length)
                 max_dx_i = max_dx_i_back;
             end
             testRange = max_dx_i:-1:obj.minDxi;
-            if obj.verbose && true
+            if obj.verbose
                 fprintf("find swing step: leg %d - x_a: %.2f, y_a: %.2f, z_a: %.2f\n", leg, x_a, y_a, z_a);
                 fprintf("x_h: %.2f, y_h: %.2f, z_h: %.2f\n", x_h, y_h, z_h);
                 fprintf("local waist x: %.2f, distance_hip_to_foot: %.2f, maxdx_i: %.2f\n", waist_x, distance_hip_to_foot, max_dx_i);
@@ -87,7 +87,7 @@ a_3=a_4=24 cm (leg length)
             localOldFootPoint = bot.change_global_to_local(state, state.endPositions(leg,1:2));
             localOldFootPoint(3) = z_a-state.basePosition(3);
             for i=testRange
-                if obj.verbose && false
+                if obj.verbose
                     fprintf("* test range i: %d\n", i);
                 end
                 moveX = i;
@@ -101,7 +101,7 @@ a_3=a_4=24 cm (leg length)
                     fprintf("Strategy found global foot point: %.2f %.2f %.2f\n", globalFootPoint);
                 end
                 localFootPoint = bot.change_global_to_local(state, globalFootPoint);
-                if obj.verbose && false
+                if obj.verbose
                     fprintf("state pos: %.2f %.2f, gamma: %.2f\n", state.basePosition(1:2), rad2deg(state.baseOrientation(3)));
                     fprintf("(global) old ft pt: %.2f %.2f %.2f, new ft pt: %.2f %.2f %.2f\n", ...
                         state.endPositions(leg,:), globalFootPoint);
@@ -113,7 +113,7 @@ a_3=a_4=24 cm (leg length)
                 y_a_prime = localFootPoint(2);
                 z_a_prime = localFootPoint(3);
                 [x_h, y_h, z_h, x_h_prime, y_h_prime, z_h_prime] = StepAdjusterSwing.get_hips(bot, state, leg, x_a_prime, y_a_prime, z_a_prime);    % for display only
-                if obj.verbose && false
+                if obj.verbose
                     fprintf("trying leg %d swing step - moveX: %.2f\n", leg, moveX)
                     fprintf("x_a_prime: %.2f, y_a_prime: %.2f, z_a_prime: %.2f\n", x_a_prime, y_a_prime, z_a_prime);
                     fprintf("x_h_prime: %.2f, y_h_prime: %.2f, z_h_prime: %.2f\n", x_h_prime, y_h_prime, z_h_prime);
@@ -134,7 +134,7 @@ a_3=a_4=24 cm (leg length)
                     end
                     break
                 else
-                    if obj.verbose && false
+                    if obj.verbose
                         fprintf("NOT stable --> after trying leg %d swing step - moveX: %.2f\n", leg, moveX)
                     end
                 end

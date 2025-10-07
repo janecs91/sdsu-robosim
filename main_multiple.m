@@ -68,10 +68,13 @@ equalAxis = false;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
+runAll = false;
 pathArgInstances = {StraightPathArgs()};
-%pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
 terrainArgInstances = {FlatTerrainArgs()};
-%terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs(), RandomTerrainArgs(), PerlinTerrainArgs()};
+if runAll
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs(), RandomTerrainArgs(), PerlinTerrainArgs()};
+end
 
 pathName = "";
 terrainName = "";

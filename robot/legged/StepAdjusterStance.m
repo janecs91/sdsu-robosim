@@ -40,7 +40,9 @@ classdef StepAdjusterStance < StepAdjuster
                 dx_b = min(footDistanceFromHip,allowableLegStretch);
             end
             if bot.numLegs > 2 && obj.conservativeWalkingBaseMovement
-                disp("Walking bot handicap")
+                if obj.verbose
+                    disp("Walking bot handicap")
+                end
                 dx_b = dx_b/2;
             end
             %bodyVectorDivisor = max(ceil(bot.numLegs/2),1);
@@ -126,11 +128,15 @@ classdef StepAdjusterStance < StepAdjuster
                     break
                 end
                 if i==size(testRange,2)
-                    disp("could not find isstable stance, end of check")
-                    fprintf("last values leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    if obj.verbose
+                        disp("could not find isstable stance, end of check")
+                        fprintf("last values leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    end
                     dx_b = 0;
                     dy_b = 0;
-                    fprintf("reset stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    if obj.verbose
+                        fprintf("reset stance leg %d - dx_b: %.2f, dy_b:%.2f\n", stanceLeg, dx_b, dy_b);
+                    end
                 end
             end
             %dz_b = obj.get_base_z_vector(bot, state, terrain, futurePathPoint);
@@ -201,7 +207,7 @@ classdef StepAdjusterStance < StepAdjuster
             end
             
             %dz_b = max(highestElevation, lowestPoint)-oldTerrainZ;
-            if obj.verbose || true
+            if obj.verbose
                 fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
                 fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
             end

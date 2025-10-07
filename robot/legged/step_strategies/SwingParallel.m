@@ -13,7 +13,7 @@ classdef SwingParallel < SwingStrategy
         useUConstant = true;
         constantLegRadius = false;
         useBaseGamma = true;
-        verbose = true;
+        verbose = false;
 
         constantBackLegGlobalFootPoint = false;
     end

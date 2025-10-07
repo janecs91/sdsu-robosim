@@ -91,7 +91,9 @@ classdef Visualizer
                 %terrainY = terrain.initY:terrain.scaleY:terrain.maxY;
                 terrainSize = terrain.gridSize;
                 CO(:,:,1) = zeros(terrainSize(2)); % red
-                disp(size(CO));
+                if Visualizer.verbose
+                    fprintf("Terrain size %d %d", size(CO));
+                end
                 %CO(:,:,2) = ones(terrainSize(2)).*linspace(0.5,0.6,25); % green
                 %CO(:,:,3) = ones(terrainSize(2)).*linspace(0,1,25); % blue
                 terrainPlot = surf(terrain.initX:terrain.scaleX:terrain.maxX, ...
@@ -304,8 +306,10 @@ classdef Visualizer
                     view(90,0);
                 elseif strcmp(viewAxis, 'y')
                     view(0,0);
-                    disp('axis')
-                    disp(axis)
+                    if Visualizer.verbose
+                        disp('axis')
+                        disp(axis)
+                    end
                     axis([0 inf -inf inf -inf inf]);
                 elseif strcmp(viewAxis, 'z')
                     view(0, 90);
