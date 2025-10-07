@@ -184,7 +184,7 @@ classdef Environment
             Visualizer.simulate_bot(bot, varargin{:});
 
         end
-        function visualize_single_frame(obj, outputVisualsDirectory, robotType, stateNumberPercent, showVisual, varargin)
+        function visualize_single_frame(obj, outputVisualsDirectory, robotType, stateNumberPercent, equalAxis, showVisual, varargin)
             robots = {robotType};
             if strcmp(robotType,'all')
                 robots = {'pull', 'roll', 'walk'};
@@ -213,12 +213,12 @@ classdef Environment
                 hold off
                 
                 hold on
-                Visualizer.simulate_bot_single_frame(bot, stateNumberPercent, varargin{:});
+                Visualizer.simulate_bot_single_frame(bot, stateNumberPercent, equalAxis, varargin{:});
                 hold off
     
                 % save figure here
                 if ~isempty(outputVisualsDirectory)
-                    pathVisualFileName = sprintf("%s/robot_%s_%s_%s_%0.2f.png", outputVisualsDirectory, obj.terrainName, obj.pathName, robotType, stateNumberPercent);
+                    pathVisualFileName = sprintf("%s/robot_%s_%s_%s_%0.2f_%d.png", outputVisualsDirectory, obj.terrainName, obj.pathName, robotType, stateNumberPercent, equalAxis);
                     saveas(gcf,pathVisualFileName)
                 end
             end

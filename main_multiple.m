@@ -61,7 +61,7 @@ stopState = -1;
 showAllMarkers = false;
 showAxis = '';
 showColorBar = 0;
-equalAxis = false;
+%equalAxis = true;
 
 
 %% ===== SIMULATE =====
@@ -100,9 +100,15 @@ for pathArgIndex = 1:length(pathArgInstances)
         %% WIP - single frame visual
         %% To do: test this for all 3 robot types
         stateNumberPercent = 0.5;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
+        equalAxis = false;
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
+        equalAxis = true;
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
         stateNumberPercent = 1;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
+        equalAxis = false;
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
+        equalAxis = true;
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
 
         %% Plot
         if createPlots

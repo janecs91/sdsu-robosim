@@ -278,7 +278,7 @@ classdef Visualizer
             end
         end
 
-        function simulate_bot_single_frame(bot, stateNumberPercent, showAllMarkers, viewAxis, showColorBar, equalAxis)
+        function simulate_bot_single_frame(bot, stateNumberPercent, equalAxis, showAllMarkers, viewAxis, showColorBar)
             % stateNumberPercent is a decimal from 0 (0%) to 1 (100%)
             grid on;
             states = bot.stateHistory;
