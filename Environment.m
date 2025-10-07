@@ -164,7 +164,7 @@ classdef Environment
             if strcmp(robotType,'all')
                 robotType = obj.botKeys{1};
             end
-            
+
             fprintf('displaying robotType %s \n', robotType);
             bot = obj.get_bot_by_type(robotType);
             
@@ -182,36 +182,45 @@ classdef Environment
             hold off
             
             Visualizer.simulate_bot(bot, varargin{:});
+
         end
-        function visualize_single_frame(obj, outputVisualsDirectory, robotType, varargin)
+        function visualize_single_frame(obj, outputVisualsDirectory, robotType, stateNumberPercent, showVisual, varargin)
+            robots = {robotType};
             if strcmp(robotType,'all')
-                robotType = obj.botKeys{1};
+                robots = {'pull', 'roll', 'walk'};
+            end
+            figureVisibility = 'off';
+            if showVisual > 0
+                figureVisibility = 'on';
             end
             
-            fprintf('displaying robotType %s \n', robotType);
-            bot = obj.get_bot_by_type(robotType);
-            
-            % robot type params: roll, pull, walk
-            % must have run analyze() first
-            figure;
-            
-            terrainVisual = Visualizer.simulate_terrain(obj.terrain);
-            xlabel('X');
-            ylabel('Y');
-            zlabel('Z');
-            
-            hold on
-            pathVisual = Visualizer.simulate_path(obj.path);
-            hold off
-            
-            hold on
-            Visualizer.simulate_bot_single_frame(bot, varargin{:});
-            hold off
-
-            % save figure here
-            if ~isempty(outputVisualsDirectory)
-                pathVisualFileName = sprintf("%s/robot_%s_%s.png", outputVisualsDirectory, obj.terrainName, obj.pathName);
-                saveas(gcf,pathVisualFileName)
+            for i=length(robots)
+                robotType = robots{i};
+                fprintf('displaying robotType %s \n', robotType);
+                bot = obj.get_bot_by_type(robotType);
+                
+                % robot type params: roll, pull, walk
+                % must have run analyze() first
+                figure('visible',figureVisibility);
+                
+                terrainVisual = Visualizer.simulate_terrain(obj.terrain);
+                xlabel('X');
+                ylabel('Y');
+                zlabel('Z');
+                
+                hold on
+                pathVisual = Visualizer.simulate_path(obj.path);
+                hold off
+                
+                hold on
+                Visualizer.simulate_bot_single_frame(bot, stateNumberPercent, varargin{:});
+                hold off
+    
+                % save figure here
+                if ~isempty(outputVisualsDirectory)
+                    pathVisualFileName = sprintf("%s/robot_%s_%s_%s_%0.2f.png", outputVisualsDirectory, obj.terrainName, obj.pathName, robotType, stateNumberPercent);
+                    saveas(gcf,pathVisualFileName)
+                end
             end
         end
         function visualize_terrain(obj, outputVisualsDirectory, varargin)            

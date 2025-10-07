@@ -5,7 +5,7 @@ pathDirectory = 'input_path';
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output2';
 outputPlotDirectory = 'output_plots_auto';
-outputVisualsDirectory = 'output_visuals2';
+outputVisualsDirectory = 'output_visuals_run';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -58,7 +58,7 @@ maxIterations = 9999;
 rate = 0.01;
 startState = 1;
 stopState = -1;
-showAllMarkers = true;
+showAllMarkers = false;
 showAxis = '';
 showColorBar = 0;
 equalAxis = false;
@@ -95,8 +95,11 @@ for pathArgIndex = 1:length(pathArgInstances)
         env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
 
         %% WIP - single frame visual
+        %% To do: test this for all 3 robot types
         stateNumberPercent = 0.5;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}, stateNumberPercent, showAllMarkers, showAxis, showColorBar, equalAxis);
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
+        stateNumberPercent = 1;
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
 
         %% Plot
         if createPlots
