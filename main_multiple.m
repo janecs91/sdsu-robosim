@@ -97,9 +97,9 @@ for pathArgIndex = 1:length(pathArgInstances)
         %% WIP - single frame visual
         %% To do: test this for all 3 robot types
         stateNumberPercent = 0.5;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
         stateNumberPercent = 1;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
+        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, showVisual, showAllMarkers, showAxis, showColorBar, equalAxis);
 
         %% Plot
         if createPlots

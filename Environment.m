@@ -194,7 +194,7 @@ classdef Environment
                 figureVisibility = 'on';
             end
             
-            for i=length(robots)
+            for i=1:length(robots)
                 robotType = robots{i};
                 fprintf('displaying robotType %s \n', robotType);
                 bot = obj.get_bot_by_type(robotType);
