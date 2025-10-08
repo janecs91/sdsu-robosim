@@ -3,7 +3,7 @@ addpath('terrain');
 addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
-outputEnvDirectory = 'output2';
+outputEnvDirectory = 'output_results_paper';
 outputPlotDirectory = 'output_plots_auto_sin';
 outputVisualsDirectory = 'output_visuals_run_sin';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
@@ -68,7 +68,7 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 5;
+executionGroup = 1;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -106,11 +106,13 @@ for pathArgIndex = 1:length(pathArgInstances)
         terrainArgInstance = terrainArgInstances{terrainArgIndex};
         terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
         terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+        envName = strcat(class(terrainArgInstance), '_', class(pathArgInstance));
+        fprintf("Env Name: %s\n", envName);
         if loadFromSaved == true
-            env = Environment.get_saved_env(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
+            env = Environment.get_saved_env(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs);
         else
-            env = Environment(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
+            env = Environment(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs);
         end
         env = env.analyze(botOptions{botNum}, botStartX, maxIterations);

@@ -96,12 +96,13 @@ terrainRequiredArgs = {genTerrainFromPath, pathName, terrainOptions{terrainNum}}
 terrainExtraArgs = {width, height, cellsize, terrainAmplitude, terrainFrequency, randFilterSize, elevationChangeRange};
 terrainArgs = [terrainRequiredArgs terrainExtraArgs];
 
+envName = '';
 % Load environment
 if loadFromSaved == true
-    env = Environment.get_saved_env(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
+    env = Environment.get_saved_env(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 else
-    env = Environment(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
+    env = Environment(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
     env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
 end

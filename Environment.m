@@ -3,6 +3,7 @@ classdef Environment
         prefix = 'results';
     end
     properties
+        envName = '';
         outputEnvAddress;
         inputPathDirectory;
         inputTerrainDirectory;
@@ -39,7 +40,7 @@ classdef Environment
         analyzedBotKeys;
     end
     methods
-        function obj = Environment(outputEnvDirectory, loadFromSaved, inputPathDirectory, inputTerrainDirectory, ...
+        function obj = Environment(outputEnvDirectory, envName, loadFromSaved, inputPathDirectory, inputTerrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs)
             disp("pathARgs")
             disp(pathArgs)
@@ -49,10 +50,11 @@ classdef Environment
             obj.outputEnvAddress = Environment.get_saved_address(outputEnvDirectory);
             disp("ENV ******f sav  **** ==")
             disp(obj.outputEnvAddress);
-            if nargin < 6
+            obj.envName = envName;
+            if nargin < 8
                 pathArgs = {};
             end
-            if nargin < 7
+            if nargin < 9
                 terrainArgs = {};
             end
             
@@ -156,7 +158,11 @@ classdef Environment
             % Save Results
             env = obj;
             resultsFileName = strcat(obj.terrainName, '_', obj.pathName);
+            if ~strcmp(obj.envName, '')
+                resultsFileName = obj.envName;
+            end
             fileAddress = sprintf(obj.outputEnvAddress, resultsFileName);
+            fprintf("Saving results... %s\n", fileAddress);
             save(fileAddress, 'env');
             %save(sprintf(obj.savePathData, obj.terrainName), '-struct', 'obj');
         end
@@ -268,7 +274,7 @@ classdef Environment
             addpath('robot/legged/step_strategies');
         end
         function saveAddress = get_saved_address(directory)
-            saveAddress = string(directory) + "/" + string(Environment.prefix) + "_%s_%s.mat";
+            saveAddress = string(directory) + "/" + string(Environment.prefix) + "_%s.mat";
         end
         function env = get_saved_env(outputEnvDirectory, pathDirectory, terrainDirectory, pathName, terrainName, pathArgs, terrainArgs)
             Environment.load_paths();
