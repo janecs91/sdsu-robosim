@@ -1,6 +1,6 @@
-classdef SinHighEasyTerrainArgs < TerrainArgsInterface
+classdef SinEasyLowTerrainArgs < TerrainArgsInterface
     methods
-        function obj = SinHighEasyTerrainArgs()
+        function obj = SinEasyLowTerrainArgs()
             %% terrain settings
             obj.terrainName = 'sin';
             obj.genTerrainFromPath = true;
@@ -9,7 +9,7 @@ classdef SinHighEasyTerrainArgs < TerrainArgsInterface
             %obj.height = pathEndY+200;
             obj.cellsize = 5;
             % sin
-            obj.terrainAmplitude = 15;
+            obj.terrainAmplitude = 5;
             obj.terrainFrequency = 0.01;
             % random
             obj.randFilterSize = 10;

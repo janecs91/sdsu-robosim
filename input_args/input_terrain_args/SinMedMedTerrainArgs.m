@@ -10,7 +10,7 @@ classdef SinMedMedTerrainArgs < TerrainArgsInterface
             obj.cellsize = 5;
             % sin
             obj.terrainAmplitude = 10;
-            obj.terrainFrequency = 0.1;
+            obj.terrainFrequency = 0.2;
             % random
             obj.randFilterSize = 10;
             obj.elevationChangeRange = 14;

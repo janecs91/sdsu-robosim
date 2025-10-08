@@ -63,7 +63,7 @@ pathEndX = 2100;
 pathEndY = pathStartY + 2000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 7;
+terrainNum = 3;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -71,7 +71,7 @@ height = pathEndY+200;
 cellsize = 5;
 % sin
 terrainAmplitude = 13;
-terrainFrequency = 0.007;
+terrainFrequency = 0.001;
 % random
 randFilterSize = 10;
 elevationChangeRange = 14;
@@ -101,10 +101,10 @@ terrainArgs = [terrainRequiredArgs terrainExtraArgs];
 
 % Load environment
 if loadFromSaved == true
-    env = Environment.get_saved_env(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
+    env = Environment.get_saved_env(outputEnvDirectory, '', loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 else
-    env = Environment(outputEnvDirectory, loadFromSaved, pathDirectory, terrainDirectory, ...
+    env = Environment(outputEnvDirectory, '', loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
 end
 

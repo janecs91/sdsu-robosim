@@ -84,14 +84,18 @@ elseif executionGroup == 4
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {PerlinTerrainArgs()};
 elseif executionGroup == 5
-    % Sin group - easy
+    % To do: Also edit visual & plot names to custom env name
+    % Sin group - easy (rerun this, group was changed)
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinLowEasyTerrainArgs(), SinMedEasyTerrainArgs, SinLowMedTerrainArgs, SinLowBumpyTerrainArgs, SinLowXBumpyTerrainArgs, SinLowXXBumpyTerrainArgs};
+    terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
+        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
 elseif executionGroup == 6
     % Sin group - harder
     % error - fix
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinHighEasyTerrainArgs, SinMedMedTerrainArgs, SinHighMedTerrainArgs, SinMedBumpyTerrainArgs, SinMedXBumpyTerrainArgs};
+    terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
+elseif executionGroup == 7
+    % possible ramp amplitude tests
 end
 
 pathName = "";

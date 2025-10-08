@@ -1,6 +1,6 @@
-classdef SinHighMedTerrainArgs < TerrainArgsInterface
+classdef SinMedHighTerrainArgs < TerrainArgsInterface
     methods
-        function obj = SinHighMedTerrainArgs()
+        function obj = SinMedHighTerrainArgs()
             %% terrain settings
             obj.terrainName = 'sin';
             obj.genTerrainFromPath = true;

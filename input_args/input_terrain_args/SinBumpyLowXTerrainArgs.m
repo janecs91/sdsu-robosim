@@ -1,6 +1,6 @@
-classdef SinMedXBumpyTerrainArgs < TerrainArgsInterface
+classdef SinBumpyLowXTerrainArgs < TerrainArgsInterface
     methods
-        function obj = SinMedXBumpyTerrainArgs()
+        function obj = SinBumpyLowXTerrainArgs()
             %% terrain settings
             obj.terrainName = 'sin';
             obj.genTerrainFromPath = true;
@@ -9,7 +9,7 @@ classdef SinMedXBumpyTerrainArgs < TerrainArgsInterface
             %obj.height = pathEndY+200;
             obj.cellsize = 5;
             % sin
-            obj.terrainAmplitude = 10;
+            obj.terrainAmplitude = 5;
             obj.terrainFrequency = 0.5;
             % random
             obj.randFilterSize = 10;
