@@ -50,7 +50,7 @@ createPlots = false;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 4;
+botNum = 3;
 botStartX = -1;
 maxIterations = 9999;
 %% path settings
@@ -62,7 +62,7 @@ pathEndX = 2150;
 pathEndY = pathStartY + 1000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 3;
+terrainNum = 7;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -104,7 +104,12 @@ if loadFromSaved == true
 else
     env = Environment(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
         pathName, terrainName, pathArgs, terrainArgs);
-    env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
+    try
+        env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
+    catch ME
+        disp("Error during robot analysis!")
+        disp(ME)
+    end
 end
 
 % System variables
