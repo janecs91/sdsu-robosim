@@ -48,7 +48,7 @@ classdef BotPlotter
             hold off;
 
             if ~isempty(obj.outputPlotsDirectory)
-                pathVisualFileName = sprintf("%s/time_%s_%s.png", obj.outputPlotsDirectory, obj.env.terrainName, obj.env.pathName);
+                pathVisualFileName = sprintf("%s/time_%s.png", obj.outputPlotsDirectory, obj.env.envName);
                 saveas(gcf,pathVisualFileName)
             end
         end
@@ -91,7 +91,7 @@ classdef BotPlotter
             hold off;
 
             if ~isempty(obj.outputPlotsDirectory)
-                pathVisualFileName = sprintf("%s/power_%s_%s.png", obj.outputPlotsDirectory, obj.env.terrainName, obj.env.pathName);
+                pathVisualFileName = sprintf("%s/power_%s.png", obj.outputPlotsDirectory, obj.env.envName);
                 saveas(gcf,pathVisualFileName)
             end
         end

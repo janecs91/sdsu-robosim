@@ -90,6 +90,9 @@ classdef Environment
             end
             obj.terrain = MatrixTerrain(terrainName, inputTerrainDirectory, loadFromSaved, terrainArgs);
             obj.terrainName = obj.terrain.terrainName;
+            if strcmp(obj.envName, '')
+                obj.envName = strcat(obj.terrainName, '_', obj.pathName);
+            end
             
             % setup bots
             botArgs = {obj.terrain,obj.path};
@@ -157,11 +160,7 @@ classdef Environment
             
             % Save Results
             env = obj;
-            resultsFileName = strcat(obj.terrainName, '_', obj.pathName);
-            if ~strcmp(obj.envName, '')
-                resultsFileName = obj.envName;
-            end
-            fileAddress = sprintf(obj.outputEnvAddress, resultsFileName);
+            fileAddress = sprintf(obj.outputEnvAddress, obj.envName);
             fprintf("Saving results... %s\n", fileAddress);
             save(fileAddress, 'env');
             %save(sprintf(obj.savePathData, obj.terrainName), '-struct', 'obj');
@@ -224,7 +223,7 @@ classdef Environment
     
                 % save figure here
                 if ~isempty(outputVisualsDirectory)
-                    pathVisualFileName = sprintf("%s/robot_%s_%s_%s_%0.2f_%d.png", outputVisualsDirectory, obj.terrainName, obj.pathName, robotType, stateNumberPercent, equalAxis);
+                    pathVisualFileName = sprintf("%s/robot_%s_%s_%0.2f_%d.png", outputVisualsDirectory, obj.envName, robotType, stateNumberPercent, equalAxis);
                     saveas(gcf,pathVisualFileName)
                 end
             end
