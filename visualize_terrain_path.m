@@ -71,7 +71,7 @@ height = pathEndY+200;
 cellsize = 5;
 % sin
 terrainAmplitude = 13;
-terrainFrequency = 0.001;
+terrainFrequency = 0.05;
 % random
 randFilterSize = 10;
 elevationChangeRange = 14;
