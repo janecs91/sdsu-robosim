@@ -84,7 +84,6 @@ elseif executionGroup == 4
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {PerlinTerrainArgs()};
 elseif executionGroup == 5
-    % To do: Also edit visual & plot names to custom env name
     % Sin group - easy (rerun this, group was changed)
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
