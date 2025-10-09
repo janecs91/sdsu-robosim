@@ -78,7 +78,13 @@ classdef StepAdjusterStance < StepAdjuster
                 triedPathPts(c,:) = futurePathPoint;
                 [angle1, slope1] = path.get_gamma_at_index(futurePathIndex);        % OR try get gammma at x??
                 fakeState = copy(state);
+                % estimate future base z?
+                %{
+                dz_b = obj.get_base_z_vector2(bot, state, terrain, futurePathPoint);
                 fakeState.basePosition(1:2) = futurePathPoint(1:2);
+                fakeState.basePosition(3) = fakeState.basePosition(3) + dz_b;
+                %}
+                % get angle for next state?
                 [futurePathPoint2, futurePathIndex2] = bot.get_next_path_point(fakeState, path, moveX);
                 [angle2, slope2] = path.get_gamma_at_index(futurePathIndex2);
                 %fprintf("angle 1: %.2f, angle 2: %.2f\n", rad2deg(angle1), rad2deg(angle2));
@@ -187,9 +193,19 @@ classdef StepAdjusterStance < StepAdjuster
             highestElevation = terrain.get_highest_elevation(backBasePosition,futurePoint(2),frontBasePosition,futurePoint(2),1);
             lowestPoint = bot.get_lowest_point(state, terrain);
             averageElevation = bot.get_average_elevation(state, terrain);
+            % get average feet position
+            disp("Getting avg feet position")
+            feetElevations = terrain.get_elevations(state.endPositions(:,1),state.endPositions(:,2));
+            disp(feetElevations)
+            averageFeetElevations = mean(feetElevations);
+            disp("Avg")
+            disp(averageFeetElevations);
+            disp("Terrain avg base elevation")
+            disp(averageElevation)
+
             dz_b = 0;
             if obj.keepBaseHeightConstant
-                newTerrainZ = max(averageElevation+bot.minBottomZFromTerrain, highestElevation+1);
+                newTerrainZ = max(averageElevation+bot.minBottomZFromTerrain, highestElevation+averageFeetElevations);
                 dz_b = newTerrainZ-baseZ;
             else
                 newTerrainZ = averageElevation;
@@ -207,7 +223,8 @@ classdef StepAdjusterStance < StepAdjuster
             end
             
             %dz_b = max(highestElevation, lowestPoint)-oldTerrainZ;
-            if obj.verbose
+            if obj.verbose || true
+                disp("* stance height adjust")
                 fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
                 fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
             end

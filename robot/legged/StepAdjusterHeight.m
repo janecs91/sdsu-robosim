@@ -3,7 +3,7 @@ classdef StepAdjusterHeight < StepAdjuster
         originalBaseHeight = 30;
         enableIncreaseHeight = true;
         enableDecreaseToOriginal = true;
-        verbose = false;
+        verbose = true;
     end
     methods
         function obj = StepAdjusterHeight(safetyValue)
