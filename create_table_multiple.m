@@ -102,75 +102,29 @@ end
 pathName = "";
 terrainName = "";
 % Load environment
-for pathArgIndex = 1:length(pathArgInstances)
-    pathArgInstance = pathArgInstances{pathArgIndex};
-    disp(pathArgInstance)
-    pathArgs = pathArgInstance.getPathArgs();
-    disp(pathArgs)
-    for terrainArgIndex = 1:length(terrainArgInstances)
-        terrainArgInstance = terrainArgInstances{terrainArgIndex};
-        terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
-        terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+for terrainArgIndex = 1:length(terrainArgInstances)
+    terrainArgInstance = terrainArgInstances{terrainArgIndex};
+    terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
+    terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+    forTableTerrainName = erase(class(terrainArgInstance), 'TerrainArgs');
+    numPaths = length(pathArgInstances);
+    timeTable = table('Size',[numPaths, 4],'VariableTypes',{'string', 'double', 'double', 'double'},'VariableNames',{'Path', 'Roll', 'Pull', 'Walk'});
+    powerTable = table('Size',[numPaths, 4],'VariableTypes',{'string', 'double', 'double', 'double'},'VariableNames',{'Path', 'Roll', 'Pull', 'Walk'});
+    for pathArgIndex = 1:numPaths
+        pathArgInstance = pathArgInstances{pathArgIndex};
+        pathArgs = pathArgInstance.getPathArgs();
+        forTablePathName = erase(class(pathArgInstance), 'PathArgs');
         envName = strcat(class(terrainArgInstance), '_', class(pathArgInstance));
-        fprintf("Env Name: %s\n", envName);
-        if loadFromSaved == true
-            env = Environment.get_saved_env(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
-                pathName, terrainName, pathArgs, terrainArgs);
-        else
-            env = Environment(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
-                pathName, terrainName, pathArgs, terrainArgs);
-        end
-        env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
-
-        %% WIP - single frame visual
-        %% To do: test this for all 3 robot types
-        stateNumberPercent = 0.5;
-        equalAxis = false;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-        equalAxis = true;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-        stateNumberPercent = 1;
-        equalAxis = false;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-        equalAxis = true;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-
-        %% Plot
-        if createPlots
-            addpath('plot');
-            plotter = BotPlotter(env, outputPlotDirectory);
-            plotter.plot_time_per_distance(showPlots);
-            plotter.plot_power_per_distance(showPlots);
-        end
+        % load file
+        load(sprintf("%s/results_%s.mat", outputEnvDirectory, envName), 'env');
+        % get bots
+        %disp(env.totalTime);
+        timeTable(pathArgIndex, 1) = {forTablePathName};
+        timeTable(pathArgIndex, 2:end) = {env.totalTime(2) env.totalTime(1) env.totalTime(3)};
+        powerTable(pathArgIndex, 1) = {forTablePathName};
+        powerTable(pathArgIndex, 2:end) = {env.totalPower(2) env.totalPower(1) env.totalPower(3)};
     end
+    disp(forTableTerrainName);
+    timeTable
+    powerTable
 end
-
-% System variables
-% To keep in workspace
-%{
-keyOrder = env.botKeys;
-totalTimes = env.totalTime;
-totalPowers = env.totalPower;
-path = env.path;
-pathPoints = path.pathPoints;
-terrain = env.terrain;
-bots = env.bots;
-pullBot = env.bots{1};
-%}
-
-% System display data
-%{
-disp(keyOrder)
-disp('total times');
-disp(totalTimes);
-disp('total powers');
-disp(totalPowers);
-%}
-
-% Launch visualization (if enabled)
-%{
-if showVisual == true
-    env.visualize(botOptions{botNum}{1}, ...
-        rate, startState, stopState, showAllMarkers, showAxis, showColorBar, equalAxis);
-end
-%}
