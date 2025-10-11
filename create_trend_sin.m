@@ -109,73 +109,32 @@ terrainName = "";
 % Load environment
 for pathArgIndex = 1:length(pathArgInstances)
     pathArgInstance = pathArgInstances{pathArgIndex};
-    disp(pathArgInstance)
     pathArgs = pathArgInstance.getPathArgs();
-    disp(pathArgs)
-    for terrainArgIndex = 1:length(terrainArgInstances)
+    forTablePathName = erase(class(pathArgInstance), 'PathArgs');
+    numTerrains = length(terrainArgInstances);
+    amplitudes = zeros(numTerrains,1);
+    frequencies = zeros(numTerrains,1);
+    times = zeros(3, numTerrains);
+    for terrainArgIndex = 1:numTerrains
         terrainArgInstance = terrainArgInstances{terrainArgIndex};
         terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
         terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+        forTableTerrainName = erase(class(terrainArgInstance), 'TerrainArgs');
         envName = strcat(class(terrainArgInstance), '_', class(pathArgInstance));
-        fprintf("Env Name: %s\n", envName);
-        if loadFromSaved == true
-            env = Environment.get_saved_env(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
-                pathName, terrainName, pathArgs, terrainArgs);
-        else
-            env = Environment(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
-                pathName, terrainName, pathArgs, terrainArgs);
-        end
-        env = env.analyze(botOptions{botNum}, botStartX, maxIterations);
-
-        %% WIP - single frame visual
-        %% To do: test this for all 3 robot types
-        stateNumberPercent = 0.5;
-        equalAxis = false;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-        equalAxis = true;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-        stateNumberPercent = 1;
-        equalAxis = false;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-        equalAxis = true;
-        env.visualize_single_frame(outputVisualsDirectory, botOptions{botNum}{1}, stateNumberPercent, equalAxis, showVisual, showAllMarkers, showAxis, showColorBar);
-
-        %% Plot
-        if createPlots
-            addpath('plot');
-            plotter = BotPlotter(env, outputPlotDirectory);
-            plotter.plot_time_per_distance(showPlots);
-            plotter.plot_power_per_distance(showPlots);
-        end
+        % load file
+        Environment.load_paths()
+        load(sprintf("%s/results_%s.mat", outputEnvDirectory, envName), 'env');
+        
+        amplitudes(terrainArgIndex) = terrainArgInstance.terrainAmplitude;
+        frequencies(terrainArgIndex) = terrainArgInstance.terrainFrequency;
+        times(:, terrainArgIndex) = env.totalTime(:);
     end
+    disp(forTableTerrainName);
+    disp(amplitudes(1:2)')
+    %disp(times)
+    disp(times(1,1:2))
+    figure;
+    plot(amplitudes(1:2)', times(1,1:2))
+    title("Plot Sin Terrain trend")
+    return
 end
-
-% System variables
-% To keep in workspace
-%{
-keyOrder = env.botKeys;
-totalTimes = env.totalTime;
-totalPowers = env.totalPower;
-path = env.path;
-pathPoints = path.pathPoints;
-terrain = env.terrain;
-bots = env.bots;
-pullBot = env.bots{1};
-%}
-
-% System display data
-%{
-disp(keyOrder)
-disp('total times');
-disp(totalTimes);
-disp('total powers');
-disp(totalPowers);
-%}
-
-% Launch visualization (if enabled)
-%{
-if showVisual == true
-    env.visualize(botOptions{botNum}{1}, ...
-        rate, startState, stopState, showAllMarkers, showAxis, showColorBar, equalAxis);
-end
-%}
