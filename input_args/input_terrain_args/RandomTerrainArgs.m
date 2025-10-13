@@ -12,8 +12,8 @@ classdef RandomTerrainArgs < TerrainArgsInterface
             obj.terrainAmplitude = 13;
             obj.terrainFrequency = 1;
             % random
-            obj.randFilterSize = 10;
-            obj.elevationChangeRange = 14;
+            obj.randFilterSize = 20;
+            obj.elevationChangeRange = 150;
             %terrainName = 'customTerrainName'; 
         end
     end
