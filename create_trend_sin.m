@@ -65,8 +65,6 @@ showColorBar = 0;
 %equalAxis = true;
 
 
-% todo: finish plotting sin trends
-% fix height adjustment for legged bot
 
 %% ===== SIMULATE =====
 % System setup
