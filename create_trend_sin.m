@@ -64,6 +64,9 @@ showColorBar = 0;
 %equalAxis = true;
 
 
+% todo: finish plotting sin trends
+% fix height adjustment for legged bot
+
 %% ===== SIMULATE =====
 % System setup
 addpath('input_args/input_path_args');
@@ -115,6 +118,7 @@ for pathArgIndex = 1:length(pathArgInstances)
     amplitudes = zeros(numTerrains,1);
     frequencies = zeros(numTerrains,1);
     times = zeros(3, numTerrains);
+    powers = zeros(3, numTerrains);
     for terrainArgIndex = 1:numTerrains
         terrainArgInstance = terrainArgInstances{terrainArgIndex};
         terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
@@ -128,13 +132,64 @@ for pathArgIndex = 1:length(pathArgInstances)
         amplitudes(terrainArgIndex) = terrainArgInstance.terrainAmplitude;
         frequencies(terrainArgIndex) = terrainArgInstance.terrainFrequency;
         times(:, terrainArgIndex) = env.totalTime(:);
+        powers(:, terrainArgIndex) = env.totalPower(:);
     end
     disp(forTableTerrainName);
-    disp(amplitudes(1:2)')
-    %disp(times)
-    disp(times(1,1:2))
+    disp(times)
+    fixedAmplitude = 5;
+    fixedFrequency = 0.01;
+    %% 2d time plot
+    % amplitude
+    desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
+    disp("Indices")
+    disp(desired2DAmplitudeIndices)
     figure;
-    plot(amplitudes(1:2)', times(1,1:2))
-    title("Plot Sin Terrain trend")
+    plot(amplitudes(desired2DAmplitudeIndices)', times(:,desired2DAmplitudeIndices))
+    xlabel("Amplitude")
+    ylabel("Time")
+    title(sprintf("Plot Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
+    legend({'pull','roll','walk'},'Location','northeast')
+    % frequency
+    desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
+    figure;
+    plot(frequencies(desired2DFrequencyIndices)', times(:,desired2DFrequencyIndices))
+    xlabel("Frequency")
+    ylabel("Time")
+    title(sprintf("Plot Time Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
+    legend({'pull','roll','walk'},'Location','northeast')
+    %% 3d time plot with both amplitude & frequency
+    figure;
+    plot3(amplitudes, frequencies, times(:,:))
+    xlabel("Amplitude")
+    ylabel("Frequency")
+    zlabel("Time")
+    title("Plot Time Trend for Sin Terrain")
+    legend({'pull','roll','walk'},'Location','northeast')
+
+    %% 2d power plot
+    % amplitude
+    desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
+    figure;
+    plot(amplitudes(desired2DAmplitudeIndices)', powers(:,desired2DAmplitudeIndices))
+    xlabel("Amplitude")
+    ylabel("Power")
+    title(sprintf("Plot Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
+    legend({'pull','roll','walk'},'Location','northeast')
+    % frequency
+    desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
+    figure;
+    plot(frequencies(desired2DFrequencyIndices)', powers(:,desired2DFrequencyIndices))
+    xlabel("Frequency")
+    ylabel("Power")
+    title(sprintf("Plot Time Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
+    legend({'pull','roll','walk'},'Location','northeast')
+    %% 3d power plot with both amplitude & frequency
+    figure;
+    plot3(amplitudes, frequencies, powers(:,:))
+    xlabel("Amplitude")
+    ylabel("Frequency")
+    zlabel("Power")
+    title("Plot Power Trend for Sin Terrain")
+    legend({'pull','roll','walk'},'Location','northeast')
     return
 end
