@@ -205,7 +205,11 @@ classdef StepAdjusterStance < StepAdjuster
 
             dz_b = 0;
             if obj.keepBaseHeightConstant
-                newTerrainZ = max(averageElevation+bot.minBottomZFromTerrain, highestElevation+averageFeetElevations);
+                % keep at average elevation
+                avgElevationAlgorithm = averageElevation+bot.minBottomZFromTerrain;
+                % need to cross highest elevation and legs are also high
+                highestElevationAlgorithm = highestElevation+1+(29-min(30, max(0, abs(highestElevation-averageFeetElevations))));
+                newTerrainZ = max(avgElevationAlgorithm, highestElevationAlgorithm);
                 dz_b = newTerrainZ-baseZ;
             else
                 newTerrainZ = averageElevation;
