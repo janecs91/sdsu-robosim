@@ -1,4 +1,6 @@
 *.asv
+archive
+archived_outputs
 output*/*
 input_path/*
 input_terrain/*
