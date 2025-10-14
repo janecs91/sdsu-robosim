@@ -1,6 +1,6 @@
 classdef StepAdjusterStance < StepAdjuster
     properties
-        verbose = true;
+        verbose = false;
         % limit ranges
         minDxb = 0;
         keepBaseHeightConstant = false;
@@ -188,14 +188,17 @@ classdef StepAdjusterStance < StepAdjuster
             %% THIS IS USED
             baseZ = state.basePosition(3);
             oldTerrainZ = terrain.get_elevation(state.basePosition(1), state.basePosition(2));
+            futureState = copy(state);
+            futureState.basePosition(1:2) = futurePoint(1:2);
+            futureState = bot.update_end_positions(futureState);
             newTerrainZ = terrain.get_elevation(futurePoint(1), futurePoint(2));
             frontBasePosition = futurePoint(1)+bot.a_0;
             backBasePosition = futurePoint(1)-bot.a_0;
             highestElevation = terrain.get_highest_elevation(backBasePosition,futurePoint(2),frontBasePosition,futurePoint(2),1);
-            lowestPoint = bot.get_lowest_point(state, terrain);
-            averageElevation = bot.get_average_elevation(state, terrain);
-            % get average feet position
-            feetElevations = terrain.get_elevations(state.endPositions(:,1),state.endPositions(:,2));
+            lowestPoint = bot.get_lowest_point(futureState, terrain);
+            averageElevation = bot.get_average_elevation(futureState, terrain);
+            % get average feet position at new position
+            feetElevations = terrain.get_elevations(futureState.endPositions(:,1),futureState.endPositions(:,2));
             averageFeetElevations = mean(feetElevations);
             if obj.verbose
                 fprintf("Feet elevations: %.2d %.2d %.2d %.2d\n", feetElevations)
@@ -203,30 +206,34 @@ classdef StepAdjusterStance < StepAdjuster
                 fprintf("Average terrain base elevation: %.2d\n", averageElevation)
             end
 
+            % optimal based on average elevation
+            averageElevationMinimum = averageElevation+bot.minBottomZFromTerrain;
+            % consider need to cross highest elevation and if legs are also high
+            highestElevationMinimum = highestElevation+(bot.minBottomZFromTerrain-min(bot.minBottomZFromTerrain, max(0, highestElevation-averageFeetElevations)));
+            if obj.verbose
+                fprintf("old base z: %.2d | highest elevation: %.2d | average feet elevation: %.2d\n", baseZ, highestElevation, averageFeetElevations)
+                fprintf("* highest elevation - average elevation = %.2d\n", highestElevation-averageFeetElevations)
+                fprintf("* avg elevation min: %.2d | highest elevation min: %.2d\n", averageElevationMinimum, highestElevationMinimum)
+                if highestElevationMinimum > averageElevationMinimum
+                    disp("** highest elevation chosen")
+                else
+                    disp("** average elevation chosen")
+                end
+            end
+
             dz_b = 0;
             if obj.keepBaseHeightConstant
-                % keep at average elevation
-                avgElevationAlgorithmResult = averageElevation+bot.minBottomZFromTerrain;
-                % need to cross highest elevation and legs are also high
-                highestElevationAlgorithmResult = highestElevation+(bot.minBottomZFromTerrain-min(bot.minBottomZFromTerrain, max(0, abs(highestElevation-averageFeetElevations))));
-                if obj.verbose
-                    fprintf("* highest elevation - average elevation = %.2d\n", highestElevation-averageFeetElevations)
-                    fpprintf("* avg elevation result: %.2d | highest elevation result: %.2d\n", avgElevationAlgorithmResult, highestElevationAlgorithmResult)
-                    if highestElevationAlgorithmResult > avgElevationAlgorithmResult
-                        disp("** highest elevation chosen")
-                    else
-                        disp("** average elevation chosen")
-                    end
-                end
-                newTerrainZ = max(avgElevationAlgorithmResult, highestElevationAlgorithmResult);
+                newTerrainZ = max(averageElevationMinimum, highestElevationMinimum);
                 dz_b = newTerrainZ-baseZ;
             else
-                newTerrainZ = averageElevation;
-                minimumBaseZ = newTerrainZ+bot.minBottomZFromTerrain;
-                maximumBaseZ = newTerrainZ+bot.maxBottomZFromTerrain;
+                minimumBaseZ = averageElevationMinimum;
+                maximumBaseZ = averageElevation+bot.maxBottomZFromTerrain;
                 % Adjust for highest elevation
-                minimumBaseZ = max(minimumBaseZ, highestElevation+1);
-                maximumBaseZ = max(maximumBaseZ, highestElevation+1);
+                minimumBaseZ = max(minimumBaseZ, highestElevationMinimum);
+                maximumBaseZ = max(maximumBaseZ, highestElevationMinimum);
+                if obj.verbose
+                    fprintf("Is baseZ < minimumBaseZ? %d || Is baseZ > maximumBaseZ? %d\n", baseZ < minimumBaseZ, baseZ > maximumBaseZ)
+                end
                 if baseZ < minimumBaseZ
                     dz_b = minimumBaseZ-baseZ;
                 end
