@@ -3,7 +3,7 @@ addpath('terrain');
 addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
-outputEnvDirectory = 'output2';
+outputEnvDirectory = 'output_results_single';
 outputPlotDirectory = 'output_plots';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -52,7 +52,7 @@ turn = 0.01;
 %% bot settings
 botNum = 3;
 botStartX = -1;
-maxIterations = 9999;
+maxIterations = 50;
 %% path settings
 % 1, 2, 3, 5
 pathNum = 2;
@@ -62,15 +62,15 @@ pathEndX = 2150;
 pathEndY = pathStartY + 1000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 4;
+terrainNum = 3;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 10;
-terrainFrequency = 0.1;
+terrainAmplitude = 15;
+terrainFrequency = 0.01;
 % random
 randFilterSize = 100;
 elevationChangeRange = 300;

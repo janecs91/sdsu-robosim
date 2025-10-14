@@ -3,9 +3,9 @@ addpath('terrain');
 addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
-outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_auto_sin';
-outputVisualsDirectory = 'output_visuals_run_sin';
+outputEnvDirectory = 'output_results_paper2';
+outputPlotDirectory = 'output_plots_auto2';
+outputVisualsDirectory = 'output_visuals2';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -68,14 +68,13 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 55;
+executionGroup = 5;
 if executionGroup == 1
-    pathArgInstances = {StraightPathArgs()};
-    terrainArgInstances = {FlatTerrainArgs()};
-elseif executionGroup == 11
+    % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
 elseif executionGroup == 2
+    % main easy group - done
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs()};
 elseif executionGroup == 3
@@ -87,14 +86,9 @@ elseif executionGroup == 4
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {PerlinTerrainArgs()};
 elseif executionGroup == 5
-    % Sin group - easy (rerun this, group was changed)
+    % Sin group - easy
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
-        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
-elseif executionGroup == 55
-    % Sin group - easy (rerun this, group was changed)
-    pathArgInstances = {StraightPathArgs()};
-    terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinMedLowTerrainArgs, ...
         SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
 elseif executionGroup == 6
     % Sin group - harder

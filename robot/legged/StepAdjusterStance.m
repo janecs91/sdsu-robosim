@@ -194,14 +194,13 @@ classdef StepAdjusterStance < StepAdjuster
             lowestPoint = bot.get_lowest_point(state, terrain);
             averageElevation = bot.get_average_elevation(state, terrain);
             % get average feet position
-            disp("Getting avg feet position")
             feetElevations = terrain.get_elevations(state.endPositions(:,1),state.endPositions(:,2));
-            disp(feetElevations)
             averageFeetElevations = mean(feetElevations);
-            disp("Avg")
-            disp(averageFeetElevations);
-            disp("Terrain avg base elevation")
-            disp(averageElevation)
+            if obj.verbose
+                fprintf("Feet elevations: %.2d %.2d %.2d %.2d\n", feetElevations)
+                fprintf("Average ft elevations: %.2d\n", averageFeetElevations);
+                fprintf("Average terrain base elevation: %.2d\n", averageElevation)
+            end
 
             dz_b = 0;
             if obj.keepBaseHeightConstant
@@ -227,7 +226,7 @@ classdef StepAdjusterStance < StepAdjuster
             end
             
             %dz_b = max(highestElevation, lowestPoint)-oldTerrainZ;
-            if obj.verbose || true
+            if obj.verbose
                 disp("* stance height adjust")
                 fprintf("baseZ: %d, oldTerrainZ: %d, newTerrainZ: %d\n", baseZ, oldTerrainZ, newTerrainZ);
                 fprintf("highestElevation: %d, lowest point:%d, dz_b: %.2f\n", highestElevation, lowestPoint, dz_b);
