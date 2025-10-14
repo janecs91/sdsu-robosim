@@ -1,6 +1,6 @@
 classdef StepAdjusterStance < StepAdjuster
     properties
-        verbose = false;
+        verbose = true;
         % limit ranges
         minDxb = 0;
         keepBaseHeightConstant = false;
@@ -160,7 +160,7 @@ classdef StepAdjusterStance < StepAdjuster
         end
         
         function dz_b = get_base_z_vector(obj, bot, state, terrain, futurePoint)
-            %% not in use
+            %% NOT IN USE
             waistZ = bot.get_waist_z(state);
             % get difference in terrain
             baseZ = state.basePosition(3);
@@ -185,6 +185,7 @@ classdef StepAdjusterStance < StepAdjuster
             %dz_b = 0;
         end
         function dz_b = get_base_z_vector2(obj, bot, state, terrain, futurePoint)
+            %% THIS IS USED
             baseZ = state.basePosition(3);
             oldTerrainZ = terrain.get_elevation(state.basePosition(1), state.basePosition(2));
             newTerrainZ = terrain.get_elevation(futurePoint(1), futurePoint(2));
@@ -205,10 +206,19 @@ classdef StepAdjusterStance < StepAdjuster
             dz_b = 0;
             if obj.keepBaseHeightConstant
                 % keep at average elevation
-                avgElevationAlgorithm = averageElevation+bot.minBottomZFromTerrain;
+                avgElevationAlgorithmResult = averageElevation+bot.minBottomZFromTerrain;
                 % need to cross highest elevation and legs are also high
-                highestElevationAlgorithm = highestElevation+1+(29-min(30, max(0, abs(highestElevation-averageFeetElevations))));
-                newTerrainZ = max(avgElevationAlgorithm, highestElevationAlgorithm);
+                highestElevationAlgorithmResult = highestElevation+(bot.minBottomZFromTerrain-min(bot.minBottomZFromTerrain, max(0, abs(highestElevation-averageFeetElevations))));
+                if obj.verbose
+                    fprintf("* highest elevation - average elevation = %.2d\n", highestElevation-averageFeetElevations)
+                    fpprintf("* avg elevation result: %.2d | highest elevation result: %.2d\n", avgElevationAlgorithmResult, highestElevationAlgorithmResult)
+                    if highestElevationAlgorithmResult > avgElevationAlgorithmResult
+                        disp("** highest elevation chosen")
+                    else
+                        disp("** average elevation chosen")
+                    end
+                end
+                newTerrainZ = max(avgElevationAlgorithmResult, highestElevationAlgorithmResult);
                 dz_b = newTerrainZ-baseZ;
             else
                 newTerrainZ = averageElevation;

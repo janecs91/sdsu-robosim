@@ -52,10 +52,10 @@ turn = 0.01;
 %% bot settings
 botNum = 3;
 botStartX = -1;
-maxIterations = 50;
+maxIterations = 35;
 %% path settings
 % 1, 2, 3, 5
-pathNum = 2;
+pathNum = 1;
 pathStartX = 100; 
 pathStartY = 100;
 pathEndX = 2150;
