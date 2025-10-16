@@ -5,7 +5,7 @@ classdef SinPathArgs < PathArgsInterface
             obj.pathName = 'sin';
             obj.pathStartX = 100; 
             obj.pathStartY = 100;
-            obj.pathEndX = 2100;
+            obj.pathEndX = 2150;
             obj.pathEndY = obj.pathStartY + 1000;
             obj.pathAmplitude = 100;
         end

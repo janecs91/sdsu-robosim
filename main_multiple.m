@@ -4,8 +4,8 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper2';
-outputPlotDirectory = 'output_plots_auto2';
-outputVisualsDirectory = 'output_visuals2';
+outputPlotDirectory = 'output_plots_auto_sin';
+outputVisualsDirectory = 'output_visuals_sin';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -68,7 +68,7 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 5;
+executionGroup = 66;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -86,13 +86,17 @@ elseif executionGroup == 4
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {PerlinTerrainArgs()};
 elseif executionGroup == 5
-    % Sin group - easy
+    % Sin group - easy - done
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
         SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
 elseif executionGroup == 6
-    % Sin group - harder
+    % Sin group - harder - done
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
+elseif executionGroup == 66
+    % Sin group - harder - done
+    pathArgInstances = {SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
 elseif executionGroup == 7
     % possible ramp amplitude tests

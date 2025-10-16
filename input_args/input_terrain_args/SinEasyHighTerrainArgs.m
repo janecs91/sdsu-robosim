@@ -9,7 +9,7 @@ classdef SinEasyHighTerrainArgs < TerrainArgsInterface
             %obj.height = pathEndY+200;
             obj.cellsize = 5;
             % sin
-            obj.terrainAmplitude = 15;
+            obj.terrainAmplitude = 14;
             obj.terrainFrequency = 0.01;
             % random
             obj.randFilterSize = 10;

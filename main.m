@@ -50,15 +50,15 @@ createPlots = false;
 showPlots = false;
 turn = 0.01;
 %% bot settings
-botNum = 3;
+botNum = 4;
 botStartX = -1;
 maxIterations = 9999;
 %% path settings
 % 1, 2, 3, 5
-pathNum = 1;
+pathNum = 3;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 2150;
+pathEndX = 2100;
 pathEndY = pathStartY + 1000;
 pathAmplitude = 100;
 %% terrain settings
@@ -69,8 +69,8 @@ width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 15;
-terrainFrequency = 0.01;
+terrainAmplitude = 14;
+terrainFrequency = 0.06;
 % random
 randFilterSize = 100;
 elevationChangeRange = 300;
