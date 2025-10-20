@@ -3,9 +3,9 @@ addpath('terrain');
 addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
-outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_auto_sin';
-outputVisualsDirectory = 'output_visuals_run_sin';
+outputEnvDirectory = 'output_results_paper2';
+outputPlotDirectory = 'output_plots_auto2';
+outputVisualsDirectory = 'output_visuals2';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -68,7 +68,7 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 11;
+executionGroup = 4;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -90,11 +90,10 @@ elseif executionGroup == 5
     % Sin group - easy (rerun this, group was changed)
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
-        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
-elseif executionGroup == 6
-    % Sin group - harder
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
+        SinMedMedTerrainArgs, SinMedHighTerrainArgs, ...
+        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs,
+        SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs
+        };
 elseif executionGroup == 7
     % possible ramp amplitude tests
 end
@@ -104,16 +103,19 @@ terrainName = "";
 % Load environment
 for terrainArgIndex = 1:length(terrainArgInstances)
     terrainArgInstance = terrainArgInstances{terrainArgIndex};
-    terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
-    terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
-    forTableTerrainName = erase(class(terrainArgInstance), 'TerrainArgs');
     numPaths = length(pathArgInstances);
     timeTable = table('Size',[numPaths, 4],'VariableTypes',{'string', 'double', 'double', 'double'},'VariableNames',{'Path', 'Roll', 'Pull', 'Walk'});
     powerTable = table('Size',[numPaths, 4],'VariableTypes',{'string', 'double', 'double', 'double'},'VariableNames',{'Path', 'Roll', 'Pull', 'Walk'});
     for pathArgIndex = 1:numPaths
+        % path
         pathArgInstance = pathArgInstances{pathArgIndex};
         pathArgs = pathArgInstance.getPathArgs();
         forTablePathName = erase(class(pathArgInstance), 'PathArgs');
+        % terrain
+        terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
+        terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+        forTableTerrainName = erase(class(terrainArgInstance), 'TerrainArgs');
+        
         envName = strcat(class(terrainArgInstance), '_', class(pathArgInstance));
         % load file
         load(sprintf("%s/results_%s.mat", outputEnvDirectory, envName), 'env');

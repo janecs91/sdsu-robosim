@@ -3,9 +3,9 @@ addpath('terrain');
 addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
-outputEnvDirectory = 'output_results_paper2';
-outputPlotDirectory = 'output_plots_auto_sin';
-outputVisualsDirectory = 'output_visuals_sin';
+outputEnvDirectory = 'output_results_paper';
+outputPlotDirectory = 'output_plots_auto';
+outputVisualsDirectory = 'output_visuals';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -45,7 +45,8 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % additional terrains: steplike, mars?
 
 %% ===== TEST PARAMS ======
-loadFromSaved = false; 
+loadFromSaved = false;
+loadFromSavedTerrain = true;
 showVisual = false;
 createPlots = true;
 showPlots = false;
@@ -68,7 +69,7 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 66;
+executionGroup = 3;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -81,10 +82,17 @@ elseif executionGroup == 3
     % error - fix
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {RandomTerrainArgs()};
-elseif executionGroup == 4
+    loadFromSavedTerrain = true;
+elseif executionGroup == 33
     % error - fix
+    pathArgInstances = {DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {RandomTerrainArgs()};
+    loadFromSavedTerrain = true;
+elseif executionGroup == 4
+    % done
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {PerlinTerrainArgs()};
+    loadFromSavedTerrain = true;
 elseif executionGroup == 5
     % Sin group - easy - done
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
@@ -110,17 +118,19 @@ for pathArgIndex = 1:length(pathArgInstances)
     disp(pathArgInstance)
     pathArgs = pathArgInstance.getPathArgs();
     disp(pathArgs)
+    forPlotPathName = erase(class(pathArgInstance), 'PathArgs');
     for terrainArgIndex = 1:length(terrainArgInstances)
         terrainArgInstance = terrainArgInstances{terrainArgIndex};
         terrainArgInstance = terrainArgInstance.setTerrainSize(pathArgInstance.pathEndX+100, pathArgInstance.pathEndY+200);
         terrainArgs = terrainArgInstance.getTerrainArgs(pathName);
+        forPlotTerrainName = erase(class(terrainArgInstance), 'TerrainArgs');
         envName = strcat(class(terrainArgInstance), '_', class(pathArgInstance));
         fprintf("Env Name: %s\n", envName);
         if loadFromSaved == true
             env = Environment.get_saved_env(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs);
         else
-            env = Environment(outputEnvDirectory, envName, loadFromSaved, pathDirectory, terrainDirectory, ...
+            env = Environment(outputEnvDirectory, envName, loadFromSavedTerrain, pathDirectory, terrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs);
         end
         env = env.analyze(botOptions{botNum}, botStartX, maxIterations);

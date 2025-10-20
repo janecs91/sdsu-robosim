@@ -3,7 +3,7 @@ classdef StepAdjusterStance < StepAdjuster
         verbose = false;
         % limit ranges
         minDxb = 0;
-        keepBaseHeightConstant = false;
+        keepBaseHeightConstant = true;
 
         conservativeWalkingBaseMovement = true;
     end
@@ -79,11 +79,11 @@ classdef StepAdjusterStance < StepAdjuster
                 [angle1, slope1] = path.get_gamma_at_index(futurePathIndex);        % OR try get gammma at x??
                 fakeState = copy(state);
                 % estimate future base z?
-                %{
+                
                 dz_b = obj.get_base_z_vector2(bot, state, terrain, futurePathPoint);
                 fakeState.basePosition(1:2) = futurePathPoint(1:2);
                 fakeState.basePosition(3) = fakeState.basePosition(3) + dz_b;
-                %}
+                
                 % get angle for next state?
                 [futurePathPoint2, futurePathIndex2] = bot.get_next_path_point(fakeState, path, moveX);
                 [angle2, slope2] = path.get_gamma_at_index(futurePathIndex2);

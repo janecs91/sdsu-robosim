@@ -40,7 +40,7 @@ classdef Environment
         analyzedBotKeys;
     end
     methods
-        function obj = Environment(outputEnvDirectory, envName, loadFromSaved, inputPathDirectory, inputTerrainDirectory, ...
+        function obj = Environment(outputEnvDirectory, envName, loadFromSavedTerrain, inputPathDirectory, inputTerrainDirectory, ...
                 pathName, terrainName, pathArgs, terrainArgs)
             disp("pathARgs")
             disp(pathArgs)
@@ -88,7 +88,7 @@ classdef Environment
                 terrainName = terrainGen.get_name(terrainArgs{:});
                 disp(terrainName);
             end
-            obj.terrain = MatrixTerrain(terrainName, inputTerrainDirectory, loadFromSaved, terrainArgs);
+            obj.terrain = MatrixTerrain(terrainName, inputTerrainDirectory, loadFromSavedTerrain, terrainArgs);
             obj.terrainName = obj.terrain.terrainName;
             if strcmp(obj.envName, '')
                 obj.envName = strcat(obj.terrainName, '_', obj.pathName);

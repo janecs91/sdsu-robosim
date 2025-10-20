@@ -4,8 +4,8 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_auto_sin';
-outputVisualsDirectory = 'output_visuals_run_sin';
+outputPlotDirectory = 'output_plots_auto_sin_trends';
+outputVisualsDirectory = 'output_visuals_sin';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
 pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
@@ -70,7 +70,7 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 55;
+executionGroup = 5;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -92,12 +92,10 @@ elseif executionGroup == 5
     % Sin group - easy (rerun this, group was changed)
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
-        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
-elseif executionGroup == 55
-    % Sin group - easy (rerun this, group was changed)
-    pathArgInstances = {StraightPathArgs()};
-    terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinMedLowTerrainArgs, ...
-        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
+        SinMedMedTerrainArgs, SinMedHighTerrainArgs, ...
+        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs, ...
+        SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs
+        };
 elseif executionGroup == 6
     % Sin group - harder
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
@@ -137,23 +135,23 @@ for pathArgIndex = 1:length(pathArgInstances)
         times(:, terrainArgIndex) = env.totalTime(:);
         powers(:, terrainArgIndex) = env.totalPower(:);
     end
-    disp(forTableTerrainName);
-    disp(times)
+    disp(forTablePathName);
+    %disp(times)
     fixedAmplitude = 5;
     fixedFrequency = 0.01;
     %% 2d time plot
     % amplitude
     desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
-    disp("Indices")
-    disp(desired2DAmplitudeIndices)
+    %disp("Indices")
+    %disp(desired2DAmplitudeIndices)
     figure('visible',figureVisibility);
     plot(amplitudes(desired2DAmplitudeIndices)', times(:,desired2DAmplitudeIndices))
     xlabel("Amplitude")
     ylabel("Time")
-    title(sprintf("Plot Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
+    title(sprintf("Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
     legend({'pull','roll','walk'},'Location','northeast')
     if savePlots
-        pathVisualFileName = sprintf("%s/trend_sin_time2d_amp_%s.png", outputPlotDirectory, envName);
+        pathVisualFileName = sprintf("%s/trend_sin_time2d_amp_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
     % frequency
@@ -162,10 +160,10 @@ for pathArgIndex = 1:length(pathArgInstances)
     plot(frequencies(desired2DFrequencyIndices)', times(:,desired2DFrequencyIndices))
     xlabel("Frequency")
     ylabel("Time")
-    title(sprintf("Plot Time Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
+    title(sprintf("Time Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
     legend({'pull','roll','walk'},'Location','northeast')
     if savePlots
-        pathVisualFileName = sprintf("%s/trend_sin_time2d_freq_%s.png", outputPlotDirectory, envName);
+        pathVisualFileName = sprintf("%s/trend_sin_time2d_freq_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
     %% 3d time plot with both amplitude & frequency
@@ -174,10 +172,10 @@ for pathArgIndex = 1:length(pathArgInstances)
     xlabel("Amplitude")
     ylabel("Frequency")
     zlabel("Time")
-    title("Plot Time Trend for Sin Terrain")
+    title("Time Trend for Sin Terrain")
     legend({'pull','roll','walk'},'Location','northeast')
     if savePlots
-        pathVisualFileName = sprintf("%s/trend_sin_time3d_%s.png", outputPlotDirectory, envName);
+        pathVisualFileName = sprintf("%s/trend_sin_time3d_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
 
@@ -188,10 +186,10 @@ for pathArgIndex = 1:length(pathArgInstances)
     plot(amplitudes(desired2DAmplitudeIndices)', powers(:,desired2DAmplitudeIndices))
     xlabel("Amplitude")
     ylabel("Power")
-    title(sprintf("Plot Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
+    title(sprintf("Power Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
     legend({'pull','roll','walk'},'Location','northeast')
     if savePlots
-        pathVisualFileName = sprintf("%s/trend_sin_pwr2d_amp_%s.png", outputPlotDirectory, envName);
+        pathVisualFileName = sprintf("%s/trend_sin_pwr2d_amp_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
     % frequency
@@ -200,10 +198,10 @@ for pathArgIndex = 1:length(pathArgInstances)
     plot(frequencies(desired2DFrequencyIndices)', powers(:,desired2DFrequencyIndices))
     xlabel("Frequency")
     ylabel("Power")
-    title(sprintf("Plot Time Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
+    title(sprintf("Power Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
     legend({'pull','roll','walk'},'Location','northeast')
     if savePlots
-        pathVisualFileName = sprintf("%s/trend_sin_pwr2d_freq_%s.png", outputPlotDirectory, envName);
+        pathVisualFileName = sprintf("%s/trend_sin_pwr2d_freq_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
     %% 3d power plot with both amplitude & frequency
@@ -212,11 +210,11 @@ for pathArgIndex = 1:length(pathArgInstances)
     xlabel("Amplitude")
     ylabel("Frequency")
     zlabel("Power")
-    title("Plot Power Trend for Sin Terrain")
+    title("Power Trend for Sin Terrain")
     legend({'pull','roll','walk'},'Location','northeast')
     if savePlots
-        pathVisualFileName = sprintf("%s/trend_sin_power3d_%s.png", outputPlotDirectory, envName);
+        pathVisualFileName = sprintf("%s/trend_sin_power3d_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
-    return
+    %return
 end

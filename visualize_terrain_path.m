@@ -45,7 +45,7 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 %% VISUAL PARAMS
 showTerrainOnly = false;
 outputVisualDirectory = "output_visuals";
-saveVisualAsImage = true;
+saveVisualAsImage = false;
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
 showVisual = true;
@@ -56,14 +56,14 @@ botNum = 2;
 botStartX = -1;
 maxIterations = 4;
 %% path settings
-pathNum = 3;
+pathNum = 2;
 pathStartX = 100; 
 pathStartY = 100;
 pathEndX = 2100;
 pathEndY = pathStartY + 2000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 3;
+terrainNum = 7;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;

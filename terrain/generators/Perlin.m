@@ -5,7 +5,7 @@ classdef Perlin < TerrainGenerator
         argNames = {};
 
         applyFilter = true;
-        filterSize = 5;
+        filterSize = 10;
     end
     methods
         function obj = Perlin(directory)
