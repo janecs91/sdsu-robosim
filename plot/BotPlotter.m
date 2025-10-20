@@ -8,9 +8,15 @@ classdef BotPlotter
             obj.env = env;
             obj.outputPlotsDirectory = outputPlotsDirectory;
         end
-        function plot_time_per_distance(obj, showDisplay)
+        function plot_time_per_distance(obj, showDisplay, titlePathName, titleTerrainName)
             if nargin < 1
                 showDisplay = 0;
+            end
+            if nargin < 3
+                titlePathName = '';
+            end
+            if nargin < 4
+                titleTerrainName = '';
             end
             env = obj.env;
             %disp(env)
@@ -40,7 +46,12 @@ classdef BotPlotter
                 
                 plot(baseX, cumsumTimeCost);
 
-                title("Time over Base Distance")
+                plotTitle = '';
+                if ~strcmp(titlePathName, '') || ~strcmp(titleTerrainName, '')
+                    plotTitle = sprintf(" for %s Path on %s Terrain", titlePathName, titleTerrainName);
+                end
+
+                title(sprintf("Time over Distance%s", plotTitle))
                 xlabel('Base Distance (cm)')
                 ylabel('Time (s)')
             end
@@ -52,9 +63,15 @@ classdef BotPlotter
                 saveas(gcf,pathVisualFileName)
             end
         end
-        function plot_power_per_distance(obj, showDisplay)
+        function plot_power_per_distance(obj, showDisplay, titlePathName, titleTerrainName)
             if nargin < 1
                 showDisplay = 0;
+            end
+            if nargin < 3
+                titlePathName = '';
+            end
+            if nargin < 4
+                titleTerrainName = '';
             end
             env = obj.env;
             bots = env.bots;
@@ -83,7 +100,12 @@ classdef BotPlotter
                 
                 plot(baseX, cumsumPowerCost);
 
-                title("Power over Base Distance")
+                plotTitle = '';
+                if ~strcmp(titlePathName, '') || ~strcmp(titleTerrainName, '')
+                    plotTitle = sprintf(" for %s Path on %s Terrain", titlePathName, titleTerrainName);
+                end
+
+                title(sprintf("Power over Base Distance%s", plotTitle))
                 xlabel('Base Distance (cm)')
                 ylabel('Power (W)')
             end
