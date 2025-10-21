@@ -4,7 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_auto_sin_trends';
+outputPlotDirectory = 'output_plots_sin_trends2';
 outputVisualsDirectory = 'output_visuals_sin';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -66,6 +66,8 @@ showColorBar = 0;
 %% plot settings
 plotLineWidth = 2;
 fontSizeScale = 1.7;
+fixedAmplitude = 5;
+fixedFrequency = 0.01;
 
 
 
@@ -74,38 +76,16 @@ fontSizeScale = 1.7;
 Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 5;
+executionGroup = 1;
 if executionGroup == 1
-    pathArgInstances = {StraightPathArgs()};
-    terrainArgInstances = {FlatTerrainArgs()};
-elseif executionGroup == 11
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
-    terrainArgInstances = {FlatTerrainArgs()};
-elseif executionGroup == 2
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs()};
-elseif executionGroup == 3
-    % error - fix
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {RandomTerrainArgs()};
-elseif executionGroup == 4
-    % error - fix
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {PerlinTerrainArgs()};
-elseif executionGroup == 5
-    % Sin group - easy (rerun this, group was changed)
+    % Sin group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
         SinMedMedTerrainArgs, SinMedHighTerrainArgs, ...
         SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs, ...
-        SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs
+        SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs, ...
+        SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs(), ...
         };
-elseif executionGroup == 6
-    % Sin group - harder
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
-elseif executionGroup == 7
-    % possible ramp amplitude tests
 end
 
 pathName = "";
@@ -140,15 +120,17 @@ for pathArgIndex = 1:length(pathArgInstances)
     end
     disp(forTablePathName);
     %disp(times)
-    fixedAmplitude = 5;
-    fixedFrequency = 0.01;
+    
     %% 2d time plot
     % amplitude
     desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
     %disp("Indices")
     %disp(desired2DAmplitudeIndices)
     figure('visible',figureVisibility);
-    plot(amplitudes(desired2DAmplitudeIndices)', times(:,desired2DAmplitudeIndices), 'LineWidth',plotLineWidth)
+    desiredAmplitudes = amplitudes(desired2DAmplitudeIndices);
+    desiredTimes = times(:,desired2DAmplitudeIndices);
+    [sortedAmplitudes, sortedAmplitudeIndices] = sort(desiredAmplitudes);
+    plot(sortedAmplitudes, desiredTimes(:,sortedAmplitudeIndices), '-o', 'LineWidth',plotLineWidth)
     xlabel("Amplitude")
     ylabel("Time (s)")
     title(sprintf("Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
@@ -159,9 +141,12 @@ for pathArgIndex = 1:length(pathArgInstances)
         saveas(gcf,pathVisualFileName)
     end
     % frequency
-    desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
     figure('visible',figureVisibility);
-    plot(frequencies(desired2DFrequencyIndices)', times(:,desired2DFrequencyIndices), 'LineWidth',plotLineWidth)
+    desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
+    desiredFrequencies = frequencies(desired2DFrequencyIndices);
+    desiredTimes = times(:,desired2DFrequencyIndices);
+    [sortedFrequencies, sortedFrequencyIndices] = sort(desiredFrequencies);
+    plot(sortedFrequencies, desiredTimes(:,sortedFrequencyIndices), '-o', 'LineWidth',plotLineWidth)
     xlabel("Frequency")
     ylabel("Time (s)")
     title(sprintf("Time Trend for Sin Terrain (fixed amplitude=%d)", fixedAmplitude))
@@ -173,7 +158,8 @@ for pathArgIndex = 1:length(pathArgInstances)
     end
     %% 3d time plot with both amplitude & frequency
     figure('visible',figureVisibility);
-    plot3(amplitudes, frequencies, times(:,:), 'LineWidth',plotLineWidth)
+    %plot3(amplitudes, frequencies, times(:,:), 'LineWidth',plotLineWidth)
+    scatter3(amplitudes, frequencies, times(:,:), 'filled')
     xlabel("Amplitude")
     ylabel("Frequency")
     zlabel("Time (s)")
@@ -187,9 +173,12 @@ for pathArgIndex = 1:length(pathArgInstances)
 
     %% 2d power plot
     % amplitude
-    desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
     figure('visible',figureVisibility);
-    plot(amplitudes(desired2DAmplitudeIndices)', powers(:,desired2DAmplitudeIndices), 'LineWidth',plotLineWidth)
+    desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
+    desiredAmplitudes = amplitudes(desired2DAmplitudeIndices);
+    desiredPowers = powers(:,desired2DAmplitudeIndices);
+    [sortedAmplitudes, sortedAmplitudeIndices] = sort(desiredAmplitudes);
+    plot(sortedAmplitudes, desiredPowers(:,sortedAmplitudeIndices), '-o', 'LineWidth',plotLineWidth)
     xlabel("Amplitude")
     ylabel("Power (W)")
     title(sprintf("Power Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
@@ -200,9 +189,12 @@ for pathArgIndex = 1:length(pathArgInstances)
         saveas(gcf,pathVisualFileName)
     end
     % frequency
-    desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
     figure('visible',figureVisibility);
-    plot(frequencies(desired2DFrequencyIndices)', powers(:,desired2DFrequencyIndices), 'LineWidth',plotLineWidth)
+    desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
+    desiredFrequencies = frequencies(desired2DFrequencyIndices);
+    desiredPowers = powers(:,desired2DFrequencyIndices);
+    [sortedFrequencies, sortedFrequencyIndices] = sort(desiredFrequencies);
+    plot(sortedFrequencies, desiredPowers(:,sortedFrequencyIndices), '-o', 'LineWidth',plotLineWidth)
     xlabel("Frequency")
     ylabel("Power (W)")
     title(sprintf("Power Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
@@ -214,7 +206,8 @@ for pathArgIndex = 1:length(pathArgInstances)
     end
     %% 3d power plot with both amplitude & frequency
     figure('visible',figureVisibility);
-    plot3(amplitudes, frequencies, powers(:,:), 'LineWidth',plotLineWidth)
+    %plot3(amplitudes, frequencies, powers(:,:), 'LineWidth',plotLineWidth)
+    scatter3(amplitudes, frequencies, powers(:,:), 'filled')
     xlabel("Amplitude")
     ylabel("Frequency")
     zlabel("Power (W)")
@@ -225,5 +218,4 @@ for pathArgIndex = 1:length(pathArgInstances)
         pathVisualFileName = sprintf("%s/trend_sin_power3d_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
-    %return
 end

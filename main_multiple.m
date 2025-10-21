@@ -4,7 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_auto';
+outputPlotDirectory = 'output_plots_auto_sin';
 outputVisualsDirectory = 'output_visuals';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -69,7 +69,7 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 3;
+executionGroup = 7;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -107,6 +107,10 @@ elseif executionGroup == 66
     pathArgInstances = {SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
 elseif executionGroup == 7
+    % Sin group - fixed amp
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
+elseif executionGroup == 8
     % possible ramp amplitude tests
 end
 
