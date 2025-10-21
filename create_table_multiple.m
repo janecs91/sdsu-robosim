@@ -66,6 +66,7 @@ showColorBar = 0;
 
 %% ===== SIMULATE =====
 % System setup
+Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 executionGroup = 4;

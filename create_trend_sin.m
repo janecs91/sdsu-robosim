@@ -63,11 +63,15 @@ showAllMarkers = false;
 showAxis = '';
 showColorBar = 0;
 %equalAxis = true;
+%% plot settings
+plotLineWidth = 2;
+fontSizeScale = 1.7;
 
 
 
 %% ===== SIMULATE =====
 % System setup
+Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 executionGroup = 5;
@@ -127,7 +131,6 @@ for pathArgIndex = 1:length(pathArgInstances)
         forTableTerrainName = erase(class(terrainArgInstance), 'TerrainArgs');
         envName = strcat(class(terrainArgInstance), '_', class(pathArgInstance));
         % load file
-        Environment.load_paths()
         load(sprintf("%s/results_%s.mat", outputEnvDirectory, envName), 'env');
         
         amplitudes(terrainArgIndex) = terrainArgInstance.terrainAmplitude;
@@ -145,11 +148,12 @@ for pathArgIndex = 1:length(pathArgInstances)
     %disp("Indices")
     %disp(desired2DAmplitudeIndices)
     figure('visible',figureVisibility);
-    plot(amplitudes(desired2DAmplitudeIndices)', times(:,desired2DAmplitudeIndices))
+    plot(amplitudes(desired2DAmplitudeIndices)', times(:,desired2DAmplitudeIndices), 'LineWidth',plotLineWidth)
     xlabel("Amplitude")
-    ylabel("Time")
+    ylabel("Time (s)")
     title(sprintf("Time Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
-    legend({'pull','roll','walk'},'Location','northeast')
+    legend({'pull','roll','walk'},'Location','southeast')
+    fontsize(gcf,scale=fontSizeScale)
     if savePlots
         pathVisualFileName = sprintf("%s/trend_sin_time2d_amp_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
@@ -157,23 +161,25 @@ for pathArgIndex = 1:length(pathArgInstances)
     % frequency
     desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
     figure('visible',figureVisibility);
-    plot(frequencies(desired2DFrequencyIndices)', times(:,desired2DFrequencyIndices))
+    plot(frequencies(desired2DFrequencyIndices)', times(:,desired2DFrequencyIndices), 'LineWidth',plotLineWidth)
     xlabel("Frequency")
-    ylabel("Time")
-    title(sprintf("Time Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
-    legend({'pull','roll','walk'},'Location','northeast')
+    ylabel("Time (s)")
+    title(sprintf("Time Trend for Sin Terrain (fixed amplitude=%d)", fixedAmplitude))
+    legend({'pull','roll','walk'},'Location','southeast')
+    fontsize(gcf,scale=fontSizeScale)
     if savePlots
         pathVisualFileName = sprintf("%s/trend_sin_time2d_freq_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
     %% 3d time plot with both amplitude & frequency
     figure('visible',figureVisibility);
-    plot3(amplitudes, frequencies, times(:,:))
+    plot3(amplitudes, frequencies, times(:,:), 'LineWidth',plotLineWidth)
     xlabel("Amplitude")
     ylabel("Frequency")
-    zlabel("Time")
+    zlabel("Time (s)")
     title("Time Trend for Sin Terrain")
     legend({'pull','roll','walk'},'Location','northeast')
+    fontsize(gcf,scale=fontSizeScale)
     if savePlots
         pathVisualFileName = sprintf("%s/trend_sin_time3d_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
@@ -183,11 +189,12 @@ for pathArgIndex = 1:length(pathArgInstances)
     % amplitude
     desired2DAmplitudeIndices = find(frequencies==fixedFrequency);
     figure('visible',figureVisibility);
-    plot(amplitudes(desired2DAmplitudeIndices)', powers(:,desired2DAmplitudeIndices))
+    plot(amplitudes(desired2DAmplitudeIndices)', powers(:,desired2DAmplitudeIndices), 'LineWidth',plotLineWidth)
     xlabel("Amplitude")
-    ylabel("Power")
+    ylabel("Power (W)")
     title(sprintf("Power Trend for Sin Terrain (fixed frequency=%.2d)", fixedFrequency))
-    legend({'pull','roll','walk'},'Location','northeast')
+    legend({'pull','roll','walk'},'Location','southeast')
+    fontsize(gcf,scale=fontSizeScale)
     if savePlots
         pathVisualFileName = sprintf("%s/trend_sin_pwr2d_amp_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
@@ -195,23 +202,25 @@ for pathArgIndex = 1:length(pathArgInstances)
     % frequency
     desired2DFrequencyIndices = find(amplitudes==fixedAmplitude);
     figure('visible',figureVisibility);
-    plot(frequencies(desired2DFrequencyIndices)', powers(:,desired2DFrequencyIndices))
+    plot(frequencies(desired2DFrequencyIndices)', powers(:,desired2DFrequencyIndices), 'LineWidth',plotLineWidth)
     xlabel("Frequency")
-    ylabel("Power")
+    ylabel("Power (W)")
     title(sprintf("Power Trend for Sin Terrain (fixed amplitude=%.2d)", fixedAmplitude))
-    legend({'pull','roll','walk'},'Location','northeast')
+    legend({'pull','roll','walk'},'Location','southeast')
+    fontsize(gcf,scale=fontSizeScale)
     if savePlots
         pathVisualFileName = sprintf("%s/trend_sin_pwr2d_freq_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)
     end
     %% 3d power plot with both amplitude & frequency
     figure('visible',figureVisibility);
-    plot3(amplitudes, frequencies, powers(:,:))
+    plot3(amplitudes, frequencies, powers(:,:), 'LineWidth',plotLineWidth)
     xlabel("Amplitude")
     ylabel("Frequency")
-    zlabel("Power")
+    zlabel("Power (W)")
     title("Power Trend for Sin Terrain")
     legend({'pull','roll','walk'},'Location','northeast')
+    fontsize(gcf,scale=fontSizeScale)
     if savePlots
         pathVisualFileName = sprintf("%s/trend_sin_power3d_%s.png", outputPlotDirectory, forTablePathName);
         saveas(gcf,pathVisualFileName)

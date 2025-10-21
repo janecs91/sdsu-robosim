@@ -2,6 +2,8 @@ classdef BotPlotter
     properties
         env;
         outputPlotsDirectory;
+        plotLineWidth = 2;
+        fontSizeScale = 1.2;
     end
     methods
         function obj = BotPlotter(env, outputPlotsDirectory)
@@ -44,13 +46,14 @@ classdef BotPlotter
                 cumsumTimeCost = cumsum(timeCost);
                 %disp(size(cumsumTimeCost))
                 
-                plot(baseX, cumsumTimeCost);
+                plot(baseX, cumsumTimeCost, 'LineWidth',obj.plotLineWidth);
 
                 plotTitle = '';
                 if ~strcmp(titlePathName, '') || ~strcmp(titleTerrainName, '')
                     plotTitle = sprintf(" for %s Path on %s Terrain", titlePathName, titleTerrainName);
                 end
 
+                fontsize(gcf,scale=obj.fontSizeScale)
                 title(sprintf("Time over Distance%s", plotTitle))
                 xlabel('Base Distance (cm)')
                 ylabel('Time (s)')
@@ -98,13 +101,14 @@ classdef BotPlotter
                 cumsumPowerCost = cumsum(powerCost);
                 %disp(size(cumsumPowerCost))
                 
-                plot(baseX, cumsumPowerCost);
+                plot(baseX, cumsumPowerCost, 'LineWidth',obj.plotLineWidth);
 
                 plotTitle = '';
                 if ~strcmp(titlePathName, '') || ~strcmp(titleTerrainName, '')
                     plotTitle = sprintf(" for %s Path on %s Terrain", titlePathName, titleTerrainName);
                 end
 
+                fontsize(gcf,scale=obj.fontSizeScale)
                 title(sprintf("Power over Base Distance%s", plotTitle))
                 xlabel('Base Distance (cm)')
                 ylabel('Power (W)')
