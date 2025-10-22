@@ -69,7 +69,8 @@ showColorBar = 0;
 % System setup
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 7;
+addpath('input_args/input_terrain_args/sin');
+executionGroup = 77;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -109,7 +110,22 @@ elseif executionGroup == 66
 elseif executionGroup == 7
     % Sin group - fixed amp
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
+    % amp = 5
+    %terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
+    % amp - 14
+    terrainArgInstances = {SinBumpyHighTerrainArgs(), SinBumpyXHighTerrainArgs(), SinBumpyXXHighTerrainArgs};
+elseif executionGroup == 77
+    % Sin group - fixed freq = 1.0
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    % freq = 0.01
+    %terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
+    % freq = 1.0
+    terrainArgInstances = {
+        %SinBumpyXXMedTerrainArgs, ...
+        %SinBumpyXXAmp7TerrainArgs, ...
+        %SinBumpyXXAmp12TerrainArgs, ...
+        SinBumpyXXHighTerrainArgs, ...
+        };
 elseif executionGroup == 8
     % possible ramp amplitude tests
 end

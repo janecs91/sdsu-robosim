@@ -3,7 +3,7 @@ classdef StepAdjusterStance < StepAdjuster
         verbose = false;
         % limit ranges
         minDxb = 0;
-        keepBaseHeightConstant = true;
+        keepBaseHeightConstant = false;
 
         conservativeWalkingBaseMovement = true;
     end

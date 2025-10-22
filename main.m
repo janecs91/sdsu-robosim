@@ -63,7 +63,7 @@ pathEndX = 2100;
 pathEndY = pathStartY + 1000;
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 4;
+terrainNum = 3;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -71,7 +71,7 @@ height = pathEndY+200;
 cellsize = 5;
 % sin
 terrainAmplitude = 14;
-terrainFrequency = 0.06;
+terrainFrequency = 1.0;
 % random
 randFilterSize = 20;
 elevationChangeRange = 150;

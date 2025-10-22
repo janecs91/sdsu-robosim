@@ -76,6 +76,7 @@ fixedFrequency = 0.01;
 Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
+addpath('input_args/input_terrain_args/sin');
 executionGroup = 1;
 if executionGroup == 1
     % Sin group

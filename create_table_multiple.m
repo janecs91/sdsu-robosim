@@ -3,8 +3,8 @@ addpath('terrain');
 addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
-outputEnvDirectory = 'output_results_paper2';
-outputPlotDirectory = 'output_plots_auto2';
+outputEnvDirectory = 'output_results_paper';
+outputPlotDirectory = 'output_plots_auto';
 outputVisualsDirectory = 'output_visuals2';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -69,7 +69,8 @@ showColorBar = 0;
 Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 4;
+addpath('input_args/input_terrain_args/sin');
+executionGroup = 55;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -94,6 +95,12 @@ elseif executionGroup == 5
         SinMedMedTerrainArgs, SinMedHighTerrainArgs, ...
         SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs,
         SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs
+        };
+elseif executionGroup == 55
+    % Sin group - small subset
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {SinBumpyLowTerrainArgs, SinBumpyXLowTerrainArgs, SinBumpyXXLowTerrainArgs, ...
+        SinBumpyMedTerrainArgs, SinBumpyXMedTerrainArgs
         };
 elseif executionGroup == 7
     % possible ramp amplitude tests
