@@ -70,7 +70,7 @@ Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 addpath('input_args/input_terrain_args/sin');
-executionGroup = 55;
+executionGroup = 77;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -102,7 +102,16 @@ elseif executionGroup == 55
     terrainArgInstances = {SinBumpyLowTerrainArgs, SinBumpyXLowTerrainArgs, SinBumpyXXLowTerrainArgs, ...
         SinBumpyMedTerrainArgs, SinBumpyXMedTerrainArgs
         };
-elseif executionGroup == 7
+elseif executionGroup == 77
+    % Sin group - fixed freq = 1.0
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    % freq = 0.01
+    %terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
+    % freq = 1.0
+    terrainArgInstances = {SinBumpyXXMedTerrainArgs, SinBumpyXXAmp7TerrainArgs, SinBumpyXXAmp12TerrainArgs, ...
+       SinBumpyXXHighTerrainArgs, ...
+        };
+elseif executionGroup == 8
     % possible ramp amplitude tests
 end
 

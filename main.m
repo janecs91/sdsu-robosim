@@ -70,7 +70,7 @@ width = pathEndX+100;
 height = pathEndY+200;
 cellsize = 5;
 % sin
-terrainAmplitude = 14;
+terrainAmplitude = 13;
 terrainFrequency = 1.0;
 % random
 randFilterSize = 20;
