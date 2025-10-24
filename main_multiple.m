@@ -70,7 +70,7 @@ showColorBar = 0;
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 addpath('input_args/input_terrain_args/sin');
-executionGroup = 5;
+executionGroup = 52;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -97,7 +97,8 @@ elseif executionGroup == 4
 elseif executionGroup == 5
     outputPlotDirectory = 'output_plots_auto_sin';
     % Sin group - fixed amp
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    %pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    pathArgInstances = {SinPathArgs()};
     % amp = 5 (low)
     %terrainArgInstances = {SinEasyLowTerrainArgs(), SinMedLowTerrainArgs(), SinBumpyLowTerrainArgs(), SinBumpyXLowTerrainArgs(), SinBumpyXXLowTerrainArgs};
     % amp - 13 (high)

@@ -56,10 +56,10 @@ botStartX = -1;
 maxIterations = 9999;
 %% path settings
 % 1, 2, 3, 5
-pathNum = 2;
+pathNum = 5;
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 2100;
+pathEndX = 2150;
 pathEndY = pathStartY + 1000;
 pathAmplitude = 100;
 %% terrain settings
@@ -71,8 +71,8 @@ height = pathEndY+200;
 cellsize = 5;
 % sin
 terrainAmplitude = 13;
-% freqs: 0.01, 0.06, 0.12, 0.5, 1.0
-terrainFrequency = 0.01;
+% freqs: 0.01, 0.06, 0.13, 0.5, 1.0
+terrainFrequency = 0.06;
 % random
 randFilterSize = 20;
 elevationChangeRange = 150;
