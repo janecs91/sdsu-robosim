@@ -9,8 +9,8 @@ classdef SinBumpyHighTerrainArgs < TerrainArgsInterface
             %obj.height = pathEndY+200;
             obj.cellsize = 5;
             % sin
-            obj.terrainAmplitude = 14;
-            obj.terrainFrequency = 0.103;
+            obj.terrainAmplitude = 13;
+            obj.terrainFrequency = 0.12;
             % random
             obj.randFilterSize = 10;
             obj.elevationChangeRange = 14;

@@ -46,7 +46,7 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
 loadFromSavedTerrain = true;
-showVisual = true;
+showVisual = false;
 createPlots = false;
 showPlots = false;
 turn = 0.01;
@@ -71,7 +71,8 @@ height = pathEndY+200;
 cellsize = 5;
 % sin
 terrainAmplitude = 13;
-terrainFrequency = 1.0;
+% freqs: 0.01, 0.06, 0.12, 0.5, 1.0
+terrainFrequency = 0.01;
 % random
 randFilterSize = 20;
 elevationChangeRange = 150;

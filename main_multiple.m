@@ -4,7 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_auto_sin';
+outputPlotDirectory = 'output_plots_auto';
 outputVisualsDirectory = 'output_visuals';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -70,7 +70,7 @@ showColorBar = 0;
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 addpath('input_args/input_terrain_args/sin');
-executionGroup = 77;
+executionGroup = 5;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -95,37 +95,32 @@ elseif executionGroup == 4
     terrainArgInstances = {PerlinTerrainArgs()};
     loadFromSavedTerrain = true;
 elseif executionGroup == 5
-    % Sin group - easy - done
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinEasyLowTerrainArgs(), SinEasyMedTerrainArgs, SinEasyHighTerrainArgs, SinMedLowTerrainArgs, ...
-        SinBumpyLowTerrainArgs, SinBumpyLowXTerrainArgs, SinBumpyLowXXTerrainArgs};
-elseif executionGroup == 6
-    % Sin group - harder - done
-    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
-elseif executionGroup == 66
-    % Sin group - harder - done
-    pathArgInstances = {SinPathArgs(), HalfCirclePathArgs()};
-    terrainArgInstances = {SinMedMedTerrainArgs, SinMedHighTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyMedXTerrainArgs};
-elseif executionGroup == 7
+    outputPlotDirectory = 'output_plots_auto_sin';
     % Sin group - fixed amp
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    % amp = 5
-    %terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
-    % amp - 14
-    terrainArgInstances = {SinBumpyHighTerrainArgs(), SinBumpyXHighTerrainArgs(), SinBumpyXXHighTerrainArgs};
-elseif executionGroup == 77
+    % amp = 5 (low)
+    %terrainArgInstances = {SinEasyLowTerrainArgs(), SinMedLowTerrainArgs(), SinBumpyLowTerrainArgs(), SinBumpyXLowTerrainArgs(), SinBumpyXXLowTerrainArgs};
+    % amp - 13 (high)
+    terrainArgInstances = {SinEasyHighTerrainArgs(), SinMedHighTerrainArgs(), SinBumpyHighTerrainArgs(), SinBumpyXHighTerrainArgs(), SinBumpyXXHighTerrainArgs};
+elseif executionGroup == 51
+    outputPlotDirectory = 'output_plots_auto_sin';
     % Sin group - fixed freq = 1.0
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
-    % freq = 0.01
-    %terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyAmp12TerrainArgs()};
-    % freq = 1.0
+    % freq = 0.01 (easy)
+    % repeats - SinEasyLowTerrainArgs, SinEasyHighTerrainArgs
+    %terrainArgInstances = {SinEasyAmp7TerrainArgs(), SinEasyMedTerrainArgs, SinEasyAmp12TerrainArgs()};
+    % freq = 1.0 (bumpyxx)
+    % repeats - SinBumpyXXLowTerrainArgs, SinBumpyXXHighTerrainArgs
     terrainArgInstances = {
-        %SinBumpyXXMedTerrainArgs, ...
+        SinBumpyXXMedTerrainArgs, ...
         SinBumpyXXAmp7TerrainArgs, ...
         SinBumpyXXAmp12TerrainArgs, ...
-        %SinBumpyXXHighTerrainArgs, ...
         };
+elseif executionGroup == 52
+    outputPlotDirectory = 'output_plots_auto_sin';
+    % Sin group - the rest (med, bumpy, bumpyx)
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {SinMedMedTerrainArgs, SinBumpyMedTerrainArgs, SinBumpyXMedTerrainArgs};
 elseif executionGroup == 8
     % possible ramp amplitude tests
 end
