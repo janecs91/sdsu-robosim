@@ -228,24 +228,58 @@ classdef Environment
                 end
             end
         end
-        function visualize_terrain(obj, outputVisualsDirectory, varargin)            
+        function visualize_terrain(obj, outputVisualsDirectory, equalAxis, viewAxis, varargin)            
             figure;
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);
             xlabel('X');
             ylabel('Y');
             zlabel('Z');
+
+            if equalAxis == true
+                axis equal;
+            end
+            view(3);
+            if ~strcmp(viewAxis, '')
+                if strcmp(viewAxis, 'x')
+                    view(90,0);
+                elseif strcmp(viewAxis, 'y')
+                    view(0,0);
+                    disp('axis')
+                    disp(axis)
+                    axis([0 inf -inf inf -inf inf]);
+                elseif strcmp(viewAxis, 'z')
+                    view(0, 90);
+                end
+            end
+
             if ~isempty(outputVisualsDirectory)
                 pathVisualFileName = sprintf("%s/%s.png", outputVisualsDirectory, obj.terrainName);
                 saveas(gcf,pathVisualFileName)
             end
         end
-        function visualize_path(obj, outputVisualsDirectory, varargin)
-            figure;
-            
+        function visualize_path(obj, outputVisualsDirectory, equalAxis, viewAxis, varargin)
+            figure;            
             terrainVisual = Visualizer.simulate_terrain(obj.terrain);
             xlabel('X');
             ylabel('Y');
             zlabel('Z');
+
+            if equalAxis == true
+                axis equal;
+            end
+            view(3);
+            if ~strcmp(viewAxis, '')
+                if strcmp(viewAxis, 'x')
+                    view(90,0);
+                elseif strcmp(viewAxis, 'y')
+                    view(0,0);
+                    disp('axis')
+                    disp(axis)
+                    axis([0 inf -inf inf -inf inf]);
+                elseif strcmp(viewAxis, 'z')
+                    view(0, 90);
+                end
+            end
             
             hold on
             pathVisual = Visualizer.simulate_path(obj.path);

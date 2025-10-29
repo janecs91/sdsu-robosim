@@ -70,7 +70,7 @@ Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 addpath('input_args/input_terrain_args/sin');
-executionGroup = 77;
+executionGroup = 22;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -80,6 +80,10 @@ elseif executionGroup == 11
 elseif executionGroup == 2
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs()};
+elseif executionGroup == 22 
+    % easy groups - redo specific terrains
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {RampUpTerrainArgs(), RampDownTerrainArgs()};
 elseif executionGroup == 3
     % error - fix
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};

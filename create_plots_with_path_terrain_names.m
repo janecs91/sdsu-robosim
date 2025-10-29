@@ -4,7 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_renamed_sin';
+outputPlotDirectory = 'output_plots_renamed';
 outputVisualsDirectory = 'output_visuals';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -69,7 +69,7 @@ showColorBar = 0;
 Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 5;
+executionGroup = 22;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};
@@ -79,12 +79,16 @@ elseif executionGroup == 11
 elseif executionGroup == 2
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs()};
-elseif executionGroup == 22
+elseif executionGroup == 21
     % almost all except sin and random
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs(), ...
         PerlinTerrainArgs()
         };
+elseif executionGroup == 22
+    % easy groups - redo specific terrains
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {RampUpTerrainArgs(), RampDownTerrainArgs()};
 elseif executionGroup == 3
     % error - fix
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};

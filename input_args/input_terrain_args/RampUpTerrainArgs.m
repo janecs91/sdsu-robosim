@@ -9,7 +9,7 @@ classdef RampUpTerrainArgs < TerrainArgsInterface
             %obj.height = pathEndY+200;
             obj.cellsize = 5;
             % sin
-            obj.terrainAmplitude = 50;
+            obj.terrainAmplitude = 300;
             obj.terrainFrequency = 1;
             % random
             obj.randFilterSize = 10;

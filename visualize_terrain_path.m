@@ -43,9 +43,9 @@ pathOptions = {'straight', 'line', 'halfcirc', 'halfcirc2', 'sin'};
 % additional terrains: steplike, mars?
 
 %% VISUAL PARAMS
-showTerrainOnly = false;
-outputVisualDirectory = "output_visuals";
-saveVisualAsImage = false;
+showTerrainOnly = true;
+outputVisualDirectory = "output_terrain_visuals";
+saveVisualAsImage = true;
 %% ===== TEST PARAMS ======
 loadFromSaved = false; 
 showVisual = true;
@@ -57,13 +57,19 @@ botStartX = -1;
 maxIterations = 4;
 %% path settings
 pathNum = 2;
+pathStartX = 0; 
+pathStartY = 0;
+pathEndX = 0;
+pathEndY = pathStartY + 100;
+%{
 pathStartX = 100; 
 pathStartY = 100;
-pathEndX = 2100;
-pathEndY = pathStartY + 2000;
+pathEndX = 200;
+pathEndY = pathStartY + 200;
+%}
 pathAmplitude = 100;
 %% terrain settings
-terrainNum = 7;
+terrainNum = 3;
 genTerrainFromPath = true;
 % custom, ignore if gen from path
 width = pathEndX+100;
@@ -71,7 +77,7 @@ height = pathEndY+200;
 cellsize = 5;
 % sin
 terrainAmplitude = 13;
-terrainFrequency = 0.05;
+terrainFrequency = 0.5;
 % random
 randFilterSize = 10;
 elevationChangeRange = 14;
@@ -81,7 +87,7 @@ rate = 0.001;
 startState = 1;
 stopState = -1;
 showAllMarkers = true;
-showAxis = '';
+showAxis = 'y';
 showColorBar = 0;
 equalAxis = true;
 
@@ -114,8 +120,8 @@ if ~saveVisualAsImage
 end
 % Launch terrain visual
 if showTerrainOnly
-    env.visualize_terrain(outputVisualDirectory);
+    env.visualize_terrain(outputVisualDirectory, equalAxis, showAxis);
 else
-    env.visualize_path(outputVisualDirectory);
+    env.visualize_path(outputVisualDirectory, equalAxis, showAxis);
 end
 

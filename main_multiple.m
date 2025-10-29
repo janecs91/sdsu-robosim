@@ -70,7 +70,7 @@ showColorBar = 0;
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
 addpath('input_args/input_terrain_args/sin');
-executionGroup = 53;
+executionGroup = 22;
 if executionGroup == 1
     % test group
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs()};
@@ -79,6 +79,10 @@ elseif executionGroup == 2
     % main easy group - done
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
     terrainArgInstances = {FlatTerrainArgs(), RampUpTerrainArgs(), RampDownTerrainArgs(), LeftRightTerrainArgs(), HalfSinTerrainArgs()};
+elseif executionGroup == 22 
+    % easy groups - redo specific terrains
+    pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
+    terrainArgInstances = {RampUpTerrainArgs(), RampDownTerrainArgs()};
 elseif executionGroup == 3
     % error - fix
     pathArgInstances = {StraightPathArgs(), DiagonalPathArgs(), SinPathArgs(), HalfCirclePathArgs()};
