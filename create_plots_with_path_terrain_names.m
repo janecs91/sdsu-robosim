@@ -4,7 +4,7 @@ addpath('terrain/generators');
 pathDirectory = 'input_path'; 
 terrainDirectory = 'input_terrain';
 outputEnvDirectory = 'output_results_paper';
-outputPlotDirectory = 'output_plots_renamed';
+outputPlotDirectory = 'output_plots2';
 outputVisualsDirectory = 'output_visuals';
 botOptions = {{'all'}, {'roll'}, {'pull'}, {'walk'}};
 terrainOptions = {'flat', 'ramp', 'sin', 'random', 'leftright', 'halfsin',   'perlin', 'mars'};
@@ -69,7 +69,7 @@ showColorBar = 0;
 Environment.load_paths()
 addpath('input_args/input_path_args');
 addpath('input_args/input_terrain_args');
-executionGroup = 22;
+executionGroup = 21;
 if executionGroup == 1
     pathArgInstances = {StraightPathArgs()};
     terrainArgInstances = {FlatTerrainArgs()};

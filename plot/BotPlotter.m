@@ -54,8 +54,8 @@ classdef BotPlotter
                 end
 
                 fontsize(gcf,scale=obj.fontSizeScale)
-                title(sprintf("Time over Distance%s", plotTitle))
-                xlabel('Base Distance (cm)')
+                title(sprintf("Time over Base Position%s", plotTitle))
+                xlabel('Base Position Along X-Axis (cm)')
                 ylabel('Time (s)')
             end
             legend('pull', 'roll', 'walk');
@@ -109,8 +109,8 @@ classdef BotPlotter
                 end
 
                 fontsize(gcf,scale=obj.fontSizeScale)
-                title(sprintf("Power over Base Distance%s", plotTitle))
-                xlabel('Base Distance (cm)')
+                title(sprintf("Power over Base Position%s", plotTitle))
+                xlabel('Base Position Along X-Axis (cm)')
                 ylabel('Power (W)')
             end
             legend('pull', 'roll', 'walk');
@@ -147,8 +147,8 @@ classdef BotPlotter
                 
                 plot(baseX, cumsumJointDistances);
 
-                title("Cumulative Maximum Joint Changes At Time over Base Distance")
-                xlabel('Base Distance (cm)')
+                title("Cumulative Maximum Joint Changes At Time over Base Position")
+                xlabel('Base Position Along X-Axis (cm)')
                 ylabel('Joint Changes (cm)')
             end
             legend('pull', 'roll', 'walk');
@@ -178,8 +178,8 @@ classdef BotPlotter
                 
                 plot(baseX, cumsumPowerCost);
 
-                title("Joint Changes over Base Distance")
-                xlabel('Base Distance (cm)')
+                title("Joint Changes over Base Position")
+                xlabel('Base Position Along X-Axis (cm)')
                 ylabel('Joint Changes (cm)')
             end
             legend('pull', 'roll', 'walk');
@@ -209,8 +209,8 @@ classdef BotPlotter
                 
                 plot(baseX, cumsumPowerCost);
 
-                title("Stride Length over Base Distance")
-                xlabel('Base Distance (cm)')
+                title("Stride Length over Base Position")
+                xlabel('Base Position Along X-Axis (cm)')
                 ylabel('Stride Length (cm)')
             end
             legend('pull', 'roll', 'walk');
